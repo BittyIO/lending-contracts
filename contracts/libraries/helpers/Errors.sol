@@ -3,8 +3,8 @@ pragma solidity 0.8.4;
 
 /**
  * @title Errors library
- * @author Bend
- * @notice Defines the error messages emitted by the different contracts of the Bend protocol
+ * @author Bitty
+ * @notice Defines the error messages emitted by the different contracts of the Bitty protocol
  */
 library Errors {
   enum ReturnCode {

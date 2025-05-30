@@ -1,7 +1,7 @@
 import { task } from "hardhat/config";
 import { ConfigNames, loadPoolConfig } from "../../helpers/configuration";
 import {
-  getBendProtocolDataProvider,
+  getBittyProtocolDataProvider,
   //getLendPoolAddressesProviderRegistry,
 } from "../../helpers/contracts-getters";
 import { getParamPerNetwork } from "../../helpers/contracts-helpers";
@@ -18,7 +18,7 @@ task("print-nft", "Print data of specified nft")
     const network = process.env.FORK ? (process.env.FORK as eNetwork) : (localBRE.network.name as eNetwork);
     const poolConfig = loadPoolConfig(pool);
 
-    const protocolDataProvider = await getBendProtocolDataProvider();
+    const protocolDataProvider = await getBittyProtocolDataProvider();
 
     let loanData;
     if (loanId != undefined) {

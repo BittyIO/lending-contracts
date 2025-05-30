@@ -308,7 +308,7 @@ contract BNFT is IBNFT, ERC721EnumerableUpgradeable, IERC721ReceiverUpgradeable,
    */
   function contractURI() external view override returns (string memory) {
     string memory hexAddress = StringsUpgradeable.toHexString(uint256(uint160(address(this))), 20);
-    return string(abi.encodePacked("https://metadata.benddao.xyz/", hexAddress));
+    return string(abi.encodePacked("https://metadata.bitty.io/", hexAddress));
   }
 
   function claimERC20Airdrop(

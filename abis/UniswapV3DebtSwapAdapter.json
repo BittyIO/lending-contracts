@@ -124,7 +124,7 @@
   },
   {
     "inputs": [],
-    "name": "bendAddressesProvider",
+    "name": "bittyAddressesProvider",
     "outputs": [
       {
         "internalType": "contract ILendPoolAddressesProvider",
@@ -137,10 +137,10 @@
   },
   {
     "inputs": [],
-    "name": "bendDataProvider",
+    "name": "bittyDataProvider",
     "outputs": [
       {
-        "internalType": "contract BendProtocolDataProvider",
+        "internalType": "contract BittyProtocolDataProvider",
         "name": "",
         "type": "address"
       }
@@ -150,7 +150,7 @@
   },
   {
     "inputs": [],
-    "name": "bendLendLoan",
+    "name": "bittyLendLoan",
     "outputs": [
       {
         "internalType": "contract ILendPoolLoan",
@@ -163,7 +163,7 @@
   },
   {
     "inputs": [],
-    "name": "bendLendPool",
+    "name": "bittyLendPool",
     "outputs": [
       {
         "internalType": "contract ILendPool",
@@ -176,7 +176,7 @@
   },
   {
     "inputs": [],
-    "name": "bendReserveOracle",
+    "name": "bittyReserveOracle",
     "outputs": [
       {
         "internalType": "contract IReserveOracleGetter",
@@ -274,7 +274,7 @@
       },
       {
         "internalType": "address",
-        "name": "bendAddressesProvider_",
+        "name": "bittyAddressesProvider_",
         "type": "address"
       },
       {

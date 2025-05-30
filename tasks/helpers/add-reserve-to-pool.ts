@@ -15,7 +15,7 @@ import {
 import { getEthersSignerByAddress, getParamPerNetwork } from "../../helpers/contracts-helpers";
 import { getNowTimeInSeconds, notFalsyOrZeroAddress, waitForTx } from "../../helpers/misc-utils";
 import { eContractid, eNetwork, IReserveParams } from "../../helpers/types";
-import { strategyReserveParams } from "../../markets/bend/reservesConfigs";
+import { strategyReserveParams } from "../../markets/bitty/reservesConfigs";
 
 task("helpers:add-reserve-to-pool", "Add and config new reserve asset to lend pool")
   .addParam("pool", `Pool name to retrieve configuration, supported: ${Object.values(ConfigNames)}`)

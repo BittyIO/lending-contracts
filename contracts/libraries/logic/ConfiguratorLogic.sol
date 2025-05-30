@@ -9,7 +9,7 @@ import {ILendPoolAddressesProvider} from "../../interfaces/ILendPoolAddressesPro
 import {IBNFT} from "../../interfaces/IBNFT.sol";
 import {IBNFTRegistry} from "../../interfaces/IBNFTRegistry.sol";
 
-import {BendUpgradeableProxy} from "../../libraries/proxy/BendUpgradeableProxy.sol";
+import {BittyUpgradeableProxy} from "../../libraries/proxy/BittyUpgradeableProxy.sol";
 import {ReserveConfiguration} from "../../libraries/configuration/ReserveConfiguration.sol";
 import {NftConfiguration} from "../../libraries/configuration/NftConfiguration.sol";
 import {DataTypes} from "../../libraries/types/DataTypes.sol";
@@ -18,7 +18,7 @@ import {Errors} from "../../libraries/helpers/Errors.sol";
 
 /**
  * @title ConfiguratorLogic library
- * @author Bend
+ * @author Bitty
  * @notice Implements the logic to configuration feature
  */
 library ConfiguratorLogic {
@@ -149,12 +149,12 @@ library ConfiguratorLogic {
   }
 
   function getTokenImplementation(address proxyAddress) external view returns (address) {
-    BendUpgradeableProxy proxy = BendUpgradeableProxy(payable(proxyAddress));
+    BittyUpgradeableProxy proxy = BittyUpgradeableProxy(payable(proxyAddress));
     return proxy.getImplementation();
   }
 
   function _initTokenWithProxy(address implementation, bytes memory initParams) internal returns (address) {
-    BendUpgradeableProxy proxy = new BendUpgradeableProxy(implementation, address(this), initParams);
+    BittyUpgradeableProxy proxy = new BittyUpgradeableProxy(implementation, address(this), initParams);
 
     return address(proxy);
   }
@@ -164,7 +164,7 @@ library ConfiguratorLogic {
     address implementation,
     bytes memory encodedCallData
   ) internal {
-    BendUpgradeableProxy proxy = BendUpgradeableProxy(payable(proxyAddress));
+    BittyUpgradeableProxy proxy = BittyUpgradeableProxy(payable(proxyAddress));
 
     if (encodedCallData.length > 0) {
       proxy.upgradeToAndCall(implementation, encodedCallData);

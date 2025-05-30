@@ -1,6 +1,6 @@
-import BigNumber from 'bignumber.js';
-import { oneRay } from '../../helpers/constants';
-import { IInterestRateStrategyParams } from '../../helpers/types';
+import BigNumber from "bignumber.js";
+import { oneRay } from "../../helpers/constants";
+import { IInterestRateStrategyParams } from "../../helpers/types";
 
 // BUSD SUSD
 export const rateStrategyStableOne: IInterestRateStrategyParams = {
@@ -18,7 +18,7 @@ export const rateStrategyStableTwo: IInterestRateStrategyParams = {
   baseVariableBorrowRate: new BigNumber(0.03).multipliedBy(oneRay).toFixed(),
   variableRateSlope1: new BigNumber(0.04).multipliedBy(oneRay).toFixed(),
   variableRateSlope2: new BigNumber(0.75).multipliedBy(oneRay).toFixed(),
-}
+};
 
 // USDC USDT
 export const rateStrategyStableThree: IInterestRateStrategyParams = {
@@ -26,8 +26,8 @@ export const rateStrategyStableThree: IInterestRateStrategyParams = {
   optimalUtilizationRate: new BigNumber(0.9).multipliedBy(oneRay).toFixed(),
   baseVariableBorrowRate: new BigNumber(0.03).multipliedBy(oneRay).toFixed(),
   variableRateSlope1: new BigNumber(0.04).multipliedBy(oneRay).toFixed(),
-  variableRateSlope2: new BigNumber(0.60).multipliedBy(oneRay).toFixed(),
-}
+  variableRateSlope2: new BigNumber(0.6).multipliedBy(oneRay).toFixed(),
+};
 
 // WETH
 export const rateStrategyWETH: IInterestRateStrategyParams = {
@@ -36,4 +36,12 @@ export const rateStrategyWETH: IInterestRateStrategyParams = {
   baseVariableBorrowRate: new BigNumber(0.03).multipliedBy(oneRay).toFixed(),
   variableRateSlope1: new BigNumber(0.08).multipliedBy(oneRay).toFixed(),
   variableRateSlope2: new BigNumber(1).multipliedBy(oneRay).toFixed(),
-}
+};
+
+export const rateStrategyWBTC: IInterestRateStrategyParams = {
+  name: "rateStrategyWBTC",
+  optimalUtilizationRate: new BigNumber(0.65).multipliedBy(oneRay).toFixed(),
+  baseVariableBorrowRate: new BigNumber(0.02).multipliedBy(oneRay).toFixed(),
+  variableRateSlope1: new BigNumber(0.16).multipliedBy(oneRay).toFixed(),
+  variableRateSlope2: new BigNumber(2).multipliedBy(oneRay).toFixed(),
+};

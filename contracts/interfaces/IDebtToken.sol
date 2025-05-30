@@ -10,7 +10,7 @@ import {IERC20MetadataUpgradeable} from "@openzeppelin/contracts-upgradeable/tok
 
 /**
  * @title IDebtToken
- * @author Bend
+ * @author Bitty
  * @notice Defines the basic interface for a debt token.
  **/
 interface IDebtToken is IScaledBalanceToken, IERC20Upgradeable, IERC20MetadataUpgradeable {

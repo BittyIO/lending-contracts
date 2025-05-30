@@ -4,7 +4,7 @@ import { task } from "hardhat/config";
 import { ConfigNames, loadPoolConfig } from "../../helpers/configuration";
 import { oneEther } from "../../helpers/constants";
 import {
-  getBendProtocolDataProvider,
+  getBittyProtocolDataProvider,
   getDeploySigner,
   getLendPool,
   getLendPoolAddressesProvider,

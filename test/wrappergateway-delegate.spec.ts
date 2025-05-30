@@ -4,7 +4,7 @@ import { parseEther } from "ethers/lib/utils";
 import DRE from "hardhat";
 
 import { getReservesConfigByPool } from "../helpers/configuration";
-import { BendPools, iBendPoolAssets, IReserveParams, ProtocolErrors } from "../helpers/types";
+import { BittyPools, iBittyPoolAssets, IReserveParams, ProtocolErrors } from "../helpers/types";
 import { configuration as actionsConfiguration } from "./helpers/actions";
 import { makeSuite, TestEnv } from "./helpers/make-suite";
 import { configuration as calculationsConfiguration } from "./helpers/utils/calculations";
@@ -24,8 +24,8 @@ makeSuite("WrapperGateway: Delegate", (testEnv: TestEnv) => {
 
     actionsConfiguration.skipIntegrityCheck = false; //set this to true to execute solidity-coverage
 
-    calculationsConfiguration.reservesParams = <iBendPoolAssets<IReserveParams>>(
-      getReservesConfigByPool(BendPools.proto)
+    calculationsConfiguration.reservesParams = <iBittyPoolAssets<IReserveParams>>(
+      getReservesConfigByPool(BittyPools.proto)
     );
   });
   after("Reset", () => {

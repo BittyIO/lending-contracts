@@ -1,7 +1,7 @@
 import { task } from "hardhat/config";
 import { ConfigNames, loadPoolConfig } from "../../helpers/configuration";
 import {
-  getBendProtocolDataProvider,
+  getBittyProtocolDataProvider,
   getBToken,
   getDebtToken,
   getIErc20Detailed,
@@ -22,7 +22,7 @@ task("print-reserve", "Print data of specified reserve and user")
     const poolConfig = loadPoolConfig(pool);
 
     const addressProvider = await getLendPoolAddressesProvider();
-    const protocolDataProvider = await getBendProtocolDataProvider(await addressProvider.getBendDataProvider());
+    const protocolDataProvider = await getBittyProtocolDataProvider(await addressProvider.getBittyDataProvider());
     const uiDataProvider = await getUIPoolDataProvider(await addressProvider.getUIDataProvider());
 
     const reserveToken = await protocolDataProvider.getReserveTokenData(asset);

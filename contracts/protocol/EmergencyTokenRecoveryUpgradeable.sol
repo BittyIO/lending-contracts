@@ -11,7 +11,7 @@ import {IPunks} from "../interfaces/IPunks.sol";
 /**
  * @title EmergencyTokenRecovery
  * @notice Add Emergency Recovery Logic to contract implementation
- * @author Bend
+ * @author Bitty
  **/
 abstract contract EmergencyTokenRecoveryUpgradeable is OwnableUpgradeable {
   using SafeERC20Upgradeable for IERC20Upgradeable;

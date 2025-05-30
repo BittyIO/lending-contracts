@@ -7,12 +7,12 @@ import { formatEther } from "@ethersproject/units";
 import { loadPoolConfig } from "../../helpers/configuration";
 import { getEthersSignerByAddress } from "../../helpers/contracts-helpers";
 
-task("bend:mainnet", "Deploy full enviroment")
+task("bitty:mainnet", "Deploy full enviroment")
   .addFlag("verify", "Verify contracts at Etherscan")
   .addFlag("skipRegistry", "Skip addresses provider registration at Addresses Provider Registry")
   .addFlag("skipOracle", "Skip deploy oracles")
   .setAction(async ({ verify, skipRegistry, skipOracle }, DRE) => {
-    const POOL_NAME = ConfigNames.Bend;
+    const POOL_NAME = ConfigNames.Bitty;
     await DRE.run("set-DRE");
     await DRE.run("compile");
 
@@ -53,8 +53,8 @@ task("bend:mainnet", "Deploy full enviroment")
     await DRE.run("full:deploy-proxy-admin", { pool: POOL_NAME, all: true });
 
     //////////////////////////////////////////////////////////////////////////
-    console.log("\n\nDeploy bend collector");
-    await DRE.run("full:deploy-bend-collector", { pool: POOL_NAME });
+    console.log("\n\nDeploy bitty collector");
+    await DRE.run("full:deploy-bitty-collector", { pool: POOL_NAME });
 
     //////////////////////////////////////////////////////////////////////////
     console.log("\n\nDeploy address provider");

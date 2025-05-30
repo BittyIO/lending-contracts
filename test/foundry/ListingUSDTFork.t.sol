@@ -18,13 +18,13 @@ import "../../contracts/interfaces/IBToken.sol";
 import "../../contracts/interfaces/IDebtToken.sol";
 import "../../contracts/interfaces/IScaledBalanceToken.sol";
 
-import "../../contracts/libraries/proxy/BendProxyAdmin.sol";
-import "../../contracts/libraries/proxy/BendUpgradeableProxy.sol";
+import "../../contracts/libraries/proxy/BittyProxyAdmin.sol";
+import "../../contracts/libraries/proxy/BittyUpgradeableProxy.sol";
 import "../../contracts/libraries/types/ConfigTypes.sol";
 import "../../contracts/protocol/InterestRate.sol";
 import "../../contracts/protocol/ReserveOracle.sol";
 import "../../contracts/protocol/LendPoolConfigurator.sol";
-import "../../contracts/misc/BendProtocolDataProvider.sol";
+import "../../contracts/misc/BittyProtocolDataProvider.sol";
 import "../../contracts/protocol/PunkGateway.sol";
 
 contract ListingUSDTForkTest is Test {
@@ -35,7 +35,7 @@ contract ListingUSDTForkTest is Test {
   address constant timelockController7DAddress = 0x4e4C314E2391A58775be6a15d7A05419ba7D2B6e;
   address constant timelockController24HAddress = 0x652DB942BE3Ab09A8Fd6F14776a52ed2A73bF214;
   address constant poolProviderAddress = 0x24451F47CaF13B24f4b5034e1dF6c0E401ec0e46;
-  address constant bendCollectorAddress = 0x43078AbfB76bd24885Fd64eFFB22049f92a8c495;
+  address constant bittyCollectorAddress = 0x43078AbfB76bd24885Fd64eFFB22049f92a8c495;
   address constant proxyAdminAddress = 0x501c991E0D31D408c25bCf00da27BdF2759A394a;
   address constant punkGatewayAddress = 0xeD01f8A737813F0bDA2D4340d191DBF8c2Cbcf30;
   address constant wethGatewayAddress = 0x3B968D2D299B895A5Fcf3BBa7A64ad0F566e6F88;
@@ -44,19 +44,19 @@ contract ListingUSDTForkTest is Test {
   address constant usdtAggregatorAddress = 0xEe9F2375b4bdF6387aa8265dD4FB8F16512A1d46;
   address constant reserveOracleAddress = 0x16ca3E500dA893cF2EEBb6b401247e68ca5BC072;
   // contracts
-  BendProxyAdmin public proxyAdminPool;
+  BittyProxyAdmin public proxyAdminPool;
   ILendPoolAddressesProvider public addressProvider;
-  BendProtocolDataProvider public dataProvider;
-  IBToken public bendUSDTToken;
+  BittyProtocolDataProvider public dataProvider;
+  IBToken public bittyUSDTToken;
   IDebtToken public debtUSDTToken;
 
   // how to run this testcase
   // forge test --match-contract ListingUSDTForkTest --fork-url https://RPC --fork-block-number 17577548
 
   function setUp() public {
-    proxyAdminPool = BendProxyAdmin(proxyAdminAddress);
+    proxyAdminPool = BittyProxyAdmin(proxyAdminAddress);
     addressProvider = ILendPoolAddressesProvider(poolProviderAddress);
-    dataProvider = BendProtocolDataProvider(addressProvider.getBendDataProvider());
+    dataProvider = BittyProtocolDataProvider(addressProvider.getBittyDataProvider());
   }
 
   function testFork_ListingUSDT() public {
@@ -86,12 +86,12 @@ contract ListingUSDTForkTest is Test {
       underlyingAssetDecimals: 6,
       interestRateAddress: address(usdtInterestRate),
       underlyingAsset: usdtTokenAddress,
-      treasury: bendCollectorAddress,
+      treasury: bittyCollectorAddress,
       underlyingAssetName: "USDT",
-      bTokenName: "Bend interest bearing USDT",
-      bTokenSymbol: "bendUSDT",
-      debtTokenName: "Bend debt bearing USDT",
-      debtTokenSymbol: "bendDebtUSDT"
+      bTokenName: "Bitty interest bearing USDT",
+      bTokenSymbol: "bittyUSDT",
+      debtTokenName: "Bitty debt bearing USDT",
+      debtTokenSymbol: "bittyDebtUSDT"
     });
     vm.prank(timelockController7DAddress);
     configurator.batchInitReserve(initInputs);
@@ -108,16 +108,16 @@ contract ListingUSDTForkTest is Test {
 
     // config usdt asset in incentive controller
     IIncentivesController incentiveController = IIncentivesController(addressProvider.getIncentivesController());
-    BendProtocolDataProvider.ReserveTokenData memory reserveTokenData = dataProvider.getReserveTokenData(
+    BittyProtocolDataProvider.ReserveTokenData memory reserveTokenData = dataProvider.getReserveTokenData(
       usdtTokenAddress
     );
-    bendUSDTToken = IBToken(reserveTokenData.bTokenAddress);
+    bittyUSDTToken = IBToken(reserveTokenData.bTokenAddress);
     debtUSDTToken = IDebtToken(reserveTokenData.debtTokenAddress);
     vm.prank(timelockController24HAddress);
     IScaledBalanceToken[] memory icAssets = new IScaledBalanceToken[](2);
-    icAssets[0] = IScaledBalanceToken(bendUSDTToken);
+    icAssets[0] = IScaledBalanceToken(bittyUSDTToken);
     icAssets[1] = IScaledBalanceToken(debtUSDTToken);
-    console.log("bendUSDT address: ", reserveTokenData.bTokenAddress);
+    console.log("bittyUSDT address: ", reserveTokenData.bTokenAddress);
     console.log("debtUSDT address: ", reserveTokenData.debtTokenAddress);
     uint256[] memory icEmissions = new uint256[](2);
     incentiveController.configureAssets(icAssets, icEmissions);
@@ -141,7 +141,7 @@ contract ListingUSDTForkTest is Test {
     console.log("====_upgradePunkGateway====");
 
     vm.prank(timelockController7DAddress);
-    proxyAdminPool.upgrade(BendUpgradeableProxy(payable(punkGatewayAddress)), address(punkGatewayImpl));
+    proxyAdminPool.upgrade(BittyUpgradeableProxy(payable(punkGatewayAddress)), address(punkGatewayImpl));
 
     PunkGateway punkGateway = PunkGateway(payable(punkGatewayAddress));
     address[] memory assets = new address[](1);
@@ -185,8 +185,8 @@ contract ListingUSDTForkTest is Test {
 
     vm.startPrank(testWallet);
 
-    uint256 usdtBalanceBeforeBorrow = IERC20(reserve).balanceOf(address(bendUSDTToken));
-    console.log("USDT balanceOf(bendUSDT) before borrow", usdtBalanceBeforeBorrow);
+    uint256 usdtBalanceBeforeBorrow = IERC20(reserve).balanceOf(address(bittyUSDTToken));
+    console.log("USDT balanceOf(bittyUSDT) before borrow", usdtBalanceBeforeBorrow);
 
     // moonbirds
     address nftAsset = 0x23581767a106ae21c074b2276D25e5C3e136a68b;
@@ -199,7 +199,7 @@ contract ListingUSDTForkTest is Test {
     IERC721(nftAsset).setApprovalForAll(address(pool), true);
     pool.borrow(reserve, availableBorrowsInReserve, nftAsset, nftTokenId, testWallet, 0);
 
-    console.log("USDT balanceOf(bendUSDT) after borrow", IERC20(reserve).balanceOf(address(bendUSDTToken)));
+    console.log("USDT balanceOf(bittyUSDT) after borrow", IERC20(reserve).balanceOf(address(bittyUSDTToken)));
 
     (, address debtReserveAsset, , uint256 totalDebt, , uint256 healthFactor) = pool.getNftDebtData(
       nftAsset,
@@ -212,7 +212,7 @@ contract ListingUSDTForkTest is Test {
     pool.repay(nftAsset, nftTokenId, totalDebt);
     assertEq(IERC721(nftAsset).ownerOf(nftTokenId), testWallet, "ownerOf not match");
 
-    console.log("USDT balanceOf(bendUSDT) after repay", IERC20(reserve).balanceOf(address(bendUSDTToken)));
+    console.log("USDT balanceOf(bittyUSDT) after repay", IERC20(reserve).balanceOf(address(bittyUSDTToken)));
 
     vm.stopPrank();
   }
@@ -229,8 +229,8 @@ contract ListingUSDTForkTest is Test {
 
     debtUSDTToken.approveDelegation(address(punkGateway), type(uint256).max);
 
-    uint256 usdtBalanceBeforeBorrow = IERC20(reserve).balanceOf(address(bendUSDTToken));
-    console.log("USDT balanceOf(bendUSDT) before borrow", usdtBalanceBeforeBorrow);
+    uint256 usdtBalanceBeforeBorrow = IERC20(reserve).balanceOf(address(bittyUSDTToken));
+    console.log("USDT balanceOf(bittyUSDT) before borrow", usdtBalanceBeforeBorrow);
 
     // punks
     address nftAsset = address(punkGateway.wrappedPunks());
@@ -243,7 +243,7 @@ contract ListingUSDTForkTest is Test {
     availableBorrowsInReserve = (availableBorrowsInReserve * 99) / 100;
     punkGateway.borrow(reserve, availableBorrowsInReserve, punkIdex, testWallet, 0);
 
-    console.log("USDT balanceOf(bendUSDT) after borrow", IERC20(reserve).balanceOf(address(bendUSDTToken)));
+    console.log("USDT balanceOf(bittyUSDT) after borrow", IERC20(reserve).balanceOf(address(bittyUSDTToken)));
 
     (, address debtReserveAsset, , uint256 totalDebt, , uint256 healthFactor) = pool.getNftDebtData(nftAsset, punkIdex);
     assertEq(debtReserveAsset, reserve, "debtReserveAsset not match");
@@ -255,7 +255,7 @@ contract ListingUSDTForkTest is Test {
     punkGateway.repay(punkIdex, totalDebt);
     assertEq(punk.punkIndexToAddress(punkIdex), testWallet, "ownerOf not match");
 
-    console.log("USDT balanceOf(bendUSDT) after repay", IERC20(reserve).balanceOf(address(bendUSDTToken)));
+    console.log("USDT balanceOf(bittyUSDT) after repay", IERC20(reserve).balanceOf(address(bittyUSDTToken)));
 
     vm.stopPrank();
   }

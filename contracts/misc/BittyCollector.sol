@@ -7,16 +7,16 @@ import {SafeERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ER
 import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
 /**
- * @title BendCollector
+ * @title BittyCollector
  * @notice Stores all the BEND kept for incentives, just giving approval to the different
  * systems that will pull BEND funds for their specific use case
- * @author Bend
+ * @author Bitty
  **/
-contract BendCollector is Initializable, OwnableUpgradeable {
+contract BittyCollector is Initializable, OwnableUpgradeable {
   using SafeERC20Upgradeable for IERC20Upgradeable;
 
   /**
-   * @dev initializes the contract upon assignment to the BendUpgradeableProxy
+   * @dev initializes the contract upon assignment to the BittyUpgradeableProxy
    */
   function initialize() external initializer {
     __Ownable_init();

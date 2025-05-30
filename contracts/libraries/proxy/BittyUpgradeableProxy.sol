@@ -4,7 +4,7 @@ pragma solidity 0.8.4;
 import {TransparentUpgradeableProxy} from "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
 import "../helpers/Errors.sol";
 
-contract BendUpgradeableProxy is TransparentUpgradeableProxy {
+contract BittyUpgradeableProxy is TransparentUpgradeableProxy {
   constructor(
     address _logic,
     address admin_,

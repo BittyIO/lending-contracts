@@ -4,7 +4,7 @@ pragma solidity 0.8.4;
 // Prettier ignore to prevent buidler flatter bug
 // prettier-ignore
 import {ILendPoolAddressesProvider} from "../interfaces/ILendPoolAddressesProvider.sol";
-import {BendUpgradeableProxy} from "../libraries/proxy/BendUpgradeableProxy.sol";
+import {BittyUpgradeableProxy} from "../libraries/proxy/BittyUpgradeableProxy.sol";
 
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {Address} from "@openzeppelin/contracts/utils/Address.sol";
@@ -13,8 +13,8 @@ import {Address} from "@openzeppelin/contracts/utils/Address.sol";
  * @title LendPoolAddressesProvider contract
  * @dev Main registry of addresses part of or connected to the protocol, including permissioned roles
  * - Acting also as factory of proxies and admin of those, so with right to change its implementations
- * - Owned by the Bend Governance
- * @author Bend
+ * - Owned by the Bitty Governance
+ * @author Bitty
  **/
 contract LendPoolAddressesProvider is Ownable, ILendPoolAddressesProvider {
   string private _marketId;
@@ -40,7 +40,7 @@ contract LendPoolAddressesProvider is Ownable, ILendPoolAddressesProvider {
   }
 
   /**
-   * @dev Returns the id of the Bend market to which this contracts points to
+   * @dev Returns the id of the Bitty market to which this contracts points to
    * @return The market id
    **/
   function getMarketId() external view override returns (string memory) {
@@ -221,13 +221,13 @@ contract LendPoolAddressesProvider is Ownable, ILendPoolAddressesProvider {
     emit UIDataProviderUpdated(provider);
   }
 
-  function getBendDataProvider() external view override returns (address) {
+  function getBittyDataProvider() external view override returns (address) {
     return getAddress(BEND_DATA_PROVIDER);
   }
 
-  function setBendDataProvider(address provider) external override onlyOwner {
+  function setBittyDataProvider(address provider) external override onlyOwner {
     _addresses[BEND_DATA_PROVIDER] = provider;
-    emit BendDataProviderUpdated(provider);
+    emit BittyDataProviderUpdated(provider);
   }
 
   function getWalletBalanceProvider() external view override returns (address) {
@@ -240,7 +240,7 @@ contract LendPoolAddressesProvider is Ownable, ILendPoolAddressesProvider {
   }
 
   function getImplementation(address proxyAddress) external view onlyOwner returns (address) {
-    BendUpgradeableProxy proxy = BendUpgradeableProxy(payable(proxyAddress));
+    BittyUpgradeableProxy proxy = BittyUpgradeableProxy(payable(proxyAddress));
     return proxy.getImplementation();
   }
 
@@ -260,13 +260,13 @@ contract LendPoolAddressesProvider is Ownable, ILendPoolAddressesProvider {
       bytes memory params = abi.encodeWithSignature("initialize(address)", address(this));
 
       // create proxy, then init proxy & implementation
-      BendUpgradeableProxy proxy = new BendUpgradeableProxy(newAddress, address(this), params);
+      BittyUpgradeableProxy proxy = new BittyUpgradeableProxy(newAddress, address(this), params);
 
       _addresses[id] = address(proxy);
       emit ProxyCreated(id, address(proxy));
     } else {
       // upgrade implementation
-      BendUpgradeableProxy proxy = BendUpgradeableProxy(proxyAddress);
+      BittyUpgradeableProxy proxy = BittyUpgradeableProxy(proxyAddress);
 
       proxy.upgradeTo(newAddress);
     }

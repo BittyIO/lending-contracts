@@ -18,10 +18,11 @@ deployed-contracts.json
 !/deployments/deployed-contracts-rinkeby*.json
 !/deployments/deployed-contracts-develop*.json
 !/deployments/deployed-contracts-goerli*.json
+!/deployments/deployed-contracts-sepolia*.json
 
 /flattened
-bend-flattened.*
-bend-protocol-flattened.*
+bitty-flattened.*
+bitty-protocol-flattened.*
 
 coverage
 .coverage_artifacts
@@ -41,3 +42,4 @@ out.html
 # Foundry
 cache_forge
 out
+*.history

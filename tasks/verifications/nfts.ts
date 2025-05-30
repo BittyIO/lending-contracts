@@ -3,7 +3,7 @@ import { loadPoolConfig, ConfigNames } from "../../helpers/configuration";
 import {
   getBNFT,
   getLendPoolAddressesProvider,
-  getBendUpgradeableProxy,
+  getBittyUpgradeableProxy,
   getBNFTRegistryProxy,
   getBNFTRegistryImpl,
   getLendPool,
@@ -24,7 +24,7 @@ task("verify:nfts", "Verify nfts contracts at Etherscan")
     const lendPoolProxy = await getLendPool(await addressesProvider.getLendPool());
 
     const bnftRegistryAddress = await addressesProvider.getBNFTRegistry();
-    const bnftRegistryProxy = await getBendUpgradeableProxy(bnftRegistryAddress);
+    const bnftRegistryProxy = await getBittyUpgradeableProxy(bnftRegistryAddress);
     const bnftRegistryImpl = await getBNFTRegistryImpl();
     const bnftRegistry = await getBNFTRegistryProxy(bnftRegistryAddress);
 
@@ -32,7 +32,7 @@ task("verify:nfts", "Verify nfts contracts at Etherscan")
 
     // BNFTRegistry proxy
     console.log("\n- Verifying BNFT Registry Proxy...\n");
-    await verifyContract(eContractid.BendUpgradeableProxy, bnftRegistryProxy, [
+    await verifyContract(eContractid.BittyUpgradeableProxy, bnftRegistryProxy, [
       bnftRegistryImpl.address,
       addressesProvider.address,
       bnftRegistryImpl.interface.encodeFunctionData("initialize", [
@@ -61,7 +61,7 @@ task("verify:nfts", "Verify nfts contracts at Etherscan")
 
       // BNFT proxy for each nft asset
       console.log("\n- Verifying BNFT Proxy...\n");
-      await verifyContract(eContractid.BendUpgradeableProxy, await getBendUpgradeableProxy(bNftAddress), [
+      await verifyContract(eContractid.BittyUpgradeableProxy, await getBittyUpgradeableProxy(bNftAddress), [
         bnftRegistry.address,
       ]);
     }

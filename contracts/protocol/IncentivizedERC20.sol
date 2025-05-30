@@ -12,7 +12,7 @@ import {IERC20MetadataUpgradeable} from "@openzeppelin/contracts-upgradeable/tok
 /**
  * @title IncentivizedERC20
  * @notice Add Incentivized Logic to ERC20 implementation
- * @author Bend
+ * @author Bitty
  **/
 abstract contract IncentivizedERC20 is Initializable, IERC20MetadataUpgradeable, ERC20Upgradeable {
   uint8 private _customDecimals;

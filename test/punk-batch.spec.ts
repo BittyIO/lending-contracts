@@ -4,7 +4,7 @@ import { parseEther } from "ethers/lib/utils";
 import DRE from "hardhat";
 
 import { getReservesConfigByPool } from "../helpers/configuration";
-import { BendPools, iBendPoolAssets, IReserveParams, ProtocolErrors, ProtocolLoanState } from "../helpers/types";
+import { BittyPools, iBittyPoolAssets, IReserveParams, ProtocolErrors, ProtocolLoanState } from "../helpers/types";
 import {
   approveERC20,
   approveERC20PunkGateway,
@@ -33,8 +33,8 @@ makeSuite("PunkGateway: Batch borrow", (testEnv: TestEnv) => {
 
     actionsConfiguration.skipIntegrityCheck = false; //set this to true to execute solidity-coverage
 
-    calculationsConfiguration.reservesParams = <iBendPoolAssets<IReserveParams>>(
-      getReservesConfigByPool(BendPools.proto)
+    calculationsConfiguration.reservesParams = <iBittyPoolAssets<IReserveParams>>(
+      getReservesConfigByPool(BittyPools.proto)
     );
   });
   after("Reset", () => {

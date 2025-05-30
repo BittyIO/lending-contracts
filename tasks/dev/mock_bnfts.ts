@@ -1,16 +1,16 @@
 import { task } from "hardhat/config";
 import { notFalsyOrZeroAddress, waitForTx } from "../../helpers/misc-utils";
-import { eContractid, tEthereumAddress, BendPools } from "../../helpers/types";
+import { eContractid, tEthereumAddress, BittyPools } from "../../helpers/types";
 import { ConfigNames, loadPoolConfig } from "../../helpers/configuration";
 import {
   deployBNFTRegistry,
   deployGenericBNFTImpl,
-  deployBendUpgradeableProxy,
+  deployBittyUpgradeableProxy,
 } from "../../helpers/contracts-deployments";
 import {
   getLendPoolAddressesProvider,
   getBNFTRegistryProxy,
-  getBendProxyAdminById,
+  getBittyProxyAdminById,
   getConfigMockedNfts,
   getProxyAdminSigner,
 } from "../../helpers/contracts-getters";
@@ -36,7 +36,7 @@ task("dev:deploy-mock-bnft-registry", "Deploy bnft registry for dev enviroment")
       poolConfig.Mocks.BNftSymbolPrefix,
     ]);
 
-    const bnftRegistryProxy = await deployBendUpgradeableProxy(
+    const bnftRegistryProxy = await deployBittyUpgradeableProxy(
       eContractid.BNFTRegistry,
       proxyAdminAddress,
       bnftRegistryImpl.address,

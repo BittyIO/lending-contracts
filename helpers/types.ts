@@ -4,7 +4,7 @@ export interface SymbolMap<T> {
   [symbol: string]: T;
 }
 
-export type eNetwork = eEthereumNetwork;
+export type eNetwork = eEthereumNetwork | string;
 
 export enum eEthereumNetwork {
   coverage = "coverage",
@@ -13,9 +13,10 @@ export enum eEthereumNetwork {
   goerli = "goerli",
   rinkeby = "rinkeby",
   main = "main",
+  sepolia = "sepolia",
 }
 
-export enum BendPools {
+export enum BittyPools {
   proto = "proto",
 }
 
@@ -47,17 +48,17 @@ export enum eContractid {
   ChainlinkAggregatorHelper = "ChainlinkAggregatorHelper",
   ChainlinkAggregatorHelperImpl = "ChainlinkAggregatorHelperImpl",
   InterestRate = "InterestRate",
-  BendUpgradeableProxy = "BendUpgradeableProxy",
-  BendProxyAdminTest = "BendProxyAdminTest",
-  BendProxyAdminPool = "BendProxyAdminPool", //LendPool Contracts, etc Oracle(Reserve, NFT)
-  BendProxyAdminFund = "BendProxyAdminFund", //Treasury Fundings, etc Collector
-  BendProxyAdminWTL = "BendProxyAdminWTL", //Common Proxy Admin Without Timelock
+  BittyUpgradeableProxy = "BittyUpgradeableProxy",
+  BittyProxyAdminTest = "BittyProxyAdminTest",
+  BittyProxyAdminPool = "BittyProxyAdminPool", //LendPool Contracts, etc Oracle(Reserve, NFT)
+  BittyProxyAdminFund = "BittyProxyAdminFund", //Treasury Fundings, etc Collector
+  BittyProxyAdminWTL = "BittyProxyAdminWTL", //Common Proxy Admin Without Timelock
   WalletBalanceProvider = "WalletBalanceProvider",
   BToken = "BToken",
   DebtToken = "DebtToken",
   BNFT = "BNFT",
   MockBNFT = "MockBNFT",
-  BendProtocolDataProvider = "BendProtocolDataProvider",
+  BittyProtocolDataProvider = "BittyProtocolDataProvider",
   IERC20Detailed = "IERC20Detailed",
   IERC721Detailed = "IERC721Detailed",
   FeeProvider = "FeeProvider",
@@ -80,8 +81,8 @@ export enum eContractid {
   PunkGatewayImpl = "PunkGatewayImpl",
   MockIncentivesController = "MockIncentivesController",
   UIPoolDataProvider = "UIPoolDataProvider",
-  BendCollector = "BendCollector",
-  BendCollectorImpl = "BendCollectorImpl",
+  BittyCollector = "BittyCollector",
+  BittyCollectorImpl = "BittyCollectorImpl",
   TimelockControllerFast = "TimelockControllerFast",
   TimelockControllerSlow = "TimelockControllerSlow",
   MockLoanRepaidInterceptor = "MockLoanRepaidInterceptor",
@@ -241,7 +242,7 @@ export type iAssetsWithoutETH<T> = Omit<iAssetBase<T>, "ETH">;
 
 export type iAssetsWithoutUSD<T> = Omit<iAssetBase<T>, "USD">;
 
-export type iBendPoolAssets<T> = Pick<
+export type iBittyPoolAssets<T> = Pick<
   iAssetsWithoutUSD<T>,
   | "WETH"
   | "DAI"
@@ -250,9 +251,9 @@ export type iBendPoolAssets<T> = Pick<
   | "USDT"
 >;
 
-export type iMultiPoolsAssets<T> = iAssetCommon<T> | iBendPoolAssets<T>;
+export type iMultiPoolsAssets<T> = iAssetCommon<T> | iBittyPoolAssets<T>;
 
-export type iBendPoolTokens<T> = Omit<iBendPoolAssets<T>, "ETH">;
+export type iBittyPoolTokens<T> = Omit<iBittyPoolAssets<T>, "ETH">;
 
 export type iAssetAggregatorBase<T> = iAssetsWithoutETH<T>;
 
@@ -278,9 +279,9 @@ export interface iNftBase<T> {
   WKODA: T;
 }
 
-export type iMultiPoolsNfts<T> = iNftCommon<T> | iBendPoolNfts<T>;
+export type iMultiPoolsNfts<T> = iNftCommon<T> | iBittyPoolNfts<T>;
 
-export type iBendPoolNfts<T> = iNftBase<T>;
+export type iBittyPoolNfts<T> = iNftBase<T>;
 
 export type iNftAggregatorBase<T> = iNftBase<T>;
 
@@ -295,7 +296,7 @@ export enum NftContractId {
   WKODA = "WKODA",
 }
 
-export interface IReserveParams extends IReserveBorrowParams, IReserveCollateralParams {
+export interface IReserveParams extends IReserveBorrowParams {
   bTokenImpl: eContractid;
   reserveFactor: string;
   strategy: IInterestRateStrategyParams;
@@ -351,10 +352,11 @@ export interface iEthereumParamsPerNetwork<T> {
   [eEthereumNetwork.goerli]: T;
   [eEthereumNetwork.rinkeby]: T;
   [eEthereumNetwork.main]: T;
+  [eEthereumNetwork.sepolia]: T;
 }
 
 export interface iParamsPerPool<T> {
-  [BendPools.proto]: T;
+  [BittyPools.proto]: T;
 }
 
 export interface iBasicDistributionParams {
@@ -427,13 +429,13 @@ export interface ICommonConfiguration {
   OracleQuoteUnit: string;
 }
 
-export interface IBendConfiguration extends ICommonConfiguration {
-  ReservesConfig: iBendPoolAssets<IReserveParams>;
-  NftsConfig: iBendPoolNfts<INftParams>;
+export interface IBittyConfiguration extends ICommonConfiguration {
+  ReservesConfig: iBittyPoolAssets<IReserveParams>;
+  NftsConfig: iBittyPoolNfts<INftParams>;
 }
 
 export interface ITokenAddress {
   [token: string]: tEthereumAddress;
 }
 
-export type PoolConfiguration = ICommonConfiguration | IBendConfiguration;
+export type PoolConfiguration = ICommonConfiguration | IBittyConfiguration;

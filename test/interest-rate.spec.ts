@@ -3,9 +3,9 @@ import { deployInterestRate } from "../helpers/contracts-deployments";
 
 import { APPROVAL_AMOUNT_LENDING_POOL, PERCENTAGE_FACTOR, RAY } from "../helpers/constants";
 
-import { rateStrategyStableOne } from "../markets/bend/rateStrategies";
+import { rateStrategyStableOne } from "../markets/bitty/rateStrategies";
 
-import { strategyDAI } from "../markets/bend/reservesConfigs";
+import { strategyDAI } from "../markets/bitty/reservesConfigs";
 import { BToken, InterestRate, MintableERC20 } from "../types";
 import BigNumber from "bignumber.js";
 import "./helpers/utils/math";

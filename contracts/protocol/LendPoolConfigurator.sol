@@ -20,8 +20,8 @@ import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Ini
 
 /**
  * @title LendPoolConfigurator contract
- * @author Bend
- * @dev Implements the configuration methods for the Bend protocol
+ * @author Bitty
+ * @dev Implements the configuration methods for the Bitty protocol
  **/
 
 contract LendPoolConfigurator is Initializable, ILendPoolConfigurator {

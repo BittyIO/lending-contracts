@@ -23,7 +23,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
           # Use the Github Package registry
           registry-url: https://npm.pkg.github.com/
-          scope: '@benddao'
+          scope: '@bitty'
       - name: Setup yarn
         if: ${{ steps.release.outputs.release_created }}
         run: npm install -g yarn

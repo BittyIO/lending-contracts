@@ -13,7 +13,7 @@ import { configuration as calculationsConfiguration } from "./helpers/utils/calc
 import BigNumber from "bignumber.js";
 import { makeSuite } from "./helpers/make-suite";
 import { getReservesConfigByPool } from "../helpers/configuration";
-import { BendPools, iBendPoolAssets, IReserveParams } from "../helpers/types";
+import { BittyPools, iBittyPoolAssets, IReserveParams } from "../helpers/types";
 
 import {
   mintERC20,
@@ -40,8 +40,8 @@ makeSuite("Subgraph tests", async (testEnv) => {
 
     actionsConfiguration.skipIntegrityCheck = false; //set this to true to execute solidity-coverage
 
-    calculationsConfiguration.reservesParams = <iBendPoolAssets<IReserveParams>>(
-      getReservesConfigByPool(BendPools.proto)
+    calculationsConfiguration.reservesParams = <iBittyPoolAssets<IReserveParams>>(
+      getReservesConfigByPool(BittyPools.proto)
     );
 
     saveBaycAssetPrice = (await testEnv.nftOracle.getAssetPrice(testEnv.bayc.address)).toString();

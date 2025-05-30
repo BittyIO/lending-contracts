@@ -16,8 +16,8 @@ import {SafeERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ER
 
 /**
  * @title ERC20 BToken
- * @dev Implementation of the interest bearing token for the Bend protocol
- * @author Bend
+ * @dev Implementation of the interest bearing token for the Bitty protocol
+ * @author Bitty
  */
 contract BToken is Initializable, IBToken, IncentivizedERC20 {
   using WadRayMath for uint256;
@@ -40,7 +40,7 @@ contract BToken is Initializable, IBToken, IncentivizedERC20 {
   /**
    * @dev Initializes the bToken
    * @param addressProvider The address of the address provider where this bToken will be used
-   * @param treasury The address of the Bend treasury, receiving the fees on this bToken
+   * @param treasury The address of the Bitty treasury, receiving the fees on this bToken
    * @param underlyingAsset The address of the underlying asset of this bToken
    */
   function initialize(
@@ -194,7 +194,7 @@ contract BToken is Initializable, IBToken, IncentivizedERC20 {
   }
 
   /**
-   * @dev Returns the address of the Bend treasury, receiving the fees on this bToken
+   * @dev Returns the address of the Bitty treasury, receiving the fees on this bToken
    **/
   function RESERVE_TREASURY_ADDRESS() public view returns (address) {
     return _treasury;

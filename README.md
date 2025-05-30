@@ -1,5 +1,5 @@
-[![Build pass](https://github.com/BendDAO/bend-lending-protocol/actions/workflows/node.js.yml/badge.svg)](https://github.com/BendDAO/bend-lending-protocol/actions/workflows/node.js.yml)
-[![codecov](https://codecov.io/gh/BendDAO/bend-lending-protocol/branch/main/graph/badge.svg?token=Z4Y9S158JS)](https://codecov.io/gh/BendDAO/bend-lending-protocol)
+[![Build pass](https://github.com/bitty/bitty-lending-protocol/actions/workflows/node.js.yml/badge.svg)](https://github.com/bitty/bitty-lending-protocol/actions/workflows/node.js.yml)
+[![codecov](https://codecov.io/gh/bitty/bitty-lending-protocol/branch/main/graph/badge.svg?token=Z4Y9S158JS)](https://codecov.io/gh/bitty/bitty-lending-protocol)
 
 ```
 ######                       ######     #    ####### 
@@ -11,42 +11,42 @@
 ######  ###### #    # #####  ######  #     # ####### 
 ```
 
-# BendDAO Lending Protocol
+# bitty Lending Protocol
 
-This repository contains the smart contracts source code and markets configuration for BendDAO Lending Protocol. The repository uses Hardhat as development environment for compilation, testing and deployment tasks.
+This repository contains the smart contracts source code and markets configuration for bitty Lending Protocol. The repository uses Hardhat as development environment for compilation, testing and deployment tasks.
 
-## What is BendDAO Lending Protocol?
+## What is bitty Lending Protocol?
 
-BendDAO Lending Protocol is a decentralized non-custodial NFT lending protocol where users can participate as depositors or borrowers. Depositors provide liquidity to the market to earn a passive income, while borrowers are able to borrow in an overcollateralized fashion, using NFTs as collateral.
+bitty Lending Protocol is a decentralized non-custodial NFT lending protocol where users can participate as depositors or borrowers. Depositors provide liquidity to the market to earn a passive income, while borrowers are able to borrow in an overcollateralized fashion, using NFTs as collateral.
 
 ## Documentation
 
-The documentation of BendDAO Lending Protocol is in the following [BendDAO documentation](https://docs.benddao.xyz) link. At the documentation you can learn more about the protocol, see the contract interfaces, integration guides and audits.
+The documentation of bitty Lending Protocol is in the following [bitty documentation](https://docs.bitty.xyz) link. At the documentation you can learn more about the protocol, see the contract interfaces, integration guides and audits.
 
-For getting the latest contracts addresses, please check the [Deployed contracts](https://docs.benddao.xyz/developers/deployed-contracts) page at the documentation to stay up to date.
+For getting the latest contracts addresses, please check the [Deployed contracts](https://docs.bitty.xyz/developers/deployed-contracts) page at the documentation to stay up to date.
 
 ## Audits
-1. [Verilog Solutions Online Report](https://hackmd.io/@verilog/benddao-audit).
-2. [Certik Online Report](https://www.certik.com/projects/bend-dao).
+1. [Verilog Solutions Online Report](https://hackmd.io/@verilog/bitty-audit).
+2. [Certik Online Report](https://www.certik.com/projects/bitty-dao).
 
 ## Thanks
-BendDAO lending protocol refers to the architecture design and adopts some of the code of [AAVE](https://github.com/aave).
+bitty lending protocol refers to the architecture design and adopts some of the code of [AAVE](https://github.com/aave).
 We are very grateful to AAVE for providing us with an excellent DeFi platform.
 
 ## Connect with the community
 
-You can join at the [Discord](https://discord.gg/benddao) channel or at the [Governance](https://snapshot.org/#/benddao.eth) for asking questions about the protocol or talk about BendDAO with other peers.
+You can join at the [Discord](https://discord.gg/bitty) channel or at the [Governance](https://snapshot.org/#/bitty.eth) for asking questions about the protocol or talk about bitty with other peers.
 
 ## Getting Started
 
-You can install `@benddao/bend-protocol` as an NPM package in your Hardhat, Buidler or Truffle project to import the contracts and interfaces:
+You can install `@bitty/bitty-protocol` as an NPM package in your Hardhat, Buidler or Truffle project to import the contracts and interfaces:
 
-`npm install @benddao/bend-protocol`
+`npm install @bitty/bitty-protocol`
 
 Import at Solidity files:
 
 ```
-import {ILendPool} from "@benddao/bend-protocol/contracts/interfaces/ILendPool.sol";
+import {ILendPool} from "@bitty/bitty-protocol/contracts/interfaces/ILendPool.sol";
 
 contract Misc {
 
@@ -62,7 +62,7 @@ The JSON artifacts with the ABI and Bytecode are also included into the bundled 
 Import JSON file via Node JS `require`:
 
 ```
-const LendPoolArtifact = require('@benddao/bend-protocol/artifacts/contracts/protocol/LendPool.sol/LendPool.json');
+const LendPoolArtifact = require('@bitty/bitty-protocol/artifacts/contracts/protocol/LendPool.sol/LendPool.json');
 
 // Log the ABI into console
 console.log(LendPoolArtifact.abi)
@@ -92,9 +92,9 @@ ETHERSCAN_KEY=""
 
 ## Markets configuration
 
-The configurations related with the BendDAO Markets are located at `markets` directory. You can follow the `IBendConfiguration` interface to create new Markets configuration or extend the current BendDAO configuration.
+The configurations related with the bitty Markets are located at `markets` directory. You can follow the `IBittyConfiguration` interface to create new Markets configuration or extend the current bitty configuration.
 
-Each market should have his own Market configuration file, and their own set of deployment tasks, using the BendDAO market config and tasks as a reference.
+Each market should have his own Market configuration file, and their own set of deployment tasks, using the bitty market config and tasks as a reference.
 
 ## Test
 
@@ -116,7 +116,7 @@ npm run test
 
 ## Deployments
 
-For deploying BendDAO Lending Protocol, you can use the available scripts located at `package.json`. For a complete list, run `npm run` to see all the tasks.
+For deploying bitty Lending Protocol, you can use the available scripts located at `package.json`. For a complete list, run `npm run` to see all the tasks.
 
 ### Prepare
 ```
@@ -139,7 +139,7 @@ yarn install
 npm run hardhat:node
 
 # In second terminal
-npm run bend:localhost:dev:migration
+npm run bitty:localhost:dev:migration
 ```
 
 ### Localhost full deployment
@@ -154,24 +154,24 @@ npx hardhat --network localhost "dev:deploy-mock-reserves"
 npx hardhat --network localhost "dev:deploy-mock-nfts"
 # then update pool config nft address
 
-npx hardhat --network localhost "dev:deploy-mock-aggregators" --pool Bend
+npx hardhat --network localhost "dev:deploy-mock-aggregators" --pool Bitty
 # then update pool config reserve aggregators address
 
-npx hardhat --network localhost "dev:deploy-mock-bnft-registry" --pool Bend
+npx hardhat --network localhost "dev:deploy-mock-bnft-registry" --pool Bitty
 # then update pool config bnft registry address
 
-npx hardhat --network localhost "dev:deploy-mock-bnft-tokens" --pool Bend
+npx hardhat --network localhost "dev:deploy-mock-bnft-tokens" --pool Bitty
 ```
 
 ### Rinkeby full deployment
 ```
 # In one terminal
-npm run bend:rinkeby:full:migration
+npm run bitty:rinkeby:full:migration
 ```
 
-## Interact with BendDAO Lending Protocol in Mainnet via console
+## Interact with bitty Lending Protocol in Mainnet via console
 
-You can interact with BendDAO Lending Protocol at Mainnet network using the Hardhat console, in the scenario where the frontend is down or you want to interact directly. You can check the deployed addresses at [deployed-contracts](https://docs.benddao.xyz/developers/deployed-contracts).
+You can interact with bitty Lending Protocol at Mainnet network using the Hardhat console, in the scenario where the frontend is down or you want to interact directly. You can check the deployed addresses at [deployed-contracts](https://docs.bitty.xyz/developers/deployed-contracts).
 
 Run the Hardhat console pointing to the Mainnet network:
 
@@ -185,7 +185,7 @@ At the Hardhat console, you can interact with the protocol:
 // Load the HRE into helpers to access signers
 run("set-DRE")
 
-// Import getters to instance any Bend contract
+// Import getters to instance any Bitty contract
 const contractGetters = require('./helpers/contracts-getters');
 
 // Load the first signer

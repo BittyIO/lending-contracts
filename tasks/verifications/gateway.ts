@@ -1,6 +1,6 @@
 import { task } from "hardhat/config";
 import { loadPoolConfig, ConfigNames } from "../../helpers/configuration";
-import { getBendProxyAdminById, getWrapperGateway } from "../../helpers/contracts-getters";
+import { getBittyProxyAdminById, getWrapperGateway } from "../../helpers/contracts-getters";
 import { getParamPerNetwork, verifyContract } from "../../helpers/contracts-helpers";
 import { eContractid, eNetwork } from "../../helpers/types";
 
@@ -12,7 +12,7 @@ task("verify:WrapperGateway", "Verify WrapperGateway contracts at Etherscan")
     const network = localDRE.network.name as eNetwork;
     const poolConfig = loadPoolConfig(pool);
 
-    const proxyAdminWTL = await getBendProxyAdminById(eContractid.BendProxyAdminWTL);
+    const proxyAdminWTL = await getBittyProxyAdminById(eContractid.BittyProxyAdminWTL);
 
     // Impl
     console.log(`\n- Verifying ${gatewayid} Impl...\n`);
@@ -29,7 +29,7 @@ task("verify:WrapperGateway", "Verify WrapperGateway contracts at Etherscan")
     const wethGateway = await gatewayProxy.wethGateway();
     const underlying = await gatewayProxy.underlying();
     const wrappedToken = await gatewayProxy.wrappedToken();
-    await verifyContract(eContractid.BendUpgradeableProxy, gatewayProxy, [
+    await verifyContract(eContractid.BittyUpgradeableProxy, gatewayProxy, [
       gatewayImpl.address,
       proxyAdminWTL.address,
       gatewayImpl.interface.encodeFunctionData("initialize", [

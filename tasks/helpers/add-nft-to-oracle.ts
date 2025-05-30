@@ -5,7 +5,7 @@ import { getIErc721Detailed, getLendPoolAddressesProvider, getNFTOracle } from "
 import { getEthersSignerByAddress } from "../../helpers/contracts-helpers";
 import { getNowTimeInSeconds, notFalsyOrZeroAddress, waitForTx } from "../../helpers/misc-utils";
 import { eContractid, eNetwork } from "../../helpers/types";
-import { strategyNftParams } from "../../markets/bend/nftsConfigs";
+import { strategyNftParams } from "../../markets/bitty/nftsConfigs";
 
 task("helpers:add-nft-to-oracle", "Add new nft asset to oracle")
   .addParam("pool", `Pool name to retrieve configuration, supported: ${Object.values(ConfigNames)}`)

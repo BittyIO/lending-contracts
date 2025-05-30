@@ -1,9 +1,9 @@
 import { task } from "hardhat/config";
 import { loadPoolConfig, ConfigNames } from "../../helpers/configuration";
-import { deployBendUpgradeableProxy, deployUniswapV3DebtSwapAdapter } from "../../helpers/contracts-deployments";
+import { deployBittyUpgradeableProxy, deployUniswapV3DebtSwapAdapter } from "../../helpers/contracts-deployments";
 import {
-  getBendProxyAdminById,
-  getBendUpgradeableProxy,
+  getBittyProxyAdminById,
+  getBittyUpgradeableProxy,
   getLendPoolAddressesProvider,
   getUniswapV3DebtSwapAdapter,
   getUniswapV3DebtSwapAdapterImpl,
@@ -11,7 +11,7 @@ import {
 import { insertContractAddressInDb, tryGetContractAddressInDb } from "../../helpers/contracts-helpers";
 import { notFalsyOrZeroAddress, waitForTx } from "../../helpers/misc-utils";
 import { eContractid, eNetwork } from "../../helpers/types";
-import { BendUpgradeableProxy, UniswapV3DebtSwapAdapter } from "../../types";
+import { BittyUpgradeableProxy, UniswapV3DebtSwapAdapter } from "../../types";
 
 task(`full:deploy-uniswapv3-debtswap-adapter`, `Deploys the UniswapV3DebtSwapAdapter contract`)
   .addParam("pool", `Pool name to retrieve configuration, supported: ${Object.values(ConfigNames)}`)
@@ -29,7 +29,7 @@ task(`full:deploy-uniswapv3-debtswap-adapter`, `Deploys the UniswapV3DebtSwapAda
     const poolConfig = loadPoolConfig(pool);
     const addressesProvider = await getLendPoolAddressesProvider();
 
-    const proxyAdmin = await getBendProxyAdminById(eContractid.BendProxyAdminWTL);
+    const proxyAdmin = await getBittyProxyAdminById(eContractid.BittyProxyAdminWTL);
     if (proxyAdmin == undefined || !notFalsyOrZeroAddress(proxyAdmin.address)) {
       throw Error("Invalid common proxy admin in config");
     }
@@ -50,13 +50,13 @@ task(`full:deploy-uniswapv3-debtswap-adapter`, `Deploys the UniswapV3DebtSwapAda
     ]);
 
     let swapAdapter: UniswapV3DebtSwapAdapter;
-    let swapAdapterProxy: BendUpgradeableProxy;
+    let swapAdapterProxy: BittyUpgradeableProxy;
 
     if (swapAdapterAddress != undefined && notFalsyOrZeroAddress(swapAdapterAddress)) {
       console.log(`Upgrading exist ${swapAdapterId} proxy to new implementation...`);
 
       await insertContractAddressInDb(swapAdapterId, swapAdapterAddress);
-      swapAdapterProxy = await getBendUpgradeableProxy(swapAdapterAddress);
+      swapAdapterProxy = await getBittyUpgradeableProxy(swapAdapterAddress);
 
       // only proxy admin can do upgrading
       await waitForTx(
@@ -66,7 +66,7 @@ task(`full:deploy-uniswapv3-debtswap-adapter`, `Deploys the UniswapV3DebtSwapAda
       swapAdapter = await getUniswapV3DebtSwapAdapter(swapAdapterProxy.address);
     } else {
       console.log(`Deploying new ${swapAdapterId} proxy with implementation...`);
-      swapAdapterProxy = await deployBendUpgradeableProxy(
+      swapAdapterProxy = await deployBittyUpgradeableProxy(
         swapAdapterId,
         proxyAdmin.address,
         swapAdapterImpl.address,

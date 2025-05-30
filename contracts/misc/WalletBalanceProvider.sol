@@ -15,10 +15,10 @@ import {DataTypes} from "../libraries/types/DataTypes.sol";
 
 /**
  * @title WalletBalanceProvider contract
- * @author Bend, influenced by https://github.com/wbobeirne/eth-balance-checker/blob/master/contracts/BalanceChecker.sol
+ * @author Bitty, influenced by https://github.com/wbobeirne/eth-balance-checker/blob/master/contracts/BalanceChecker.sol
  * @notice Implements a logic of getting multiple tokens balance for one user address
  * @dev NOTE: THIS CONTRACT IS NOT USED WITHIN THE BEND PROTOCOL. It's an accessory contract used to reduce the number of calls
- * towards the blockchain from the Bend backend.
+ * towards the blockchain from the Bitty backend.
  **/
 contract WalletBalanceProvider {
   using Address for address payable;

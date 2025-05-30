@@ -7,11 +7,11 @@ import {ILendPoolAddressesProviderRegistry} from "../interfaces/ILendPoolAddress
 
 /**
  * @title LendPoolAddressesProviderRegistry contract
- * @dev Main registry of LendPoolAddressesProvider of multiple Bend protocol's markets
- * - Used for indexing purposes of Bend protocol's markets
+ * @dev Main registry of LendPoolAddressesProvider of multiple Bitty protocol's markets
+ * - Used for indexing purposes of Bitty protocol's markets
  * - The id assigned to a LendPoolAddressesProvider refers to the market it is connected with,
- *   for example with `1` for the Bend main market and `2` for the next created
- * @author Bend
+ *   for example with `1` for the Bitty main market and `2` for the next created
+ * @author Bitty
  **/
 contract LendPoolAddressesProviderRegistry is Ownable, ILendPoolAddressesProviderRegistry {
   mapping(address => uint256) private _addressesProviders;

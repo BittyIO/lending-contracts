@@ -3,7 +3,7 @@ import { Signer } from "ethers";
 import {
   getLendPool,
   getLendPoolAddressesProvider,
-  getBendProtocolDataProvider,
+  getBittyProtocolDataProvider,
   getBToken,
   getBNFT,
   getMintableERC20,
@@ -31,7 +31,7 @@ import {
 } from "../../helpers/contracts-getters";
 import { eContractid, eEthereumNetwork, eNetwork, tEthereumAddress } from "../../helpers/types";
 import { LendPool } from "../../types/LendPool";
-import { BendProtocolDataProvider } from "../../types/BendProtocolDataProvider";
+import { BittyProtocolDataProvider } from "../../types/BittyProtocolDataProvider";
 import { MintableERC20 } from "../../types/MintableERC20";
 import { BToken } from "../../types/BToken";
 import { MintableERC721 } from "../../types/MintableERC721";
@@ -52,7 +52,7 @@ import { getParamPerNetwork } from "../../helpers/contracts-helpers";
 import { WETH9Mocked } from "../../types/WETH9Mocked";
 import { WETHGateway } from "../../types/WETHGateway";
 import { solidity } from "ethereum-waffle";
-import { BendConfig } from "../../markets/bend";
+import { BittyConfig } from "../../markets/bitty";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import {
   BNFTRegistry,
@@ -89,7 +89,7 @@ export interface TestEnv {
   mockReserveOracle: MockReserveOracle;
   nftOracle: NFTOracle;
   mockNftOracle: MockNFTOracle;
-  dataProvider: BendProtocolDataProvider;
+  dataProvider: BittyProtocolDataProvider;
   uiProvider: UiPoolDataProvider;
   walletProvider: WalletBalanceProvider;
   mockIncentivesController: MockIncentivesController;
@@ -134,7 +134,7 @@ const testEnv: TestEnv = {
   pool: {} as LendPool,
   loan: {} as LendPoolLoan,
   configurator: {} as LendPoolConfigurator,
-  dataProvider: {} as BendProtocolDataProvider,
+  dataProvider: {} as BittyProtocolDataProvider,
   uiProvider: {} as UiPoolDataProvider,
   walletProvider: {} as WalletBalanceProvider,
   mockIncentivesController: {} as MockIncentivesController,
@@ -198,7 +198,7 @@ export async function initializeMakeSuite() {
   testEnv.nftOracle = await getNFTOracle();
   testEnv.mockNftOracle = await getMockNFTOracle();
 
-  testEnv.dataProvider = await getBendProtocolDataProvider();
+  testEnv.dataProvider = await getBittyProtocolDataProvider();
   testEnv.walletProvider = await getWalletProvider();
   testEnv.uiProvider = await getUIPoolDataProvider();
 

@@ -1,14 +1,14 @@
 import { task } from "hardhat/config";
 import {
   deployWalletBalancerProvider,
-  deployBendProtocolDataProvider,
+  deployBittyProtocolDataProvider,
   deployUiPoolDataProvider,
 } from "../../helpers/contracts-deployments";
 import { getParamPerNetwork } from "../../helpers/contracts-helpers";
 import { eNetwork } from "../../helpers/types";
 import { ConfigNames, getReserveFactorCollectorAddress, loadPoolConfig } from "../../helpers/configuration";
 
-import { tEthereumAddress, BendPools, eContractid } from "../../helpers/types";
+import { tEthereumAddress, BittyPools, eContractid } from "../../helpers/types";
 import { waitForTx, filterMapBy, notFalsyOrZeroAddress } from "../../helpers/misc-utils";
 import {
   configureReservesByHelper,
@@ -49,8 +49,8 @@ task("dev:initialize-lend-pool", "Initialize lend pool configuration.")
       throw Error("Invalid collector address in pool config");
     }
 
-    const dataProvider = await deployBendProtocolDataProvider(addressesProvider.address, verify);
-    await insertContractAddressInDb(eContractid.BendProtocolDataProvider, dataProvider.address);
+    const dataProvider = await deployBittyProtocolDataProvider(addressesProvider.address, verify);
+    await insertContractAddressInDb(eContractid.BittyProtocolDataProvider, dataProvider.address);
 
     ////////////////////////////////////////////////////////////////////////////
     // Init & Config Reserve assets
@@ -76,7 +76,7 @@ task("dev:initialize-lend-pool", "Initialize lend pool configuration.")
     const mockNfts = await getAllMockedNfts();
     const allNftAddresses = getAllNftAddresses(mockNfts);
 
-    await initNftsByHelper(NftsConfig, allNftAddresses, admin, ConfigNames.Bend, verify);
+    await initNftsByHelper(NftsConfig, allNftAddresses, admin, ConfigNames.Bitty, verify);
 
     await configureNftsByHelper(NftsConfig, allNftAddresses, admin);
 
@@ -89,8 +89,8 @@ task("dev:initialize-lend-pool", "Initialize lend pool configuration.")
     console.log("WalletBalancerProvider deployed at:", walletBalanceProvider.address);
 
     // this contract is not support upgrade, just deploy new contract
-    const bendProtocolDataProvider = await deployBendProtocolDataProvider(addressesProvider.address, verify);
-    console.log("BendProtocolDataProvider deployed at:", bendProtocolDataProvider.address);
+    const bittyProtocolDataProvider = await deployBittyProtocolDataProvider(addressesProvider.address, verify);
+    console.log("BittyProtocolDataProvider deployed at:", bittyProtocolDataProvider.address);
 
     const uiPoolDataProvider = await deployUiPoolDataProvider(reserveOracle, nftOracle, verify);
     console.log("UiPoolDataProvider deployed at:", uiPoolDataProvider.address);

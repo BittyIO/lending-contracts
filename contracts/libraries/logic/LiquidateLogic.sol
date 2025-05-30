@@ -27,7 +27,7 @@ import {IERC721Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC7
 
 /**
  * @title LiquidateLogic library
- * @author Bend
+ * @author Bitty
  * @notice Implements the logic to liquidate feature
  */
 library LiquidateLogic {

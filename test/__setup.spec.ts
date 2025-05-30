@@ -17,12 +17,12 @@ import {
   deployMockNFTOracle,
   deployMockReserveOracle,
   deployWalletBalancerProvider,
-  deployBendProtocolDataProvider,
+  deployBittyProtocolDataProvider,
   deployWETHGateway,
   deployBNFTRegistry,
   deployPunkGateway,
-  deployBendUpgradeableProxy,
-  deployBendProxyAdmin,
+  deployBittyUpgradeableProxy,
+  deployBittyProxyAdmin,
   deployGenericBNFTImpl,
   deployLendPoolAddressesProviderRegistry,
   deployMockIncentivesController,
@@ -30,11 +30,11 @@ import {
   deployAllMockNfts,
   deployUiPoolDataProvider,
   deployMockChainlinkOracle,
-  deployBendLibraries,
+  deployBittyLibraries,
   deployWrapperGateway,
 } from "../helpers/contracts-deployments";
 import { Signer } from "ethers";
-import { eContractid, tEthereumAddress, BendPools, NftContractId } from "../helpers/types";
+import { eContractid, tEthereumAddress, BittyPools, NftContractId } from "../helpers/types";
 import { MintableERC20 } from "../types/MintableERC20";
 import { MintableERC721 } from "../types/MintableERC721";
 import { ConfigNames, getReserveFactorCollectorAddress, loadPoolConfig } from "../helpers/configuration";
@@ -54,7 +54,7 @@ import {
   initNftsByHelper,
   configureNftsByHelper,
 } from "../helpers/init-helpers";
-import BendConfig from "../markets/bend";
+import BittyConfig from "../markets/bitty";
 import {
   getSecondSigner,
   getDeploySigner,
@@ -80,11 +80,11 @@ import { WrappedPunk } from "../types/WrappedPunk";
 import { ADDRESS_ID_PUNK_GATEWAY, ADDRESS_ID_WETH_GATEWAY } from "../helpers/constants";
 import { MockerERC721Wrapper, WETH9 } from "../types";
 
-const MOCK_USD_PRICE = BendConfig.ProtocolGlobalParams.MockUsdPrice;
-const ALL_ASSETS_INITIAL_PRICES = BendConfig.Mocks.AllAssetsInitialPrices;
-const USD_ADDRESS = BendConfig.ProtocolGlobalParams.UsdAddress;
+const MOCK_USD_PRICE = BittyConfig.ProtocolGlobalParams.MockUsdPrice;
+const ALL_ASSETS_INITIAL_PRICES = BittyConfig.Mocks.AllAssetsInitialPrices;
+const USD_ADDRESS = BittyConfig.ProtocolGlobalParams.UsdAddress;
 
-const ALL_NFTS_INITIAL_PRICES = BendConfig.Mocks.AllNftsInitialPrices;
+const ALL_NFTS_INITIAL_PRICES = BittyConfig.Mocks.AllNftsInitialPrices;
 
 const buildTestEnv = async (deployer: Signer, secondaryWallet: Signer) => {
   console.time("setup");
@@ -93,7 +93,7 @@ const buildTestEnv = async (deployer: Signer, secondaryWallet: Signer) => {
   const emergencyAdmin = await (await getEmergencyAdminSigner()).getAddress();
   console.log("Admin accounts:", "poolAdmin:", poolAdmin, "emergencyAdmin:", emergencyAdmin);
 
-  const config = loadPoolConfig(ConfigNames.Bend);
+  const config = loadPoolConfig(ConfigNames.Bitty);
 
   //////////////////////////////////////////////////////////////////////////////
   console.log("-> Prepare mock external ERC20 Tokens, such as WETH, DAI...");
@@ -122,8 +122,8 @@ const buildTestEnv = async (deployer: Signer, secondaryWallet: Signer) => {
 
   //////////////////////////////////////////////////////////////////////////////
   console.log("-> Prepare proxy admin...");
-  const bendProxyAdmin = await deployBendProxyAdmin(eContractid.BendProxyAdminTest);
-  console.log("bendProxyAdmin:", bendProxyAdmin.address);
+  const bittyProxyAdmin = await deployBittyProxyAdmin(eContractid.BittyProxyAdminTest);
+  console.log("bittyProxyAdmin:", bittyProxyAdmin.address);
 
   //////////////////////////////////////////////////////////////////////////////
   // !!! MUST BEFORE LendPoolConfigurator which will getBNFTRegistry from address provider when init
@@ -137,9 +137,9 @@ const buildTestEnv = async (deployer: Signer, secondaryWallet: Signer) => {
     config.Mocks.BNftSymbolPrefix,
   ]);
 
-  const bnftRegistryProxy = await deployBendUpgradeableProxy(
+  const bnftRegistryProxy = await deployBittyUpgradeableProxy(
     eContractid.BNFTRegistry,
-    bendProxyAdmin.address,
+    bittyProxyAdmin.address,
     bnftRegistryImpl.address,
     initEncodedData
   );
@@ -160,12 +160,12 @@ const buildTestEnv = async (deployer: Signer, secondaryWallet: Signer) => {
   console.log("-> Prepare address provider...");
   const addressesProviderRegistry = await deployLendPoolAddressesProviderRegistry();
 
-  const addressesProvider = await deployLendPoolAddressesProvider(BendConfig.MarketId);
+  const addressesProvider = await deployLendPoolAddressesProvider(BittyConfig.MarketId);
   await waitForTx(await addressesProvider.setPoolAdmin(poolAdmin));
   await waitForTx(await addressesProvider.setEmergencyAdmin(emergencyAdmin));
 
   await waitForTx(
-    await addressesProviderRegistry.registerAddressesProvider(addressesProvider.address, BendConfig.ProviderId)
+    await addressesProviderRegistry.registerAddressesProvider(addressesProvider.address, BittyConfig.ProviderId)
   );
 
   //////////////////////////////////////////////////////////////////////////////
@@ -174,8 +174,8 @@ const buildTestEnv = async (deployer: Signer, secondaryWallet: Signer) => {
   await waitForTx(await addressesProvider.setIncentivesController(incentivesControllerAddress));
 
   //////////////////////////////////////////////////////////////////////////////
-  console.log("-> Prepare bend libraries...");
-  await deployBendLibraries();
+  console.log("-> Prepare bitty libraries...");
+  await deployBittyLibraries();
 
   console.log("-> Prepare lend pool...");
   const lendPoolImpl = await deployLendPool();
@@ -308,7 +308,7 @@ const buildTestEnv = async (deployer: Signer, secondaryWallet: Signer) => {
   };
 
   console.log("-> Prepare BToken impl contract...");
-  await deployBTokenImplementations(ConfigNames.Bend, reservesParams, false);
+  await deployBTokenImplementations(ConfigNames.Bitty, reservesParams, false);
 
   console.log("-> Prepare Reserve init and configure...");
   const { BTokenNamePrefix, BTokenSymbolPrefix, DebtTokenNamePrefix, DebtTokenSymbolPrefix } = config;
@@ -323,7 +323,7 @@ const buildTestEnv = async (deployer: Signer, secondaryWallet: Signer) => {
     DebtTokenSymbolPrefix,
     poolAdmin,
     collectorAddress,
-    ConfigNames.Bend,
+    ConfigNames.Bitty,
     false
   );
 
@@ -341,7 +341,7 @@ const buildTestEnv = async (deployer: Signer, secondaryWallet: Signer) => {
   };
 
   console.log("-> Prepare NFT init and configure...");
-  await initNftsByHelper(nftsParams, allNftsAddresses, poolAdmin, ConfigNames.Bend, false);
+  await initNftsByHelper(nftsParams, allNftsAddresses, poolAdmin, ConfigNames.Bitty, false);
 
   await configureNftsByHelper(nftsParams, allNftsAddresses, poolAdmin);
 
@@ -350,8 +350,8 @@ const buildTestEnv = async (deployer: Signer, secondaryWallet: Signer) => {
   const walletProvider = await deployWalletBalancerProvider();
   await waitForTx(await addressesProvider.setWalletBalanceProvider(walletProvider.address));
 
-  const bendDataProvider = await deployBendProtocolDataProvider(addressesProvider.address);
-  await waitForTx(await addressesProvider.setBendDataProvider(bendDataProvider.address));
+  const bittyDataProvider = await deployBittyProtocolDataProvider(addressesProvider.address);
+  await waitForTx(await addressesProvider.setBittyDataProvider(bittyDataProvider.address));
 
   const uiDataProvider = await deployUiPoolDataProvider(reserveOracleImpl.address, nftOracleImpl.address, false);
   await waitForTx(await addressesProvider.setUIDataProvider(uiDataProvider.address));
@@ -363,9 +363,9 @@ const buildTestEnv = async (deployer: Signer, secondaryWallet: Signer) => {
     addressesProvider.address,
     mockTokens.WETH.address,
   ]);
-  const wethGatewayProxy = await deployBendUpgradeableProxy(
+  const wethGatewayProxy = await deployBittyUpgradeableProxy(
     eContractid.WETHGateway,
-    bendProxyAdmin.address,
+    bittyProxyAdmin.address,
     wethGatewayImpl.address,
     wethGwInitEncodedData
   );
@@ -384,9 +384,9 @@ const buildTestEnv = async (deployer: Signer, secondaryWallet: Signer) => {
     cryptoPunksMarket.address,
     wrappedPunk.address,
   ]);
-  const punkGatewayProxy = await deployBendUpgradeableProxy(
+  const punkGatewayProxy = await deployBittyUpgradeableProxy(
     eContractid.PunkGateway,
-    bendProxyAdmin.address,
+    bittyProxyAdmin.address,
     punkGatewayImpl.address,
     punkGwInitEncodedData
   );
@@ -412,9 +412,9 @@ const buildTestEnv = async (deployer: Signer, secondaryWallet: Signer) => {
     mockOtherdeed.address,
     wrappedKoda.address,
   ]);
-  const wrapperGatewayProxy = await deployBendUpgradeableProxy(
+  const wrapperGatewayProxy = await deployBittyUpgradeableProxy(
     wrapperGatewayId,
-    bendProxyAdmin.address,
+    bittyProxyAdmin.address,
     wrapperGatewayImpl.address,
     wrapperGwInitEncodedData
   );
@@ -440,7 +440,7 @@ before(async () => {
   const FORK = process.env.FORK;
 
   if (FORK) {
-    await rawBRE.run("bend:mainnet", { skipRegistry: true });
+    await rawBRE.run("bitty:mainnet", { skipRegistry: true });
   } else {
     console.log("-> Deploying test environment...");
     await buildTestEnv(deployer, secondaryWallet);

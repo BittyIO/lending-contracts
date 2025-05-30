@@ -8,7 +8,7 @@ import { MAX_UINT_AMOUNT } from "../helpers/constants";
 import { deploySelfdestructTransferMock } from "../helpers/contracts-deployments";
 import { convertToCurrencyDecimals, convertToCurrencyUnits } from "../helpers/contracts-helpers";
 import { advanceTimeAndBlock, getNowTimeInSeconds, increaseTime, waitForTx } from "../helpers/misc-utils";
-import { BendPools, iBendPoolAssets, IReserveParams, ProtocolLoanState } from "../helpers/types";
+import { BittyPools, iBittyPoolAssets, IReserveParams, ProtocolLoanState } from "../helpers/types";
 import {
   borrow,
   configuration as actionsConfiguration,
@@ -40,8 +40,8 @@ makeSuite("WETHGateway", (testEnv: TestEnv) => {
 
     actionsConfiguration.skipIntegrityCheck = false; //set this to true to execute solidity-coverage
 
-    calculationsConfiguration.reservesParams = <iBendPoolAssets<IReserveParams>>(
-      getReservesConfigByPool(BendPools.proto)
+    calculationsConfiguration.reservesParams = <iBittyPoolAssets<IReserveParams>>(
+      getReservesConfigByPool(BittyPools.proto)
     );
 
     baycInitPrice = await testEnv.nftOracle.getAssetPrice(testEnv.bayc.address);

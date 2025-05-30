@@ -14,7 +14,7 @@ import {ValidationLogic} from "./ValidationLogic.sol";
 
 /**
  * @title SupplyLogic library
- * @author Bend
+ * @author Bitty
  * @notice Implements the logic to supply feature
  */
 library SupplyLogic {

@@ -7,9 +7,9 @@ import {
   loadPoolConfig,
 } from "../../helpers/configuration";
 import {
-  getBendProtocolDataProvider,
-  getBendProxyAdminById,
-  getBendUpgradeableProxy,
+  getBittyProtocolDataProvider,
+  getBittyProxyAdminById,
+  getBittyUpgradeableProxy,
   getLendPoolAddressesProvider,
   getLendPoolConfiguratorProxy,
   getWETHGateway,
@@ -23,12 +23,12 @@ import {
   deployLendPoolConfigurator,
   deployUiPoolDataProvider,
   deployWalletBalancerProvider,
-  deployBendProtocolDataProvider,
+  deployBittyProtocolDataProvider,
   deployPunkGateway,
   deployWETHGateway,
   deployInterestRate,
   deployGenericDebtToken,
-  deployBendCollector,
+  deployBittyCollector,
   deployConfiguratorLibraries,
   deployLendPoolLibraries,
   deployWrapperGateway,
@@ -190,17 +190,17 @@ task("dev:deploy-new-implementation", "Deploy new implementation")
           contract,
           proxy: proxyAddress,
           impl: kodaGatewayImpl.address,
-          admin: eContractid.BendProxyAdminWTL,
+          admin: eContractid.BittyProxyAdminWTL,
         });
       }
     }
 
-    if (contract == "BendProtocolDataProvider") {
-      const contractImpl = await deployBendProtocolDataProvider(addressesProvider.address, verify);
-      console.log("BendProtocolDataProvider implementation address:", contractImpl.address);
+    if (contract == "BittyProtocolDataProvider") {
+      const contractImpl = await deployBittyProtocolDataProvider(addressesProvider.address, verify);
+      console.log("BittyProtocolDataProvider implementation address:", contractImpl.address);
 
       if (upgrade) {
-        await waitForTx(await addressesProvider.setBendDataProvider(contractImpl.address));
+        await waitForTx(await addressesProvider.setBittyDataProvider(contractImpl.address));
       }
     }
 
@@ -226,9 +226,9 @@ task("dev:deploy-new-implementation", "Deploy new implementation")
       }
     }
 
-    if (contract == "BendCollector") {
-      const contractImpl = await deployBendCollector([], verify);
-      console.log("BendCollector implementation address:", contractImpl.address);
+    if (contract == "BittyCollector") {
+      const contractImpl = await deployBittyCollector([], verify);
+      console.log("BittyCollector implementation address:", contractImpl.address);
     }
   });
 
@@ -244,12 +244,12 @@ task("dev:upgrade-implementation", "Update implementation to address provider")
     const network = DRE.network.name as eNetwork;
     const poolConfig = loadPoolConfig(pool);
 
-    const bendProxy = await getBendUpgradeableProxy(proxy);
+    const bittyProxy = await getBittyUpgradeableProxy(proxy);
 
     if (admin == undefined || admin == "") {
-      admin = eContractid.BendProxyAdminPool;
+      admin = eContractid.BittyProxyAdminPool;
     }
-    const proxyAdmin = await getBendProxyAdminById(admin);
+    const proxyAdmin = await getBittyProxyAdminById(admin);
     if (proxyAdmin == undefined || !notFalsyOrZeroAddress(proxyAdmin.address)) {
       throw Error("Invalid pool proxy admin in config");
     }
@@ -258,7 +258,7 @@ task("dev:upgrade-implementation", "Update implementation to address provider")
     console.log("ProxyAdmin:", proxyAdmin.address, "Owner:", proxyAdminOwnerAddress);
 
     // only proxy admin can do upgrading
-    await waitForTx(await proxyAdmin.connect(proxyAdminOwnerSigner).upgrade(bendProxy.address, impl));
+    await waitForTx(await proxyAdmin.connect(proxyAdminOwnerSigner).upgrade(bittyProxy.address, impl));
 
     await insertContractAddressInDb(eContractid[contract], proxy);
   });
@@ -279,7 +279,7 @@ task("dev:upgrade-all-debtokens", "Update implementation to debt token")
     const lendPoolConfigurator = await getLendPoolConfiguratorProxy(
       await addressesProviderRaw.getLendPoolConfigurator()
     );
-    const protocolDataProvider = await getBendProtocolDataProvider(await addressesProviderRaw.getBendDataProvider());
+    const protocolDataProvider = await getBittyProtocolDataProvider(await addressesProviderRaw.getBittyDataProvider());
 
     const debtTokenImpl = await deployGenericDebtToken(verify);
     console.log("DebtToken implementation:", debtTokenImpl.address);

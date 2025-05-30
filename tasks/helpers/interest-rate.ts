@@ -7,7 +7,7 @@ import { notFalsyOrZeroAddress, waitForTx } from "../../helpers/misc-utils";
 import { getEthersSignerByAddress, insertContractAddressInDb } from "../../helpers/contracts-helpers";
 import BigNumber from "bignumber.js";
 import { oneRay } from "../../helpers/constants";
-import { strategyReserveParams } from "../../markets/bend/reservesConfigs";
+import { strategyReserveParams } from "../../markets/bitty/reservesConfigs";
 
 task("helpers:deploy-new-interest-rate-for-symbol", "Add and config new reserve asset to lend pool")
   .addFlag("verify", "Verify contracts at Etherscan")

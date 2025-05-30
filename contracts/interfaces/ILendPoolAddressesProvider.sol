@@ -5,8 +5,8 @@ pragma solidity 0.8.4;
  * @title LendPoolAddressesProvider contract
  * @dev Main registry of addresses part of or connected to the protocol, including permissioned roles
  * - Acting also as factory of proxies and admin of those, so with right to change its implementations
- * - Owned by the Bend Governance
- * @author Bend
+ * - Owned by the Bitty Governance
+ * @author Bitty
  **/
 interface ILendPoolAddressesProvider {
   event MarketIdSet(string newMarketId);
@@ -22,7 +22,7 @@ interface ILendPoolAddressesProvider {
   event BNFTRegistryUpdated(address indexed newAddress);
   event IncentivesControllerUpdated(address indexed newAddress);
   event UIDataProviderUpdated(address indexed newAddress);
-  event BendDataProviderUpdated(address indexed newAddress);
+  event BittyDataProviderUpdated(address indexed newAddress);
   event WalletBalanceProviderUpdated(address indexed newAddress);
 
   function getMarketId() external view returns (string memory);
@@ -79,9 +79,9 @@ interface ILendPoolAddressesProvider {
 
   function setUIDataProvider(address provider) external;
 
-  function getBendDataProvider() external view returns (address);
+  function getBittyDataProvider() external view returns (address);
 
-  function setBendDataProvider(address provider) external;
+  function setBittyDataProvider(address provider) external;
 
   function getWalletBalanceProvider() external view returns (address);
 

@@ -7,7 +7,7 @@ import { MAX_UINT_AMOUNT, oneEther, ONE_HOUR } from "../helpers/constants";
 import { getDebtToken } from "../helpers/contracts-getters";
 import { convertToCurrencyDecimals, convertToCurrencyUnits } from "../helpers/contracts-helpers";
 import { advanceBlock, advanceTimeAndBlock, increaseTime, sleep, waitForTx } from "../helpers/misc-utils";
-import { BendPools, iBendPoolAssets, IReserveParams, ProtocolLoanState } from "../helpers/types";
+import { BittyPools, iBittyPoolAssets, IReserveParams, ProtocolLoanState } from "../helpers/types";
 import {
   approveERC20,
   approveERC20PunkGateway,
@@ -36,8 +36,8 @@ makeSuite("PunkGateway-Liquidate", (testEnv: TestEnv) => {
 
     actionsConfiguration.skipIntegrityCheck = false; //set this to true to execute solidity-coverage
 
-    calculationsConfiguration.reservesParams = <iBendPoolAssets<IReserveParams>>(
-      getReservesConfigByPool(BendPools.proto)
+    calculationsConfiguration.reservesParams = <iBittyPoolAssets<IReserveParams>>(
+      getReservesConfigByPool(BittyPools.proto)
     );
 
     punkInitPrice = await testEnv.nftOracle.getAssetPrice(testEnv.wrappedPunk.address);

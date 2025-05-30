@@ -1,9 +1,9 @@
 import { task } from "hardhat/config";
 import { loadPoolConfig, ConfigNames } from "../../helpers/configuration";
-import { deployBendUpgradeableProxy, deployWrapperGateway } from "../../helpers/contracts-deployments";
+import { deployBittyUpgradeableProxy, deployWrapperGateway } from "../../helpers/contracts-deployments";
 import {
-  getBendProxyAdminById,
-  getBendUpgradeableProxy,
+  getBittyProxyAdminById,
+  getBittyUpgradeableProxy,
   getLendPoolAddressesProvider,
   getWETHGateway,
   getWrapperGateway,
@@ -11,7 +11,7 @@ import {
 import { insertContractAddressInDb, tryGetContractAddressInDb } from "../../helpers/contracts-helpers";
 import { notFalsyOrZeroAddress, waitForTx } from "../../helpers/misc-utils";
 import { eContractid, eNetwork } from "../../helpers/types";
-import { BendUpgradeableProxy, WrapperGateway } from "../../types";
+import { BittyUpgradeableProxy, WrapperGateway } from "../../types";
 
 task(`full:deploy-wrapper-gateway`, `Deploys the WrapperGateway contract`)
   .addParam("pool", `Pool name to retrieve configuration, supported: ${Object.values(ConfigNames)}`)
@@ -30,7 +30,7 @@ task(`full:deploy-wrapper-gateway`, `Deploys the WrapperGateway contract`)
     const poolConfig = loadPoolConfig(pool);
     const addressesProvider = await getLendPoolAddressesProvider();
 
-    const proxyAdmin = await getBendProxyAdminById(eContractid.BendProxyAdminWTL);
+    const proxyAdmin = await getBittyProxyAdminById(eContractid.BittyProxyAdminWTL);
     if (proxyAdmin == undefined || !notFalsyOrZeroAddress(proxyAdmin.address)) {
       throw Error("Invalid common proxy admin in config");
     }
@@ -53,7 +53,7 @@ task(`full:deploy-wrapper-gateway`, `Deploys the WrapperGateway contract`)
     ]);
 
     let wrapperGateWay: WrapperGateway;
-    let wrapperGatewayProxy: BendUpgradeableProxy;
+    let wrapperGatewayProxy: BittyUpgradeableProxy;
 
     const wrapperGatewayAddress = await tryGetContractAddressInDb(gatewayid);
 
@@ -61,7 +61,7 @@ task(`full:deploy-wrapper-gateway`, `Deploys the WrapperGateway contract`)
       console.log(`Upgrading exist ${gatewayid} proxy to new implementation...`);
 
       await insertContractAddressInDb(gatewayid, wrapperGatewayAddress);
-      wrapperGatewayProxy = await getBendUpgradeableProxy(wrapperGatewayAddress);
+      wrapperGatewayProxy = await getBittyUpgradeableProxy(wrapperGatewayAddress);
 
       // only proxy admin can do upgrading
       await waitForTx(
@@ -71,7 +71,7 @@ task(`full:deploy-wrapper-gateway`, `Deploys the WrapperGateway contract`)
       wrapperGateWay = await getWrapperGateway(gatewayid, wrapperGatewayProxy.address);
     } else {
       console.log(`Deploying new ${gatewayid} proxy with implementation...`);
-      const wrapperGatewayProxy = await deployBendUpgradeableProxy(
+      const wrapperGatewayProxy = await deployBittyUpgradeableProxy(
         gatewayid,
         proxyAdmin.address,
         wrapperGateWayImpl.address,
@@ -125,7 +125,7 @@ task("full:new-wrapper-gateway-impl", "New gateway impl.")
         id,
         proxy: gatewayProxy,
         impl: gatewayImpl.address,
-        admin: eContractid.BendProxyAdminWTL,
+        admin: eContractid.BittyProxyAdminWTL,
       });
     }
   });

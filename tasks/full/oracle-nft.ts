@@ -1,16 +1,16 @@
 import { task } from "hardhat/config";
 import { getParamPerNetwork, insertContractAddressInDb } from "../../helpers/contracts-helpers";
-import { deployBendUpgradeableProxy, deployNFTOracle } from "../../helpers/contracts-deployments";
+import { deployBittyUpgradeableProxy, deployNFTOracle } from "../../helpers/contracts-deployments";
 import { ICommonConfiguration, eNetwork, eContractid } from "../../helpers/types";
 import { waitForTx, notFalsyOrZeroAddress } from "../../helpers/misc-utils";
 import { ConfigNames, loadPoolConfig, getGenesisPoolAdmin } from "../../helpers/configuration";
 import {
   getNFTOracle,
   getLendPoolAddressesProvider,
-  getBendUpgradeableProxy,
-  getBendProxyAdminById,
+  getBittyUpgradeableProxy,
+  getBittyProxyAdminById,
 } from "../../helpers/contracts-getters";
-import { NFTOracle, BendUpgradeableProxy } from "../../types";
+import { NFTOracle, BittyUpgradeableProxy } from "../../types";
 import { BigNumber as BN } from "ethers";
 
 task("full:deploy-oracle-nft", "Deploy nft oracle for full enviroment")
@@ -40,7 +40,7 @@ task("full:deploy-oracle-nft", "Deploy nft oracle for full enviroment")
         return;
       }
 
-      const proxyAdmin = await getBendProxyAdminById(eContractid.BendProxyAdminPool);
+      const proxyAdmin = await getBittyProxyAdminById(eContractid.BittyProxyAdminPool);
       if (proxyAdmin == undefined || !notFalsyOrZeroAddress(proxyAdmin.address)) {
         throw Error("Invalid pool proxy admin in config");
       }
@@ -68,14 +68,14 @@ task("full:deploy-oracle-nft", "Deploy nft oracle for full enviroment")
       ]);
 
       let nftOracle: NFTOracle;
-      let nftOracleProxy: BendUpgradeableProxy;
+      let nftOracleProxy: BittyUpgradeableProxy;
 
       if (nftOracleAddress != undefined && notFalsyOrZeroAddress(nftOracleAddress)) {
         console.log("Upgrading exist nft oracle proxy to new implementation...");
 
         await insertContractAddressInDb(eContractid.NFTOracle, nftOracleAddress);
 
-        nftOracleProxy = await getBendUpgradeableProxy(nftOracleAddress);
+        nftOracleProxy = await getBittyUpgradeableProxy(nftOracleAddress);
 
         // only proxy admin can do upgrading
         await waitForTx(
@@ -86,7 +86,7 @@ task("full:deploy-oracle-nft", "Deploy nft oracle for full enviroment")
       } else {
         console.log("Deploying new nft oracle proxy & implementation...");
 
-        nftOracleProxy = await deployBendUpgradeableProxy(
+        nftOracleProxy = await deployBittyUpgradeableProxy(
           eContractid.NFTOracle,
           proxyAdmin.address,
           nftOracleImpl.address,

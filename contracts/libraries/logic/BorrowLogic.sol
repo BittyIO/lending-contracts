@@ -27,7 +27,7 @@ import {ValidationLogic} from "./ValidationLogic.sol";
 
 /**
  * @title BorrowLogic library
- * @author Bend
+ * @author Bitty
  * @notice Implements the logic to borrow feature
  */
 library BorrowLogic {

@@ -17,7 +17,7 @@ import {SafeERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ER
 
 /**
  * @title ValidationLogic library
- * @author Bend
+ * @author Bitty
  * @notice Implements functions to validate the different actions of the protocol
  */
 library ValidationLogic {

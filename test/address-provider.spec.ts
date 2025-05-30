@@ -26,7 +26,7 @@ makeSuite("LendPoolAddressesProvider", (testEnv: TestEnv) => {
       addressesProvider.setEmergencyAdmin,
       addressesProvider.setIncentivesController,
       addressesProvider.setUIDataProvider,
-      addressesProvider.setBendDataProvider,
+      addressesProvider.setBittyDataProvider,
       addressesProvider.setWalletBalanceProvider,
     ]) {
       await expect(contractFunction(mockAddress)).to.be.revertedWith(INVALID_OWNER_REVERT_MSG);

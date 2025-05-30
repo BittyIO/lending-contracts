@@ -9,7 +9,7 @@ import {
   deployLendPool,
   deployLendPoolLoan,
   deployLendPoolConfigurator,
-  deployBendLibraries,
+  deployBittyLibraries,
 } from "../../helpers/contracts-deployments";
 import { eContractid, eNetwork } from "../../helpers/types";
 import { notFalsyOrZeroAddress, waitForTx } from "../../helpers/misc-utils";
@@ -56,7 +56,7 @@ task("full:deploy-lend-pool", "Deploy lend pool for full enviroment")
 
       //////////////////////////////////////////////////////////////////////////
       console.log("Deploying new libraries implementation...");
-      await deployBendLibraries(verify);
+      await deployBittyLibraries(verify);
 
       // Reuse/deploy lend pool implementation
       console.log("Deploying new lend pool implementation & libraries...");

@@ -15,7 +15,7 @@ import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Ini
 /**
  * @title DebtToken
  * @notice Implements a debt token to track the borrowing positions of users
- * @author Bend
+ * @author Bitty
  **/
 contract DebtToken is Initializable, IDebtToken, IncentivizedERC20 {
   using WadRayMath for uint256;

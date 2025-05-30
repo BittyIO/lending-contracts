@@ -1,7 +1,7 @@
 import { task } from "hardhat/config";
 import { formatEther } from "ethers/lib/utils";
 import {
-  deployBendProtocolDataProvider,
+  deployBittyProtocolDataProvider,
   deployUiPoolDataProvider,
   deployWalletBalancerProvider,
 } from "../../helpers/contracts-deployments";
@@ -14,7 +14,7 @@ task("full:deploy-data-provider", "Deploy data provider for full enviroment")
   .addFlag("verify", "Verify contracts at Etherscan")
   .addParam("pool", `Pool name to retrieve configuration, supported: ${Object.values(ConfigNames)}`)
   .addFlag("wallet", "Deploy wallet balancer provider")
-  .addFlag("protocol", "Deploy bend protocol data provider")
+  .addFlag("protocol", "Deploy bitty protocol data provider")
   .addFlag("ui", "Deploy ui data provider")
   .setAction(async ({ verify, wallet, protocol, ui }, DRE) => {
     await DRE.run("set-DRE");
@@ -34,9 +34,9 @@ task("full:deploy-data-provider", "Deploy data provider for full enviroment")
 
     // this contract is not support upgrade, just deploy new contract
     if (protocol) {
-      const bendProtocolDataProvider = await deployBendProtocolDataProvider(addressesProvider.address, verify);
-      console.log("BendProtocolDataProvider deployed at:", bendProtocolDataProvider.address);
-      await waitForTx(await addressesProvider.setBendDataProvider(bendProtocolDataProvider.address));
+      const bittyProtocolDataProvider = await deployBittyProtocolDataProvider(addressesProvider.address, verify);
+      console.log("BittyProtocolDataProvider deployed at:", bittyProtocolDataProvider.address);
+      await waitForTx(await addressesProvider.setBittyDataProvider(bittyProtocolDataProvider.address));
     }
 
     // this contract is not support upgrade, just deploy new contract

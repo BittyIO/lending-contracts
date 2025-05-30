@@ -6,10 +6,10 @@ import {
   getCryptoPunksMarketAddress,
 } from "../../helpers/configuration";
 import { ADDRESS_ID_PUNK_GATEWAY } from "../../helpers/constants";
-import { deployBendUpgradeableProxy, deployPunkGateway } from "../../helpers/contracts-deployments";
+import { deployBittyUpgradeableProxy, deployPunkGateway } from "../../helpers/contracts-deployments";
 import {
-  getBendProxyAdminById,
-  getBendUpgradeableProxy,
+  getBittyProxyAdminById,
+  getBittyUpgradeableProxy,
   getLendPoolAddressesProvider,
   getPunkGateway,
   getWETHGateway,
@@ -17,7 +17,7 @@ import {
 import { insertContractAddressInDb } from "../../helpers/contracts-helpers";
 import { notFalsyOrZeroAddress, waitForTx } from "../../helpers/misc-utils";
 import { eContractid, eNetwork } from "../../helpers/types";
-import { BendUpgradeableProxy, PunkGateway } from "../../types";
+import { BittyUpgradeableProxy, PunkGateway } from "../../types";
 
 task(`full:deploy-punk-gateway`, `Deploys the PunkGateway contract`)
   .addParam("pool", `Pool name to retrieve configuration, supported: ${Object.values(ConfigNames)}`)
@@ -33,7 +33,7 @@ task(`full:deploy-punk-gateway`, `Deploys the PunkGateway contract`)
     const poolConfig = loadPoolConfig(pool);
     const addressesProvider = await getLendPoolAddressesProvider();
 
-    const proxyAdmin = await getBendProxyAdminById(eContractid.BendProxyAdminPool);
+    const proxyAdmin = await getBittyProxyAdminById(eContractid.BittyProxyAdminPool);
     if (proxyAdmin == undefined || !notFalsyOrZeroAddress(proxyAdmin.address)) {
       throw Error("Invalid pool proxy admin in config");
     }
@@ -59,7 +59,7 @@ task(`full:deploy-punk-gateway`, `Deploys the PunkGateway contract`)
     ]);
 
     let punkGateWay: PunkGateway;
-    let punkGatewayProxy: BendUpgradeableProxy;
+    let punkGatewayProxy: BittyUpgradeableProxy;
 
     const punkGatewayAddress = undefined; //await addressesProvider.getAddress(ADDRESS_ID_PUNK_GATEWAY);
 
@@ -67,7 +67,7 @@ task(`full:deploy-punk-gateway`, `Deploys the PunkGateway contract`)
       console.log("Upgrading exist PunkGateway proxy to new implementation...");
 
       await insertContractAddressInDb(eContractid.PunkGateway, punkGatewayAddress);
-      punkGatewayProxy = await getBendUpgradeableProxy(punkGatewayAddress);
+      punkGatewayProxy = await getBittyUpgradeableProxy(punkGatewayAddress);
 
       // only proxy admin can do upgrading
       await waitForTx(
@@ -77,7 +77,7 @@ task(`full:deploy-punk-gateway`, `Deploys the PunkGateway contract`)
       punkGateWay = await getPunkGateway(punkGatewayProxy.address);
     } else {
       console.log("Deploying new PunkGateway proxy & implementation...");
-      const punkGatewayProxy = await deployBendUpgradeableProxy(
+      const punkGatewayProxy = await deployBittyUpgradeableProxy(
         eContractid.PunkGateway,
         proxyAdmin.address,
         punkGateWayImpl.address,

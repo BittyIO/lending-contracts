@@ -2,7 +2,7 @@ import { task } from "hardhat/config";
 import { ConfigNames, loadPoolConfig } from "../../helpers/configuration";
 import { ADDRESS_ID_PUNK_GATEWAY, ADDRESS_ID_WETH_GATEWAY } from "../../helpers/constants";
 import {
-  getBendProtocolDataProvider,
+  getBittyProtocolDataProvider,
   getLendPool,
   getLendPoolAddressesProvider,
   getLendPoolAddressesProviderRegistry,
@@ -24,7 +24,7 @@ task("print-config", "Print config of all reserves and nfts")
     const providerRegistry = await getLendPoolAddressesProviderRegistry(providerRegistryAddress);
     const providers = await providerRegistry.getAddressesProvidersList();
     const addressesProvider = await getLendPoolAddressesProvider(providers[0]); // Checks first provider
-    const protocolDataProvider = await getBendProtocolDataProvider(await addressesProvider.getBendDataProvider());
+    const protocolDataProvider = await getBittyProtocolDataProvider(await addressesProvider.getBittyDataProvider());
 
     console.log("Provider Registry: ", providerRegistry.address);
     console.log("Address Provider: ", addressesProvider.address);
@@ -38,7 +38,7 @@ task("print-config", "Print config of all reserves and nfts")
     console.log("NFT Oracle Proxy:", await addressesProvider.getNFTOracle());
     console.log("BNFT Registry Proxy:", await addressesProvider.getBNFTRegistry());
     console.log("Incentives Controller:", await addressesProvider.getIncentivesController());
-    console.log("Bend Data Provider:", protocolDataProvider.address);
+    console.log("Bitty Data Provider:", protocolDataProvider.address);
     console.log("UI Data Provider:", await addressesProvider.getUIDataProvider());
     console.log("Wallet Balance Provider:", await addressesProvider.getWalletBalanceProvider());
 

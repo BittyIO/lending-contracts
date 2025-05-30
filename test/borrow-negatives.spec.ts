@@ -14,7 +14,7 @@ import { configuration as actionsConfiguration } from "./helpers/actions";
 import { configuration as calculationsConfiguration } from "./helpers/utils/calculations";
 import BigNumber from "bignumber.js";
 import { getReservesConfigByPool } from "../helpers/configuration";
-import { BendPools, iBendPoolAssets, IReserveParams } from "../helpers/types";
+import { BittyPools, iBittyPoolAssets, IReserveParams } from "../helpers/types";
 
 const { expect } = require("chai");
 
@@ -30,8 +30,8 @@ makeSuite("LendPool: Borrow negative test cases", (testEnv: TestEnv) => {
 
     actionsConfiguration.skipIntegrityCheck = false; //set this to true to execute solidity-coverage
 
-    calculationsConfiguration.reservesParams = <iBendPoolAssets<IReserveParams>>(
-      getReservesConfigByPool(BendPools.proto)
+    calculationsConfiguration.reservesParams = <iBittyPoolAssets<IReserveParams>>(
+      getReservesConfigByPool(BittyPools.proto)
     );
   });
   after("Reset", () => {

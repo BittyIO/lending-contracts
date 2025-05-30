@@ -29,7 +29,7 @@ task("dev:add-mock-nfts", "Add mock nfts for dev enviroment")
     const tokens: { [symbol: string]: MintableERC721 } = {};
 
     for (const tokenSymbol of Object.keys(NftContractId)) {
-      const tokenName = "Bend Mock " + tokenSymbol;
+      const tokenName = "Bitty Mock " + tokenSymbol;
       const contractId = tokenSymbol.toUpperCase();
       const tokenAddress = await tryGetContractAddressInDb(contractId);
       if (tokenAddress != undefined && notFalsyOrZeroAddress(tokenAddress)) {

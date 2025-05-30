@@ -3,10 +3,10 @@ import { checkVerification } from "../../helpers/etherscan-verification";
 import { ConfigNames } from "../../helpers/configuration";
 import { printContracts } from "../../helpers/misc-utils";
 
-task("bend:dev", "Deploy development enviroment")
+task("bitty:dev", "Deploy development enviroment")
   .addFlag("verify", "Verify contracts at Etherscan")
   .setAction(async ({ verify }, localBRE) => {
-    const POOL_NAME = ConfigNames.Bend;
+    const POOL_NAME = ConfigNames.Bitty;
 
     await localBRE.run("set-DRE");
 

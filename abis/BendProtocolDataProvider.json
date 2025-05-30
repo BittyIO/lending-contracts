@@ -50,7 +50,7 @@
             "type": "address"
           }
         ],
-        "internalType": "struct BendProtocolDataProvider.NftTokenData[]",
+        "internalType": "struct BittyProtocolDataProvider.NftTokenData[]",
         "name": "",
         "type": "tuple[]"
       }
@@ -95,7 +95,7 @@
             "type": "address"
           }
         ],
-        "internalType": "struct BendProtocolDataProvider.ReserveTokenData[]",
+        "internalType": "struct BittyProtocolDataProvider.ReserveTokenData[]",
         "name": "",
         "type": "tuple[]"
       }
@@ -181,7 +181,7 @@
             "type": "uint256"
           }
         ],
-        "internalType": "struct BendProtocolDataProvider.LoanData",
+        "internalType": "struct BittyProtocolDataProvider.LoanData",
         "name": "loanData",
         "type": "tuple"
       }
@@ -262,7 +262,7 @@
             "type": "uint256"
           }
         ],
-        "internalType": "struct BendProtocolDataProvider.LoanData",
+        "internalType": "struct BittyProtocolDataProvider.LoanData",
         "name": "loanData",
         "type": "tuple"
       }
@@ -333,7 +333,7 @@
             "type": "bool"
           }
         ],
-        "internalType": "struct BendProtocolDataProvider.NftConfigurationData",
+        "internalType": "struct BittyProtocolDataProvider.NftConfigurationData",
         "name": "configData",
         "type": "tuple"
       }
@@ -374,7 +374,7 @@
             "type": "address"
           }
         ],
-        "internalType": "struct BendProtocolDataProvider.NftTokenData",
+        "internalType": "struct BittyProtocolDataProvider.NftTokenData",
         "name": "",
         "type": "tuple"
       }
@@ -513,7 +513,7 @@
             "type": "address"
           }
         ],
-        "internalType": "struct BendProtocolDataProvider.ReserveTokenData",
+        "internalType": "struct BittyProtocolDataProvider.ReserveTokenData",
         "name": "",
         "type": "tuple"
       }

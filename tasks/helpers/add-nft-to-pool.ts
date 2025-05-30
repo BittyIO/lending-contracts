@@ -12,7 +12,7 @@ import {
 import { getEthersSignerByAddress } from "../../helpers/contracts-helpers";
 import { getNowTimeInSeconds, notFalsyOrZeroAddress, waitForTx } from "../../helpers/misc-utils";
 import { eContractid, eNetwork, INftParams } from "../../helpers/types";
-import { strategyNftParams } from "../../markets/bend/nftsConfigs";
+import { strategyNftParams } from "../../markets/bitty/nftsConfigs";
 
 task("helpers:add-nft-to-pool", "Add and config new nft asset to lend pool")
   .addParam("pool", `Pool name to retrieve configuration, supported: ${Object.values(ConfigNames)}`)

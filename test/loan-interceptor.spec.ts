@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { makeSuite, TestEnv } from "./helpers/make-suite";
-import { BendPools, iBendPoolAssets, IReserveParams, ProtocolErrors } from "../helpers/types";
+import { BittyPools, iBittyPoolAssets, IReserveParams, ProtocolErrors } from "../helpers/types";
 import { advanceTimeAndBlock, waitForTx } from "../helpers/misc-utils";
 import { MockLoanRepaidInterceptor, MockLoanRepaidInterceptorFactory } from "../types";
 import { approveERC20, borrow, deposit, mintERC20, mintERC721, repay, setApprovalForAll } from "./helpers/actions";
@@ -21,8 +21,8 @@ makeSuite("LendPoolLoan: Token Interceptor", (testEnv: TestEnv) => {
 
     actionsConfiguration.skipIntegrityCheck = false; //set this to true to execute solidity-coverage
 
-    calculationsConfiguration.reservesParams = <iBendPoolAssets<IReserveParams>>(
-      getReservesConfigByPool(BendPools.proto)
+    calculationsConfiguration.reservesParams = <iBittyPoolAssets<IReserveParams>>(
+      getReservesConfigByPool(BittyPools.proto)
     );
 
     mockLoanRepaidInterceptor = await new MockLoanRepaidInterceptorFactory(testEnv.deployer.signer).deploy(

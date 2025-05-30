@@ -32,7 +32,7 @@ import {ContextUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/Cont
 
 /**
  * @title LendPool contract
- * @dev Main point of interaction with an Bend protocol's market
+ * @dev Main point of interaction with an Bitty protocol's market
  * - Users can:
  *   # Deposit
  *   # Withdraw
@@ -43,7 +43,7 @@ import {ContextUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/Cont
  * - To be covered by a proxy contract, owned by the LendPoolAddressesProvider of the specific market
  * - All admin functions are callable by the LendPoolConfigurator contract defined also in the
  *   LendPoolAddressesProvider
- * @author Bend
+ * @author Bitty
  **/
 // !!! For Upgradable: DO NOT ADJUST Inheritance Order !!!
 contract LendPool is

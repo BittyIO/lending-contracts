@@ -9,7 +9,7 @@ import {
 } from "../../helpers/configuration";
 import { MAX_UINT_AMOUNT } from "../../helpers/constants";
 import {
-  getBendProtocolDataProvider,
+  getBittyProtocolDataProvider,
   getBToken,
   getDeploySigner,
   getLendPool,
@@ -36,7 +36,7 @@ task("dev:pool-auction", "Doing WETH auction task")
     const addressesProvider = await getLendPoolAddressesProvider();
 
     const lendPool = await getLendPool(await addressesProvider.getLendPool());
-    const dataProvider = await getBendProtocolDataProvider(await addressesProvider.getBendDataProvider());
+    const dataProvider = await getBittyProtocolDataProvider(await addressesProvider.getBittyDataProvider());
 
     const signer = await getDeploySigner();
     const signerAddress = await signer.getAddress();
@@ -63,7 +63,7 @@ task("dev:pool-redeem", "Doing WETH redeem task")
     const addressesProvider = await getLendPoolAddressesProvider();
 
     const lendPool = await getLendPool(await addressesProvider.getLendPool());
-    const dataProvider = await getBendProtocolDataProvider(await addressesProvider.getBendDataProvider());
+    const dataProvider = await getBittyProtocolDataProvider(await addressesProvider.getBittyDataProvider());
 
     const signer = await getDeploySigner();
     const signerAddress = await signer.getAddress();
@@ -161,7 +161,7 @@ task("dev:weth-liquidate", "Doing WETH liquidate task")
     await DRE.run("set-DRE");
 
     const addressesProvider = await getLendPoolAddressesProvider();
-    const dataProvider = await getBendProtocolDataProvider(await addressesProvider.getBendDataProvider());
+    const dataProvider = await getBittyProtocolDataProvider(await addressesProvider.getBittyDataProvider());
     const loanData = await dataProvider.getLoanDataByCollateral(token, id);
     let extraAmount = new BigNumber(0);
     if (loanData.currentAmount.gt(loanData.bidPrice)) {

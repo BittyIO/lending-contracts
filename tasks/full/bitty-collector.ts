@@ -3,14 +3,14 @@ import { task } from "hardhat/config";
 import { ConfigNames, loadPoolConfig } from "../../helpers/configuration";
 import { MAX_UINT_AMOUNT } from "../../helpers/constants";
 import {
-  deployBendCollector,
-  deployBendProxyAdmin,
-  deployBendUpgradeableProxy,
+  deployBittyCollector,
+  deployBittyProxyAdmin,
+  deployBittyUpgradeableProxy,
 } from "../../helpers/contracts-deployments";
 import {
-  getBendCollectorProxy,
-  getBendProxyAdminById,
-  getBendUpgradeableProxy,
+  getBittyCollectorProxy,
+  getBittyProxyAdminById,
+  getBittyUpgradeableProxy,
   getIErc20Detailed,
 } from "../../helpers/contracts-getters";
 import {
@@ -21,9 +21,9 @@ import {
 } from "../../helpers/contracts-helpers";
 import { notFalsyOrZeroAddress, waitForTx } from "../../helpers/misc-utils";
 import { eNetwork, eContractid } from "../../helpers/types";
-import { BendCollector, BendUpgradeableProxy } from "../../types";
+import { BittyCollector, BittyUpgradeableProxy } from "../../types";
 
-task("full:deploy-bend-collector", "Deploy bend collect contract")
+task("full:deploy-bitty-collector", "Deploy bitty collect contract")
   .addFlag("verify", "Verify contracts at Etherscan")
   .addParam("pool", `Pool name to retrieve configuration, supported: ${Object.values(ConfigNames)}`)
   .setAction(async ({ verify, pool }, DRE) => {
@@ -33,24 +33,24 @@ task("full:deploy-bend-collector", "Deploy bend collect contract")
     const poolConfig = loadPoolConfig(pool);
     const network = <eNetwork>DRE.network.name;
 
-    const collectorProxyAdmin = await getBendProxyAdminById(eContractid.BendProxyAdminFund);
+    const collectorProxyAdmin = await getBittyProxyAdminById(eContractid.BittyProxyAdminFund);
     const proxyAdminOwner = await collectorProxyAdmin.owner();
     console.log("Proxy Admin: address %s, owner %s", collectorProxyAdmin.address, proxyAdminOwner);
 
-    const bendCollectorImpl = await deployBendCollector(verify);
-    const initEncodedData = bendCollectorImpl.interface.encodeFunctionData("initialize");
+    const bittyCollectorImpl = await deployBittyCollector(verify);
+    const initEncodedData = bittyCollectorImpl.interface.encodeFunctionData("initialize");
 
-    const bendCollectorProxy = await deployBendUpgradeableProxy(
-      eContractid.BendCollector,
+    const bittyCollectorProxy = await deployBittyUpgradeableProxy(
+      eContractid.BittyCollector,
       collectorProxyAdmin.address,
-      bendCollectorImpl.address,
+      bittyCollectorImpl.address,
       initEncodedData,
       verify
     );
-    console.log("Bend Collector: proxy %s, implementation %s", bendCollectorProxy.address, bendCollectorImpl.address);
+    console.log("Bitty Collector: proxy %s, implementation %s", bittyCollectorProxy.address, bittyCollectorImpl.address);
   });
 
-task("full:upgrade-bend-collector", "Upgrade bend collect contract")
+task("full:upgrade-bitty-collector", "Upgrade bitty collect contract")
   .addFlag("verify", "Verify contracts at Etherscan")
   .addParam("pool", `Pool name to retrieve configuration, supported: ${Object.values(ConfigNames)}`)
   .addParam("proxy", "Contract proxy address")
@@ -60,42 +60,42 @@ task("full:upgrade-bend-collector", "Upgrade bend collect contract")
     const poolConfig = loadPoolConfig(pool);
     const network = <eNetwork>DRE.network.name;
 
-    const collectorProxyAdmin = await getBendProxyAdminById(eContractid.BendProxyAdminFund);
+    const collectorProxyAdmin = await getBittyProxyAdminById(eContractid.BittyProxyAdminFund);
     const proxyAdminOwnerAddress = await collectorProxyAdmin.owner();
     const proxyAdminOwnerSigner = await getEthersSignerByAddress(proxyAdminOwnerAddress);
     console.log("Proxy Admin: address %s, owner %s", collectorProxyAdmin.address, proxyAdminOwnerAddress);
 
-    const bendCollectorProxy = await getBendUpgradeableProxy(proxy);
-    console.log("Bend Collector: proxy %s", bendCollectorProxy.address);
+    const bittyCollectorProxy = await getBittyUpgradeableProxy(proxy);
+    console.log("Bitty Collector: proxy %s", bittyCollectorProxy.address);
 
-    const bendCollector = await getBendCollectorProxy(bendCollectorProxy.address);
+    const bittyCollector = await getBittyCollectorProxy(bittyCollectorProxy.address);
 
-    const bendCollectorImpl = await deployBendCollector(verify);
-    console.log("Bend Collector: new implementation %s", bendCollectorImpl.address);
-    insertContractAddressInDb(eContractid.BendCollector, bendCollectorProxy.address);
+    const bittyCollectorImpl = await deployBittyCollector(verify);
+    console.log("Bitty Collector: new implementation %s", bittyCollectorImpl.address);
+    insertContractAddressInDb(eContractid.BittyCollector, bittyCollectorProxy.address);
 
     if (initFunc != undefined && initFunc != "") {
-      const initEncodedData = bendCollectorImpl.interface.encodeFunctionData(initFunc);
+      const initEncodedData = bittyCollectorImpl.interface.encodeFunctionData(initFunc);
 
       await waitForTx(
         await collectorProxyAdmin
           .connect(proxyAdminOwnerSigner)
-          .upgradeAndCall(bendCollectorProxy.address, bendCollectorImpl.address, initEncodedData)
+          .upgradeAndCall(bittyCollectorProxy.address, bittyCollectorImpl.address, initEncodedData)
       );
     } else {
       await waitForTx(
         await collectorProxyAdmin
           .connect(proxyAdminOwnerSigner)
-          .upgrade(bendCollectorProxy.address, bendCollectorImpl.address)
+          .upgrade(bittyCollectorProxy.address, bittyCollectorImpl.address)
       );
     }
 
-    //await waitForTx(await bendCollector.initialize_v2());
+    //await waitForTx(await bittyCollector.initialize_v2());
 
-    console.log("Bend Collector: upgrade ok");
+    console.log("Bitty Collector: upgrade ok");
   });
 
-task("bend-collector:approve-erc20", "Approve ERC20 token")
+task("bitty-collector:approve-erc20", "Approve ERC20 token")
   .addParam("pool", `Pool name to retrieve configuration, supported: ${Object.values(ConfigNames)}`)
   .addParam("proxy", "Contract proxy address")
   .addParam("token", "ERC20 token address")
@@ -106,18 +106,18 @@ task("bend-collector:approve-erc20", "Approve ERC20 token")
     const poolConfig = loadPoolConfig(pool);
     const network = <eNetwork>DRE.network.name;
 
-    const bendCollectorProxy = await getBendUpgradeableProxy(proxy);
-    console.log("Bend Collector: proxy %s", bendCollectorProxy.address);
+    const bittyCollectorProxy = await getBittyUpgradeableProxy(proxy);
+    console.log("Bitty Collector: proxy %s", bittyCollectorProxy.address);
 
-    const bendCollector = await getBendCollectorProxy(bendCollectorProxy.address);
-    const ownerSigner = await getEthersSignerByAddress(await bendCollector.owner());
+    const bittyCollector = await getBittyCollectorProxy(bittyCollectorProxy.address);
+    const ownerSigner = await getEthersSignerByAddress(await bittyCollector.owner());
 
     let amountDecimals = MAX_UINT_AMOUNT;
     if (amount != "-1") {
       amountDecimals = (await convertToCurrencyDecimals(token, amount)).toString();
     }
 
-    await waitForTx(await bendCollector.connect(ownerSigner).approve(token, to, amountDecimals));
+    await waitForTx(await bittyCollector.connect(ownerSigner).approve(token, to, amountDecimals));
 
-    console.log("Bend Collector: approve ok");
+    console.log("Bitty Collector: approve ok");
   });

@@ -4,7 +4,7 @@ import {
   getParamPerNetwork,
   insertContractAddressInDb,
 } from "../../helpers/contracts-helpers";
-import { deployReserveOracle, deployBendUpgradeableProxy } from "../../helpers/contracts-deployments";
+import { deployReserveOracle, deployBittyUpgradeableProxy } from "../../helpers/contracts-deployments";
 import { ICommonConfiguration, eNetwork, eContractid } from "../../helpers/types";
 import { waitForTx, notFalsyOrZeroAddress } from "../../helpers/misc-utils";
 import { ConfigNames, loadPoolConfig, getWrappedNativeTokenAddress } from "../../helpers/configuration";
@@ -12,10 +12,10 @@ import {
   getReserveOracle,
   getLendPoolAddressesProvider,
   getPairsTokenAggregator,
-  getBendProxyAdminById,
-  getBendUpgradeableProxy,
+  getBittyProxyAdminById,
+  getBittyUpgradeableProxy,
 } from "../../helpers/contracts-getters";
-import { ReserveOracle, BendUpgradeableProxy } from "../../types";
+import { ReserveOracle, BittyUpgradeableProxy } from "../../types";
 
 task("full:deploy-oracle-reserve", "Deploy reserve oracle for full enviroment")
   .addFlag("verify", "Verify contracts at Etherscan")
@@ -44,7 +44,7 @@ task("full:deploy-oracle-reserve", "Deploy reserve oracle for full enviroment")
         return;
       }
 
-      const proxyAdmin = await getBendProxyAdminById(eContractid.BendProxyAdminPool);
+      const proxyAdmin = await getBittyProxyAdminById(eContractid.BittyProxyAdminPool);
       const proxyOwnerAddress = await proxyAdmin.owner();
 
       const reserveAssets = getParamPerNetwork(ReserveAssets, network);
@@ -66,14 +66,14 @@ task("full:deploy-oracle-reserve", "Deploy reserve oracle for full enviroment")
       const initEncodedData = reserveOracleImpl.interface.encodeFunctionData("initialize", [weth]);
 
       let reserveOracle: ReserveOracle;
-      let reserveOracleProxy: BendUpgradeableProxy;
+      let reserveOracleProxy: BittyUpgradeableProxy;
 
       if (reserveOracleAddress != undefined && notFalsyOrZeroAddress(reserveOracleAddress)) {
         console.log("Upgrading exist reserve oracle proxy to new implementation...");
 
         await insertContractAddressInDb(eContractid.ReserveOracle, reserveOracleAddress);
 
-        reserveOracleProxy = await getBendUpgradeableProxy(reserveOracleAddress);
+        reserveOracleProxy = await getBittyUpgradeableProxy(reserveOracleAddress);
         // only proxy admin can do upgrading
         const ownerSigner = DRE.ethers.provider.getSigner(proxyOwnerAddress);
         await waitForTx(
@@ -84,7 +84,7 @@ task("full:deploy-oracle-reserve", "Deploy reserve oracle for full enviroment")
       } else {
         console.log("Deploying new reserve oracle proxy & implementation...");
 
-        reserveOracleProxy = await deployBendUpgradeableProxy(
+        reserveOracleProxy = await deployBittyUpgradeableProxy(
           eContractid.ReserveOracle,
           proxyAdmin.address,
           reserveOracleImpl.address,

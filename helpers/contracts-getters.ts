@@ -1,6 +1,6 @@
 import { Signer, ethers } from "ethers";
 import {
-  BendProtocolDataProviderFactory,
+  BittyProtocolDataProviderFactory,
   BTokenFactory,
   DebtTokenFactory,
   BNFTFactory,
@@ -28,11 +28,11 @@ import {
   CryptoPunksMarketFactory,
   WrappedPunkFactory,
   PunkGatewayFactory,
-  BendUpgradeableProxyFactory,
-  BendProxyAdminFactory,
+  BittyUpgradeableProxyFactory,
+  BittyProxyAdminFactory,
   MockIncentivesControllerFactory,
   UiPoolDataProviderFactory,
-  BendCollectorFactory,
+  BittyCollectorFactory,
   ConfiguratorLogicFactory,
   BorrowLogicFactory,
   SupplyLogicFactory,
@@ -43,6 +43,7 @@ import {
   WrapperGatewayFactory,
   ChainlinkAggregatorHelperFactory,
   UniswapV3DebtSwapAdapterFactory,
+  WETH9Factory,
 } from "../types";
 import { IERC20DetailedFactory } from "../types/IERC20DetailedFactory";
 import { IERC721DetailedFactory } from "../types/IERC721DetailedFactory";
@@ -206,9 +207,9 @@ export const getIErc721Detailed = async (address: tEthereumAddress) =>
     await getDeploySigner()
   );
 
-export const getBendProtocolDataProvider = async (address?: tEthereumAddress) =>
-  await BendProtocolDataProviderFactory.connect(
-    address || (await getDb(DRE.network.name).get(`${eContractid.BendProtocolDataProvider}`).value()).address,
+export const getBittyProtocolDataProvider = async (address?: tEthereumAddress) =>
+  await BittyProtocolDataProviderFactory.connect(
+    address || (await getDb(DRE.network.name).get(`${eContractid.BittyProtocolDataProvider}`).value()).address,
     await getDeploySigner()
   );
 
@@ -378,14 +379,14 @@ export const getSelfdestructTransferMock = async (address?: tEthereumAddress) =>
     await getDeploySigner()
   );
 
-export const getBendUpgradeableProxy = async (address: tEthereumAddress) =>
-  await BendUpgradeableProxyFactory.connect(address, await getDeploySigner());
+export const getBittyUpgradeableProxy = async (address: tEthereumAddress) =>
+  await BittyUpgradeableProxyFactory.connect(address, await getDeploySigner());
 
-export const getBendProxyAdminByAddress = async (address: tEthereumAddress) =>
-  await BendProxyAdminFactory.connect(address, await getDeploySigner());
+export const getBittyProxyAdminByAddress = async (address: tEthereumAddress) =>
+  await BittyProxyAdminFactory.connect(address, await getDeploySigner());
 
-export const getBendProxyAdminById = async (id: string) =>
-  await BendProxyAdminFactory.connect(
+export const getBittyProxyAdminById = async (id: string) =>
+  await BittyProxyAdminFactory.connect(
     (
       await getDb(DRE.network.name).get(`${id}`).value()
     ).address,
@@ -456,15 +457,15 @@ export const getMockIncentivesController = async (address?: tEthereumAddress) =>
     await getDeploySigner()
   );
 
-export const getBendCollectorProxy = async (address?: tEthereumAddress) =>
-  await BendCollectorFactory.connect(
-    address || (await getDb(DRE.network.name).get(`${eContractid.BendCollector}`).value()).address,
+export const getBittyCollectorProxy = async (address?: tEthereumAddress) =>
+  await BittyCollectorFactory.connect(
+    address || (await getDb(DRE.network.name).get(`${eContractid.BittyCollector}`).value()).address,
     await getDeploySigner()
   );
 
-export const getBendCollectorImpl = async (address?: tEthereumAddress) =>
-  await BendCollectorFactory.connect(
-    address || (await getDb(DRE.network.name).get(`${eContractid.BendCollectorImpl}`).value()).address,
+export const getBittyCollectorImpl = async (address?: tEthereumAddress) =>
+  await BittyCollectorFactory.connect(
+    address || (await getDb(DRE.network.name).get(`${eContractid.BittyCollectorImpl}`).value()).address,
     await getDeploySigner()
   );
 

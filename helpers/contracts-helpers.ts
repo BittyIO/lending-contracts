@@ -1,28 +1,26 @@
-import { Contract, Signer, utils, ethers, BigNumberish } from "ethers";
-import { signTypedData_v4 } from "eth-sig-util";
-import { fromRpcSig, ECDSASignature } from "ethereumjs-util";
 import BigNumber from "bignumber.js";
-import { ZERO_ADDRESS } from "./constants";
-import { getDb, DRE, waitForTx, notFalsyOrZeroAddress } from "./misc-utils";
-import {
-  tEthereumAddress,
-  eContractid,
-  tStringTokenSmallUnits,
-  eEthereumNetwork,
-  BendPools,
-  iParamsPerNetwork,
-  iParamsPerPool,
-  eNetwork,
-  iParamsPerNetworkAll,
-  iEthereumParamsPerNetwork,
-} from "./types";
+import { signTypedData_v4 } from "eth-sig-util";
+import { ECDSASignature, fromRpcSig } from "ethereumjs-util";
+import { Contract, ethers, Signer, utils } from "ethers";
+import { Artifact } from "hardhat/types";
 import { MintableERC20 } from "../types/MintableERC20";
 import { MintableERC721 } from "../types/MintableERC721";
-import { Artifact } from "hardhat/types";
-import { verifyEtherscanContract } from "./etherscan-verification";
-import { getDeploySigner, getIErc20Detailed } from "./contracts-getters";
 import { ConfigNames, loadPoolConfig } from "./configuration";
-import { string } from "hardhat/internal/core/params/argumentTypes";
+import { ZERO_ADDRESS } from "./constants";
+import { getDeploySigner, getIErc20Detailed } from "./contracts-getters";
+import { verifyEtherscanContract } from "./etherscan-verification";
+import { DRE, getDb, notFalsyOrZeroAddress } from "./misc-utils";
+import {
+  BittyPools,
+  eContractid,
+  eEthereumNetwork,
+  eNetwork,
+  iEthereumParamsPerNetwork,
+  iParamsPerNetwork,
+  iParamsPerPool,
+  tEthereumAddress,
+  tStringTokenSmallUnits
+} from "./types";
 
 export type MockTokenMap = { [symbol: string]: MintableERC20 };
 export type MockNftMap = { [symbol: string]: MintableERC721 };
@@ -42,7 +40,7 @@ export const registerContractInJsonDb = async (contractId: string, contractInsta
     console.log();
   }
 
-  await getDb(currentNetwork)
+  getDb(currentNetwork)
     .set(`${contractId}`, {
       address: contractInstance.address,
       deployer: contractInstance.deployTransaction.from,
@@ -122,7 +120,8 @@ export const deployContract = async <ContractType extends Contract>(
   const contract = (await (await DRE.ethers.getContractFactory(contractName))
     .connect(await getDeploySigner())
     .deploy(...args)) as ContractType;
-  await waitForTx(contract.deployTransaction);
+  await contract.deployed();
+  // await waitForTx(contract.deployTransaction)
   await registerContractInJsonDb(<eContractid>contractName, contract);
   return contract;
 };
@@ -134,7 +133,8 @@ export const withSaveAndVerify = async <ContractType extends Contract>(
   verify?: boolean
 ): Promise<ContractType> => {
   //console.log('contracts-helpers:withSaveAndVerify,','id',id)
-  await waitForTx(instance.deployTransaction);
+  // await waitForTx(instance.deployTransaction)
+  await instance.deployed();
   await registerContractInJsonDb(id, instance);
   if (verify) {
     await verifyContract(id, instance, args);
@@ -171,7 +171,8 @@ export const linkBytecode = (artifact: Artifact, libraries: any) => {
 };
 
 export const getParamPerNetwork = <T>(param: iParamsPerNetwork<T>, network: eNetwork) => {
-  const { main, rinkeby, goerli, hardhat, coverage, localhost } = param as iEthereumParamsPerNetwork<T>;
+  const { main, rinkeby, goerli, hardhat, coverage, localhost, sepolia } =
+    param as iEthereumParamsPerNetwork<T>;
   if (process.env.FORK) {
     return param[process.env.FORK as eNetwork] as T;
   }
@@ -189,6 +190,8 @@ export const getParamPerNetwork = <T>(param: iParamsPerNetwork<T>, network: eNet
       return rinkeby;
     case eEthereumNetwork.main:
       return main;
+    case eEthereumNetwork.sepolia:
+      return sepolia;
   }
 
   return hardhat;
@@ -204,9 +207,9 @@ export const getOptionalParamAddressPerNetwork = (
   return getParamPerNetwork(param, network);
 };
 
-export const getParamPerPool = <T>({ proto }: iParamsPerPool<T>, pool: BendPools) => {
+export const getParamPerPool = <T>({ proto }: iParamsPerPool<T>, pool: BittyPools) => {
   switch (pool) {
-    case BendPools.proto:
+    case BittyPools.proto:
       return proto;
     default:
       return proto;
@@ -286,21 +289,21 @@ export const getSignatureFromTypedData = (
 };
 
 export const verifyContract = async (id: string, instance: Contract, args: (string | string[])[]) => {
-  if (id == eContractid.BendUpgradeableProxy) {
+  if (id == eContractid.BittyUpgradeableProxy) {
     await verifyEtherscanContract(
       instance.address,
       args,
-      "contracts/libraries/proxy/BendUpgradeableProxy.sol:BendUpgradeableProxy"
+      "contracts/libraries/proxy/BittyUpgradeableProxy.sol:BittyUpgradeableProxy"
     );
   } else if (
-    id == eContractid.BendProxyAdminFund ||
-    id == eContractid.BendProxyAdminPool ||
-    id == eContractid.BendProxyAdminWTL
+    id == eContractid.BittyProxyAdminFund ||
+    id == eContractid.BittyProxyAdminPool ||
+    id == eContractid.BittyProxyAdminWTL
   ) {
     await verifyEtherscanContract(
       instance.address,
       args,
-      "contracts/libraries/proxy/BendProxyAdmin.sol:BendProxyAdmin"
+      "contracts/libraries/proxy/BittyProxyAdmin.sol:BittyProxyAdmin"
     );
   } else {
     await verifyEtherscanContract(instance.address, args);

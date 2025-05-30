@@ -1,7 +1,7 @@
 import { task } from "hardhat/config";
 import { ConfigNames, getEmergencyAdmin, loadPoolConfig } from "../../helpers/configuration";
 import { MOCK_NFT_AGGREGATORS_PRICES, USD_ADDRESS } from "../../helpers/constants";
-import { deployBendUpgradeableProxy, deployNFTOracle } from "../../helpers/contracts-deployments";
+import { deployBittyUpgradeableProxy, deployNFTOracle } from "../../helpers/contracts-deployments";
 import {
   getIErc721Detailed,
   getLendPool,
@@ -70,12 +70,10 @@ task("oracle-admin:set-nft-assets", "Set new nft asset to oracle")
   });
 
 task("oracle-admin:set-price-feed-admin", "Doing oracle admin task")
-  .addParam("pool", `Pool name to retrieve configuration, supported: ${Object.values(ConfigNames)}`)
   .addParam("feedAdmin", "Address of price feed")
-  .setAction(async ({ pool, feedAdmin }, DRE) => {
+  .setAction(async ({ feedAdmin }, DRE) => {
     await DRE.run("set-DRE");
 
-    const poolConfig = loadPoolConfig(pool);
     const addressesProvider = await getLendPoolAddressesProvider();
 
     const nftOracleProxy = await getNFTOracle(await addressesProvider.getNFTOracle());
@@ -124,7 +122,9 @@ task("oracle-admin:add-usd-eth-asset", "Doing oracle admin task")
 
     const aggregators = getParamPerNetwork(poolConfig.ReserveAggregators, network);
 
-    await waitForTx(await oracle.connect(ownerSigner).addAggregator(USD_ADDRESS, aggregators["USD"]));
+    // await waitForTx(await oracle.connect(ownerSigner).addAggregator(USD_ADDRESS, aggregators["USD"]));
+    await waitForTx(await oracle.connect(ownerSigner).addAggregator('0x7169d38820dfd117c3fa1f22a697dba58d90ba06', '0x694AA1769357215DE4FAC081bf1f309aDC325306'));
+    await waitForTx(await oracle.connect(ownerSigner).addAggregator('0x7169d38820dfd117c3fa1f22a697dba58d90ba06', '0x694AA1769357215DE4FAC081bf1f309aDC325306'));
 
     const price = await oracle.getAssetPrice(USD_ADDRESS);
     console.log("ETH-USD price:", price.toString());

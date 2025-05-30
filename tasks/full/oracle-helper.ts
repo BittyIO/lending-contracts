@@ -4,18 +4,18 @@ import {
   insertContractAddressInDb,
   tryGetContractAddressInDb,
 } from "../../helpers/contracts-helpers";
-import { deployBendUpgradeableProxy, deployChainlinkAggregatorHelper } from "../../helpers/contracts-deployments";
+import { deployBittyUpgradeableProxy, deployChainlinkAggregatorHelper } from "../../helpers/contracts-deployments";
 import { eNetwork, eContractid } from "../../helpers/types";
 import { waitForTx, notFalsyOrZeroAddress } from "../../helpers/misc-utils";
 import { ConfigNames, loadPoolConfig } from "../../helpers/configuration";
 import {
-  getBendProxyAdminById,
-  getBendUpgradeableProxy,
+  getBittyProxyAdminById,
+  getBittyUpgradeableProxy,
   getChainlinkAggregatorHelper,
   getChainlinkAggregatorHelperImpl,
   getLendPoolAddressesProvider,
 } from "../../helpers/contracts-getters";
-import { BendUpgradeableProxy, ChainlinkAggregatorHelper } from "../../types";
+import { BittyUpgradeableProxy, ChainlinkAggregatorHelper } from "../../types";
 
 task("dev:deploy-aggregator-helper", "Deploy aggregator helper for dev enviroment")
   .addFlag("verify", "Verify contracts at Etherscan")
@@ -31,7 +31,7 @@ task("dev:deploy-aggregator-helper", "Deploy aggregator helper for dev enviromen
       const addressProvider = await getLendPoolAddressesProvider();
       const aggHelperAddress = await tryGetContractAddressInDb(eContractid.ChainlinkAggregatorHelper);
 
-      const proxyAdmin = await getBendProxyAdminById(eContractid.BendProxyAdminPool);
+      const proxyAdmin = await getBittyProxyAdminById(eContractid.BittyProxyAdminPool);
       const proxyOwnerAddress = await proxyAdmin.owner();
 
       const aggHelperImpl = await deployChainlinkAggregatorHelper([], verify);
@@ -39,14 +39,14 @@ task("dev:deploy-aggregator-helper", "Deploy aggregator helper for dev enviromen
       const initEncodedData = aggHelperImpl.interface.encodeFunctionData("initialize", [addressProvider.address]);
 
       let aggHelper: ChainlinkAggregatorHelper;
-      let aggHelperProxy: BendUpgradeableProxy;
+      let aggHelperProxy: BittyUpgradeableProxy;
 
       if (aggHelperAddress != undefined && notFalsyOrZeroAddress(aggHelperAddress)) {
         console.log("Upgrading exist aggregator helper proxy to new implementation...");
 
         await insertContractAddressInDb(eContractid.ChainlinkAggregatorHelper, aggHelperAddress);
 
-        aggHelperProxy = await getBendUpgradeableProxy(aggHelperAddress);
+        aggHelperProxy = await getBittyUpgradeableProxy(aggHelperAddress);
         // only proxy admin can do upgrading
         const ownerSigner = DRE.ethers.provider.getSigner(proxyOwnerAddress);
         await waitForTx(await proxyAdmin.connect(ownerSigner).upgrade(aggHelperProxy.address, aggHelperImpl.address));
@@ -55,7 +55,7 @@ task("dev:deploy-aggregator-helper", "Deploy aggregator helper for dev enviromen
       } else {
         console.log("Deploying new aggregator helper proxy & implementation...");
 
-        aggHelperProxy = await deployBendUpgradeableProxy(
+        aggHelperProxy = await deployBittyUpgradeableProxy(
           eContractid.ChainlinkAggregatorHelper,
           proxyAdmin.address,
           aggHelperImpl.address,

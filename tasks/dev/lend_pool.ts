@@ -4,7 +4,7 @@ import {
   deployLendPool,
   deployLendPoolConfigurator,
   deployLendPoolLoan,
-  deployBendLibraries,
+  deployBittyLibraries,
 } from "../../helpers/contracts-deployments";
 import { eContractid } from "../../helpers/types";
 import { waitForTx } from "../../helpers/misc-utils";
@@ -31,7 +31,7 @@ task("dev:deploy-lend-pool", "Deploy lend pool for dev enviroment")
 
     ////////////////////////////////////////////////////////////////////////////
     console.log("Deploying new libraries implementation...");
-    await deployBendLibraries(verify);
+    await deployBittyLibraries(verify);
 
     // deploy lend pool
     const lendPoolImpl = await deployLendPool(verify);

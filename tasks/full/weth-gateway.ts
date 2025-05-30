@@ -1,17 +1,17 @@
 import { task } from "hardhat/config";
 import { loadPoolConfig, ConfigNames, getWrappedNativeTokenAddress } from "../../helpers/configuration";
 import { ADDRESS_ID_WETH_GATEWAY } from "../../helpers/constants";
-import { deployBendUpgradeableProxy, deployWETHGateway } from "../../helpers/contracts-deployments";
+import { deployBittyUpgradeableProxy, deployWETHGateway } from "../../helpers/contracts-deployments";
 import {
-  getBendProxyAdminById,
-  getBendUpgradeableProxy,
+  getBittyProxyAdminById,
+  getBittyUpgradeableProxy,
   getLendPoolAddressesProvider,
   getWETHGateway,
 } from "../../helpers/contracts-getters";
 import { insertContractAddressInDb } from "../../helpers/contracts-helpers";
 import { notFalsyOrZeroAddress, waitForTx } from "../../helpers/misc-utils";
 import { eContractid, eNetwork } from "../../helpers/types";
-import { BendUpgradeableProxy, WETHGateway } from "../../types";
+import { BittyUpgradeableProxy, WETHGateway } from "../../types";
 
 task(`full:deploy-weth-gateway`, `Deploys the WETHGateway contract`)
   .addParam("pool", `Pool name to retrieve configuration, supported: ${Object.values(ConfigNames)}`)
@@ -27,7 +27,7 @@ task(`full:deploy-weth-gateway`, `Deploys the WETHGateway contract`)
     const poolConfig = loadPoolConfig(pool);
     const addressesProvider = await getLendPoolAddressesProvider();
 
-    const proxyAdmin = await getBendProxyAdminById(eContractid.BendProxyAdminPool);
+    const proxyAdmin = await getBittyProxyAdminById(eContractid.BittyProxyAdminPool);
     if (proxyAdmin == undefined || !notFalsyOrZeroAddress(proxyAdmin.address)) {
       throw Error("Invalid pool proxy admin in config");
     }
@@ -44,7 +44,7 @@ task(`full:deploy-weth-gateway`, `Deploys the WETHGateway contract`)
     ]);
 
     let wethGateWay: WETHGateway;
-    let wethGatewayProxy: BendUpgradeableProxy;
+    let wethGatewayProxy: BittyUpgradeableProxy;
 
     const wethGatewayAddress = undefined; //await addressesProvider.getAddress(ADDRESS_ID_WETH_GATEWAY);
 
@@ -52,7 +52,7 @@ task(`full:deploy-weth-gateway`, `Deploys the WETHGateway contract`)
       console.log("Upgrading exist WETHGateway proxy to new implementation...");
 
       await insertContractAddressInDb(eContractid.WETHGateway, wethGatewayAddress);
-      wethGatewayProxy = await getBendUpgradeableProxy(wethGatewayAddress);
+      wethGatewayProxy = await getBittyUpgradeableProxy(wethGatewayAddress);
 
       // only proxy admin can do upgrading
       await waitForTx(
@@ -62,7 +62,7 @@ task(`full:deploy-weth-gateway`, `Deploys the WETHGateway contract`)
       wethGateWay = await getWETHGateway(wethGatewayProxy.address);
     } else {
       console.log("Deploying new WETHGateway proxy & implementation...");
-      const wethGatewayProxy = await deployBendUpgradeableProxy(
+      const wethGatewayProxy = await deployBittyUpgradeableProxy(
         eContractid.WETHGateway,
         proxyAdmin.address,
         wethGatewayImpl.address,

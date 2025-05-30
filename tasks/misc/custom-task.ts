@@ -17,7 +17,7 @@ import {
 import {
   getAllMockedNfts,
   getAllMockedTokens,
-  getBendProtocolDataProvider,
+  getBittyProtocolDataProvider,
   getBToken,
   getCryptoPunksMarket,
   getDebtToken,
@@ -273,8 +273,8 @@ task("dev:borrow-eth-using-punk", "Doing custom task")
 
     let amountDecimals: BigNumberish;
     if (amount == "-1") {
-      const bendDataProvider = await getBendProtocolDataProvider(await addressesProvider.getBendDataProvider());
-      const wethResData = await bendDataProvider.getReserveData(weth.address);
+      const bittyDataProvider = await getBittyProtocolDataProvider(await addressesProvider.getBittyDataProvider());
+      const wethResData = await bittyDataProvider.getReserveData(weth.address);
       console.log("WETH Available Liquidity:", wethResData.availableLiquidity.toString());
       amountDecimals = wethResData.availableLiquidity;
     } else {
@@ -355,8 +355,8 @@ task("dev:repay-eth-using-punk", "Doing repay task")
 
     let amountDecimals: BigNumberish;
     if (amount == "-1") {
-      const bendDataProvider = await getBendProtocolDataProvider(await addressesProvider.getBendDataProvider());
-      const loanData = await bendDataProvider.getLoanDataByCollateral(wpunk.address, id);
+      const bittyDataProvider = await getBittyProtocolDataProvider(await addressesProvider.getBittyDataProvider());
+      const loanData = await bittyDataProvider.getLoanDataByCollateral(wpunk.address, id);
       console.log("Loan Borrow Amount:", loanData.currentAmount.toString());
       amountDecimals = new BigNumber(loanData.currentAmount.toString()).multipliedBy(1.1).toFixed(0);
     } else {
@@ -389,8 +389,8 @@ task("dev:repay-eth-using-erc721", "Doing repay task")
 
     let amountDecimals: BigNumberish;
     if (amount == "-1" || amount == "0") {
-      const bendDataProvider = await getBendProtocolDataProvider(await addressesProvider.getBendDataProvider());
-      const loanData = await bendDataProvider.getLoanDataByCollateral(token, id);
+      const bittyDataProvider = await getBittyProtocolDataProvider(await addressesProvider.getBittyDataProvider());
+      const loanData = await bittyDataProvider.getLoanDataByCollateral(token, id);
       console.log("Loan Borrow Amount:", loanData.currentAmount.toString());
       amountDecimals = loanData.currentAmount;
     } else {
@@ -409,7 +409,7 @@ task("dev:debt-approve-delegate", "Doing custom task")
     const network = DRE.network.name as eNetwork;
     const poolConfig = loadPoolConfig(pool);
     const addressesProvider = await getLendPoolAddressesProvider();
-    const bendDataProvider = await getBendProtocolDataProvider();
+    const bittyDataProvider = await getBittyProtocolDataProvider();
 
     const signer = await getDeploySigner();
 
@@ -417,7 +417,7 @@ task("dev:debt-approve-delegate", "Doing custom task")
 
     console.log("WETHGateway:", wethGateway.address);
 
-    const reserveToken = await bendDataProvider.getReserveTokenData(asset);
+    const reserveToken = await bittyDataProvider.getReserveTokenData(asset);
     const debToken = await getDebtToken(reserveToken.debtTokenAddress);
 
     console.log(
@@ -441,7 +441,7 @@ task("dev:print-ui-reserve-data", "Doing custom task")
     const network = DRE.network.name as eNetwork;
     const poolConfig = loadPoolConfig(pool);
     const addressesProvider = await getLendPoolAddressesProvider();
-    const dataProvider = await getBendProtocolDataProvider();
+    const dataProvider = await getBittyProtocolDataProvider();
     const uiProvider = await getUIPoolDataProvider();
 
     console.log("--------------------------------------------------------------------------------");
@@ -464,7 +464,7 @@ task("dev:print-ui-nft-data", "Doing custom task")
     const network = DRE.network.name as eNetwork;
     const poolConfig = loadPoolConfig(pool);
     const addressesProvider = await getLendPoolAddressesProvider();
-    const dataProvider = await getBendProtocolDataProvider();
+    const dataProvider = await getBittyProtocolDataProvider();
     const uiProvider = await getUIPoolDataProvider();
 
     console.log("--------------------------------------------------------------------------------");

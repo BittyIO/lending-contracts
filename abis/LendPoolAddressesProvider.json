@@ -64,7 +64,7 @@
         "type": "address"
       }
     ],
-    "name": "BendDataProviderUpdated",
+    "name": "BittyDataProviderUpdated",
     "type": "event"
   },
   {
@@ -300,7 +300,7 @@
   },
   {
     "inputs": [],
-    "name": "getBendDataProvider",
+    "name": "getBittyDataProvider",
     "outputs": [
       {
         "internalType": "address",
@@ -555,7 +555,7 @@
         "type": "address"
       }
     ],
-    "name": "setBendDataProvider",
+    "name": "setBittyDataProvider",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

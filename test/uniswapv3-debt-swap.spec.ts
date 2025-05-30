@@ -13,7 +13,7 @@ import { configuration as actionsConfiguration } from "./helpers/actions";
 import { configuration as calculationsConfiguration } from "./helpers/utils/calculations";
 import BigNumber from "bignumber.js";
 import { getReservesConfigByPool } from "../helpers/configuration";
-import { BendPools, iBendPoolAssets, IReserveParams } from "../helpers/types";
+import { BittyPools, iBittyPoolAssets, IReserveParams } from "../helpers/types";
 import { waitForTx } from "../helpers/misc-utils";
 import {
   MockAaveLendPool,
@@ -47,8 +47,8 @@ makeSuite("Adapter: Uniswap v3 debt swap test cases", (testEnv: TestEnv) => {
 
     actionsConfiguration.skipIntegrityCheck = false; //set this to true to execute solidity-coverage
 
-    calculationsConfiguration.reservesParams = <iBendPoolAssets<IReserveParams>>(
-      getReservesConfigByPool(BendPools.proto)
+    calculationsConfiguration.reservesParams = <iBittyPoolAssets<IReserveParams>>(
+      getReservesConfigByPool(BittyPools.proto)
     );
 
     mockAaveAddressProvider = await new MockAaveLendPoolAddressesProviderFactory(testEnv.deployer.signer).deploy();

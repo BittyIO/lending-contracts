@@ -1,7 +1,7 @@
 import { task } from "hardhat/config";
 import { ConfigNames, getEmergencyAdmin, getGenesisPoolAdmin, loadPoolConfig } from "../../helpers/configuration";
 import {
-  getBendProtocolDataProvider,
+  getBittyProtocolDataProvider,
   getLendPool,
   getLendPoolAddressesProvider,
   getLendPoolConfiguratorProxy,
@@ -104,9 +104,9 @@ task("pool-admin:set-reserve-active", "Doing Reserve active task")
       await addressesProvider.getLendPoolConfigurator()
     );
 
-    const bendDataProvider = await getBendProtocolDataProvider(await addressesProvider.getBendDataProvider());
+    const bittyDataProvider = await getBittyProtocolDataProvider(await addressesProvider.getBittyDataProvider());
 
-    const reserveConfig = await bendDataProvider.getReserveConfigurationData(asset);
+    const reserveConfig = await bittyDataProvider.getReserveConfigurationData(asset);
     const currentState = reserveConfig.isActive;
     console.log("Reserve Current Active State:", currentState);
 
@@ -121,7 +121,7 @@ task("pool-admin:set-reserve-active", "Doing Reserve active task")
       await waitForTx(await lendPoolConfiguratorProxy.connect(pmAdmin).deactivateReserve(asset));
     }
 
-    const newReserveConfig = await bendDataProvider.getReserveConfigurationData(asset);
+    const newReserveConfig = await bittyDataProvider.getReserveConfigurationData(asset);
     console.log("Reserve New Active State:", newReserveConfig.isActive);
   });
 
@@ -145,9 +145,9 @@ task("pool-admin:set-reserve-frozen", "Doing Reserve frozen task")
       await addressesProvider.getLendPoolConfigurator()
     );
 
-    const bendDataProvider = await getBendProtocolDataProvider(await addressesProvider.getBendDataProvider());
+    const bittyDataProvider = await getBittyProtocolDataProvider(await addressesProvider.getBittyDataProvider());
 
-    const reserveConfig = await bendDataProvider.getReserveConfigurationData(asset);
+    const reserveConfig = await bittyDataProvider.getReserveConfigurationData(asset);
     const currentState = reserveConfig.isFrozen;
     console.log("Reserve Current Frozen State:", currentState);
 
@@ -162,7 +162,7 @@ task("pool-admin:set-reserve-frozen", "Doing Reserve frozen task")
       await waitForTx(await lendPoolConfiguratorProxy.connect(pmAdmin).unfreezeReserve(asset));
     }
 
-    const newReserveConfig = await bendDataProvider.getReserveConfigurationData(asset);
+    const newReserveConfig = await bittyDataProvider.getReserveConfigurationData(asset);
     console.log("Reserve New Frozen State:", newReserveConfig.isFrozen);
   });
 
@@ -186,9 +186,9 @@ task("pool-admin:set-nft-active", "Doing NFT active task")
       await addressesProvider.getLendPoolConfigurator()
     );
 
-    const bendDataProvider = await getBendProtocolDataProvider(await addressesProvider.getBendDataProvider());
+    const bittyDataProvider = await getBittyProtocolDataProvider(await addressesProvider.getBittyDataProvider());
 
-    const curNftConfig = await bendDataProvider.getNftConfigurationData(asset);
+    const curNftConfig = await bittyDataProvider.getNftConfigurationData(asset);
     const currentState = curNftConfig.isActive;
     console.log("NFT Current Active State:", currentState);
 
@@ -203,7 +203,7 @@ task("pool-admin:set-nft-active", "Doing NFT active task")
       await waitForTx(await lendPoolConfiguratorProxy.connect(pmAdmin).deactivateNft(asset));
     }
 
-    const newNftConfig = await bendDataProvider.getNftConfigurationData(asset);
+    const newNftConfig = await bittyDataProvider.getNftConfigurationData(asset);
     console.log("NFT New Active State:", newNftConfig.isActive);
   });
 
@@ -227,9 +227,9 @@ task("pool-admin:set-nft-frozen", "Doing NFT frozen task")
       await addressesProvider.getLendPoolConfigurator()
     );
 
-    const bendDataProvider = await getBendProtocolDataProvider(await addressesProvider.getBendDataProvider());
+    const bittyDataProvider = await getBittyProtocolDataProvider(await addressesProvider.getBittyDataProvider());
 
-    const curNftConfig = await bendDataProvider.getNftConfigurationData(asset);
+    const curNftConfig = await bittyDataProvider.getNftConfigurationData(asset);
     const currentState = curNftConfig.isFrozen;
     console.log("NFT Current Frozen State:", currentState);
 
@@ -244,6 +244,6 @@ task("pool-admin:set-nft-frozen", "Doing NFT frozen task")
       await waitForTx(await lendPoolConfiguratorProxy.connect(pmAdmin).unfreezeNft(asset));
     }
 
-    const newNftConfig = await bendDataProvider.getNftConfigurationData(asset);
+    const newNftConfig = await bittyDataProvider.getNftConfigurationData(asset);
     console.log("NFT New Frozen State:", newNftConfig.isFrozen);
   });

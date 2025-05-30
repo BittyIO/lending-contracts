@@ -5,7 +5,7 @@ import {
   getDebtToken,
   getInterestRate,
   getLendPoolAddressesProvider,
-  getBendUpgradeableProxy,
+  getBittyUpgradeableProxy,
   getLendPool,
   getLendPoolConfiguratorProxy,
   getUIPoolDataProvider,
@@ -62,7 +62,7 @@ task("verify:reserves", "Verify reserves contracts at Etherscan")
         await bTokenContract.name(),
         await bTokenContract.symbol(),
       ]);
-      await verifyContract(eContractid.BendUpgradeableProxy, await getBendUpgradeableProxy(bTokenAddress), [
+      await verifyContract(eContractid.BittyUpgradeableProxy, await getBittyUpgradeableProxy(bTokenAddress), [
         bTokenImpl.address,
         lendPoolConfigurator.address,
         bTokenInitEncodeData,
@@ -77,7 +77,7 @@ task("verify:reserves", "Verify reserves contracts at Etherscan")
         await bTokenContract.symbol(),
       ]);
       console.log("\n- Verifying debtToken proxy...\n");
-      await verifyContract(eContractid.BendUpgradeableProxy, await getBendUpgradeableProxy(debtTokenAddress), [
+      await verifyContract(eContractid.BittyUpgradeableProxy, await getBittyUpgradeableProxy(debtTokenAddress), [
         debtTokenImpl.address,
         lendPoolConfigurator.address,
         debtTokenInitEncodeData,

@@ -14,7 +14,7 @@ const okErrors = [`Contract source code already verified`, `Already Verified`];
 
 const unableVerifyError = "Fail - Unable to verify";
 
-export const SUPPORTED_ETHERSCAN_NETWORKS = ["main", "ropsten", "goerli", "rinkeby"];
+export const SUPPORTED_ETHERSCAN_NETWORKS = ["main", "ropsten", "goerli", "rinkeby", "sepolia"];
 
 function delay(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -61,7 +61,9 @@ export const verifyEtherscanContract = async (
       relatedSources: true,
     };
     await runTaskWithRetry("verify:verify", params, times, msDelay, cleanup);
-  } catch (error) {}
+  } catch (error) {
+    console.error("[ETHERSCAN][ERROR] Fatal error detected", error.message);
+  }
 };
 
 export const runTaskWithRetry = async (
@@ -73,7 +75,6 @@ export const runTaskWithRetry = async (
 ) => {
   let counter = times;
   await delay(msDelay);
-
   try {
     if (times > 1) {
       await DRE.run(task, params);

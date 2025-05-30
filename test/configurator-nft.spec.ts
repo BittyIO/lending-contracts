@@ -2,7 +2,7 @@ import { TestEnv, makeSuite } from "./helpers/make-suite";
 import { APPROVAL_AMOUNT_LENDING_POOL, RAY } from "../helpers/constants";
 import { convertToCurrencyDecimals } from "../helpers/contracts-helpers";
 import { ProtocolErrors } from "../helpers/types";
-import { strategyNftClassB } from "../markets/bend/nftsConfigs";
+import { strategyNftClassB } from "../markets/bitty/nftsConfigs";
 import { BigNumberish } from "ethers";
 import { waitForTx } from "../helpers/misc-utils";
 
