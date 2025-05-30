@@ -1,16 +1,3 @@
-[![Build pass](https://github.com/bitty/bitty-lending-protocol/actions/workflows/node.js.yml/badge.svg)](https://github.com/bitty/bitty-lending-protocol/actions/workflows/node.js.yml)
-[![codecov](https://codecov.io/gh/bitty/bitty-lending-protocol/branch/main/graph/badge.svg?token=Z4Y9S158JS)](https://codecov.io/gh/bitty/bitty-lending-protocol)
-
-```
-######                       ######     #    ####### 
-#     # ###### #    # #####  #     #   # #   #     # 
-#     # #      ##   # #    # #     #  #   #  #     # 
-######  #####  # #  # #    # #     # #     # #     # 
-#     # #      #  # # #    # #     # ####### #     # 
-#     # #      #   ## #    # #     # #     # #     # 
-######  ###### #    # #####  ######  #     # ####### 
-```
-
 # bitty Lending Protocol
 
 This repository contains the smart contracts source code and markets configuration for bitty Lending Protocol. The repository uses Hardhat as development environment for compilation, testing and deployment tasks.
@@ -19,53 +6,11 @@ This repository contains the smart contracts source code and markets configurati
 
 bitty Lending Protocol is a decentralized non-custodial NFT lending protocol where users can participate as depositors or borrowers. Depositors provide liquidity to the market to earn a passive income, while borrowers are able to borrow in an overcollateralized fashion, using NFTs as collateral.
 
-## Documentation
-
-The documentation of bitty Lending Protocol is in the following [bitty documentation](https://docs.bitty.xyz) link. At the documentation you can learn more about the protocol, see the contract interfaces, integration guides and audits.
-
-For getting the latest contracts addresses, please check the [Deployed contracts](https://docs.bitty.xyz/developers/deployed-contracts) page at the documentation to stay up to date.
-
-## Audits
-1. [Verilog Solutions Online Report](https://hackmd.io/@verilog/bitty-audit).
-2. [Certik Online Report](https://www.certik.com/projects/bitty-dao).
 
 ## Thanks
-bitty lending protocol refers to the architecture design and adopts some of the code of [AAVE](https://github.com/aave).
-We are very grateful to AAVE for providing us with an excellent DeFi platform.
+bitty lending protocol fork from [bend-lending-protocol](https://github.com/BendDAO/bend-lending-protocol) and refers to the architecture design and adopts some of the code of [AAVE](https://github.com/aave).
+We are very grateful to BEND and AAVE for providing us with an excellent DeFi platform.
 
-## Connect with the community
-
-You can join at the [Discord](https://discord.gg/bitty) channel or at the [Governance](https://snapshot.org/#/bitty.eth) for asking questions about the protocol or talk about bitty with other peers.
-
-## Getting Started
-
-You can install `@bitty/bitty-protocol` as an NPM package in your Hardhat, Buidler or Truffle project to import the contracts and interfaces:
-
-`npm install @bitty/bitty-protocol`
-
-Import at Solidity files:
-
-```
-import {ILendPool} from "@bitty/bitty-protocol/contracts/interfaces/ILendPool.sol";
-
-contract Misc {
-
-  function deposit(address pool, address token, address user, uint256 amount) public {
-    ILendPool(pool).deposit(token, amount, user, 0);
-    {...}
-  }
-}
-```
-
-The JSON artifacts with the ABI and Bytecode are also included into the bundled NPM package at `artifacts/` directory.
-
-Import JSON file via Node JS `require`:
-
-```
-const LendPoolArtifact = require('@bitty/bitty-protocol/artifacts/contracts/protocol/LendPool.sol/LendPool.json');
-
-// Log the ABI into console
-console.log(LendPoolArtifact.abi)
 ```
 
 ## Setup
