@@ -4,7 +4,7 @@ pragma solidity 0.8.4;
 /**
  * @title IAaveFlashLoanReceiver interface
  * @notice Interface for the Aave fee IFlashLoanReceiver.
- * @author Bend
+ * @author Bitty
  * @dev implement this interface to develop a flashloan-compatible flashLoanReceiver contract
  **/
 interface IAaveFlashLoanReceiver {
