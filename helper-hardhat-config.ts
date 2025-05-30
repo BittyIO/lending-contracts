@@ -1,12 +1,10 @@
 // @ts-ignore
-import { HardhatNetworkForkingUserConfig, HardhatUserConfig } from "hardhat/types";
+import { HardhatNetworkForkingUserConfig } from "hardhat/types";
 import { eEthereumNetwork, iParamsPerNetwork } from "./helpers/types";
 
 require("dotenv").config();
 
-const INFURA_KEY = process.env.INFURA_KEY || "";
 const ALCHEMY_KEY = process.env.ALCHEMY_KEY || "";
-const TENDERLY_FORK_ID = process.env.TENDERLY_FORK_ID || "";
 const FORK = process.env.FORK || "";
 const FORK_BLOCK_NUMBER = process.env.FORK_BLOCK_NUMBER ? parseInt(process.env.FORK_BLOCK_NUMBER) : 0;
 
@@ -26,18 +24,13 @@ export const buildForkConfig = (): HardhatNetworkForkingUserConfig | undefined =
 };
 
 export const NETWORKS_RPC_URL: iParamsPerNetwork<string> = {
-  [eEthereumNetwork.goerli]: ALCHEMY_KEY
-    ? `https://eth-goerli.alchemyapi.io/v2/${ALCHEMY_KEY}`
-    : `https://goerli.infura.io/v3/${INFURA_KEY}`,
-  [eEthereumNetwork.rinkeby]: ALCHEMY_KEY
-    ? `https://eth-rinkeby.alchemyapi.io/v2/${ALCHEMY_KEY}`
-    : `https://rinkeby.infura.io/v3/${INFURA_KEY}`,
-  [eEthereumNetwork.main]: ALCHEMY_KEY
-    ? `https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_KEY}`
-    : `https://mainnet.infura.io/v3/${INFURA_KEY}`,
+  [eEthereumNetwork.goerli]: `https://eth-goerli.g.alchemy.com/v2/${ALCHEMY_KEY}`,
+  [eEthereumNetwork.rinkeby]: `https://eth-rinkeby.g.alchemy.com/v2/${ALCHEMY_KEY}`,
+  [eEthereumNetwork.main]: `https://eth-mainnet.g.alchemy.com/v2/${ALCHEMY_KEY}`,
   [eEthereumNetwork.coverage]: "http://localhost:8555",
   [eEthereumNetwork.hardhat]: "http://localhost:8545",
   [eEthereumNetwork.localhost]: "http://localhost:8545",
+  [eEthereumNetwork.sepolia]: `https://eth-sepolia.g.alchemy.com/v2/${ALCHEMY_KEY}`,
 };
 
 export const NETWORKS_DEFAULT_GAS: iParamsPerNetwork<number> = {
@@ -47,6 +40,7 @@ export const NETWORKS_DEFAULT_GAS: iParamsPerNetwork<number> = {
   [eEthereumNetwork.coverage]: 65 * GWEI,
   [eEthereumNetwork.hardhat]: 65 * GWEI,
   [eEthereumNetwork.localhost]: 65 * GWEI,
+  [eEthereumNetwork.sepolia]: 1 * GWEI,
 };
 
 export const BLOCK_TO_FORK: iParamsPerNetwork<number | undefined> = {
@@ -56,4 +50,5 @@ export const BLOCK_TO_FORK: iParamsPerNetwork<number | undefined> = {
   [eEthereumNetwork.coverage]: 0,
   [eEthereumNetwork.hardhat]: 0,
   [eEthereumNetwork.localhost]: 0,
+  [eEthereumNetwork.sepolia]: 0,
 };

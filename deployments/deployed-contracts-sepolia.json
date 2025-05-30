@@ -1,0 +1,105 @@
+{
+  "BittyProxyAdminPool": {
+    "address": "0x0F881a5437a7bDf7823D152F91238cA115937595",
+    "deployer": "0x68e9f64887d634250B4Da6965b6802039Fe89934"
+  },
+  "BittyCollector": {
+    "address": "0xFe95c395c4EE4660be94Fb7Eb1AB4D6D3F34C0Aa",
+    "deployer": "0x68e9f64887d634250B4Da6965b6802039Fe89934"
+  },
+  "LendPoolAddressesProvider": {
+    "address": "0xb565f78104cD08FFe9d98e7801AfE9eB3539Df82",
+    "deployer": "0x68e9f64887d634250B4Da6965b6802039Fe89934"
+  },
+  "LendPoolAddressesProviderRegistry": {
+    "address": "0x34A50f63f679D83F6FDB7024B792D4F44c0b8c3F",
+    "deployer": "0x68e9f64887d634250B4Da6965b6802039Fe89934"
+  },
+  "ReserveLogic": {
+    "address": "0x9f99ACa0AE2A4cfE522332c1013d24Ea0299760b",
+    "deployer": "0x68e9f64887d634250B4Da6965b6802039Fe89934"
+  },
+  "GenericLogic": {
+    "address": "0xd87B2778C6a9406D6E4B0b5784a9c747925F5373",
+    "deployer": "0x68e9f64887d634250B4Da6965b6802039Fe89934"
+  },
+  "NftLogic": {
+    "address": "0x4F5ed352b925b111E19f5453A1Bf952855173dd8",
+    "deployer": "0x68e9f64887d634250B4Da6965b6802039Fe89934"
+  },
+  "ValidationLogic": {
+    "address": "0xba3bb974562a9F00F2615041D5Bc8b1bd30FCeb1",
+    "deployer": "0x68e9f64887d634250B4Da6965b6802039Fe89934"
+  },
+  "SupplyLogic": {
+    "address": "0xA124dcd0b1Fb5587D7F435BbE9981839652312d2",
+    "deployer": "0x68e9f64887d634250B4Da6965b6802039Fe89934"
+  },
+  "BorrowLogic": {
+    "address": "0xa126a8b060bc77DA010999Cf59883f2EB927B69d",
+    "deployer": "0x68e9f64887d634250B4Da6965b6802039Fe89934"
+  },
+  "LiquidateLogic": {
+    "address": "0x6CfB249F9a58A8c271d4f0FBD42e7959ff472A49",
+    "deployer": "0x68e9f64887d634250B4Da6965b6802039Fe89934"
+  },
+  "ConfiguratorLogic": {
+    "address": "0x3F6B9cDf106233E8fA2018344f91BA6202D9500C",
+    "deployer": "0x68e9f64887d634250B4Da6965b6802039Fe89934"
+  },
+  "LendPool": {
+    "address": "0xDb3C37783d26a4fFf1dA6aB9b9Cc5FB194526A8f"
+  },
+  "LendPoolLoan": {
+    "address": "0xA5199146Cc0C1E2cc2dCDb2C5D516abf27499863"
+  },
+  "LendPoolConfigurator": {
+    "address": "0x752BD08671525cBff7FB2175E072B53f69Df79Ad"
+  },
+  "BToken": {
+    "address": "0x89B34B3e22F493e36c6e077eaC9D9dca85F6EB27",
+    "deployer": "0x68e9f64887d634250B4Da6965b6802039Fe89934"
+  },
+  "DebtToken": {
+    "address": "0x879CF55209675a7bc4dD882419994855E7dddcAE",
+    "deployer": "0x68e9f64887d634250B4Da6965b6802039Fe89934"
+  },
+  "ReserveOracle": {
+    "address": "0x69ee3E414D91cF7C1d332aEca8e81162c5bE21f8",
+    "deployer": "0x68e9f64887d634250B4Da6965b6802039Fe89934"
+  },
+  "NFTOracle": {
+    "address": "0xe6f42e118195521622ed885C81a1347b445606d1",
+    "deployer": "0x68e9f64887d634250B4Da6965b6802039Fe89934"
+  },
+  "InterestRate": {
+    "address": "0x9A2D2F4C8265E6D3c999E65B4D99c56198B500e2",
+    "deployer": "0x68e9f64887d634250B4Da6965b6802039Fe89934"
+  },
+  "rateStrategyWETH": {
+    "address": "0x091fF3578c09102a170C1b5a0C195403461b55FB"
+  },
+  "rateStrategyStableThree": {
+    "address": "0x9A2D2F4C8265E6D3c999E65B4D99c56198B500e2"
+  },
+  "WETHGateway": {
+    "address": "0x8fBbfEa0619760ebdb9aEC9c2fcCff1552CC38aB",
+    "deployer": "0x68e9f64887d634250B4Da6965b6802039Fe89934"
+  },
+  "WalletBalanceProvider": {
+    "address": "0xCEcc6711a06F5489fEF4933b2c83cA2157Ad51dC",
+    "deployer": "0x68e9f64887d634250B4Da6965b6802039Fe89934"
+  },
+  "BittyProtocolDataProvider": {
+    "address": "0x07b7aBD93190DAf16277689c994F0186aDb5a844",
+    "deployer": "0x68e9f64887d634250B4Da6965b6802039Fe89934"
+  },
+  "UIPoolDataProvider": {
+    "address": "0x081b0fdC00547255Fd214c0229490397D63B110c",
+    "deployer": "0x68e9f64887d634250B4Da6965b6802039Fe89934"
+  },
+  "PunkGateway": {
+    "address": "0x1a7afb94762DEC4BeB037f1334Aa6B3FFa461311",
+    "deployer": "0x68e9f64887d634250B4Da6965b6802039Fe89934"
+  }
+}
