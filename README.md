@@ -1,15 +1,15 @@
-# bitty Lending Protocol
+# Bitty Lending Protocol
 
 This repository contains the smart contracts source code and markets configuration for bitty Lending Protocol. The repository uses Hardhat as development environment for compilation, testing and deployment tasks.
 
-## What is bitty Lending Protocol?
+## What is Bitty Lending Protocol?
 
-bitty Lending Protocol is a decentralized non-custodial NFT lending protocol where users can participate as depositors or borrowers. Depositors provide liquidity to the market to earn a passive income, while borrowers are able to borrow in an overcollateralized fashion, using NFTs as collateral.
+Bitty Lending Protocol is a decentralized non-custodial NFT lending protocol where users can participate as depositors or borrowers. Depositors provide liquidity to the market to earn a passive income, while borrowers are able to borrow in an overcollateralized fashion, using NFTs as collateral.
 
 
 ## Thanks
-bitty lending protocol fork from [bend-lending-protocol](https://github.com/BendDAO/bend-lending-protocol) and refers to the architecture design and adopts some of the code of [AAVE](https://github.com/aave).
-We are very grateful to BEND and AAVE for providing us with an excellent DeFi platform.
+Bitty lending protocol fork from [bend-lending-protocol](https://github.com/BendDAO/bend-lending-protocol) and refers to the architecture design and adopts some of the code of [AAVE](https://github.com/aave),
+Thanks AAVE and BendDAO for the opensouce spirit & code.
 
 ```
 
@@ -137,10 +137,10 @@ const contractGetters = require('./helpers/contracts-getters');
 const signer = await contractGetters.getFirstSigner();
 
 // Lend pool instance
-const lendPool = await contractGetters.getLendPool("0x3AF6fC17EbD751E4D11F5A1d6823b2aE64723B87");
+const lendPool = await contractGetters.getLendPool("0xAddress");
 
 // ERC20 token WETH Mainnet instance
-const WETH = await contractGetters.getIErc20Detailed("0xbe4d36E2C69Aa9658e937f6cC584E60167484381");
+const WETH = await contractGetters.getIErc20Detailed("0xAddress");
 
 // Approve 10 WETH to LendPool address
 await WETH.connect(signer).approve(lendPool.address, ethers.utils.parseUnits('10'));
@@ -178,16 +178,16 @@ npx solhint 'contracts/**/*.sol' --fix
 
 ## Etherscan verification
 
-To try out Etherscan verification, you first need to deploy a contract to an Ethereum network that's supported by Etherscan, such as Ropsten.
+To try out Etherscan verification, you first need to deploy a contract to an Ethereum network that's supported by Etherscan, such as Sepolia.
 
-In this project, copy the .env.template file to a file named .env, and then edit it to fill in the details. Enter your Etherscan API key, your Ropsten node URL (eg from Alchemy), and the private key of the account which will send the deployment transaction. With a valid .env file in place, first deploy your contract:
+In this project, copy the .env.template file to a file named .env, and then edit it to fill in the details. Enter your Etherscan API key, your Sepolia node URL (eg from Alchemy), and the private key of the account which will send the deployment transaction. With a valid .env file in place, first deploy your contract:
 
 ```shell
-hardhat run --network ropsten scripts/deploy.js
+hardhat run --network sepolia scripts/deploy.js
 ```
 
 Then, copy the deployment address and paste it in to replace `DEPLOYED_CONTRACT_ADDRESS` in this command:
 
 ```shell
-npx hardhat verify --network ropsten DEPLOYED_CONTRACT_ADDRESS "Hello, Hardhat!"
+npx hardhat verify --network sepolia DEPLOYED_CONTRACT_ADDRESS "Hello, Hardhat!"
 ```
