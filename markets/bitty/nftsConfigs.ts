@@ -150,6 +150,33 @@ export const strategyNft_WKODA: INftParams = {
   maxTokenId: "99999",
 };
 
+export const strategyNft_MIL: INftParams = {
+  ...strategyNftClassB,
+  maxSupply: "10000",
+  maxTokenId: "9999",
+};
+
+export const strategyNft_PUDGY: INftParams = {
+  ...strategyNftClassB,
+  maxSupply: "8888",
+  maxTokenId: "8887",
+};
+
+export const strategyNft_LILP: INftParams = {
+  ...strategyNftClassB,
+  maxSupply: "21905",
+  maxTokenId: "21904",
+};
+
+export const strategyNft_MFER: INftParams = {
+  ...strategyNftClassB,
+  maxSupply: "10021",
+  maxTokenId: "10020",
+};
+
+
+
+
 export const strategyNftParams: SymbolMap<INftParams> = {
   ClassA: strategyNftClassA,
   ClassB: strategyNftClassB,

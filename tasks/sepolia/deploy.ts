@@ -83,7 +83,12 @@ import { ICommonConfiguration, eContractid, eNetwork, tEthereumAddress } from ".
 import {
   strategyNft_AZUKI,
   strategyNft_BAYC,
+  strategyNft_LILP,
   strategyNft_MAYC,
+  strategyNft_MEEBITS,
+  strategyNft_MFER,
+  strategyNft_MIL,
+  strategyNft_PUDGY,
   strategyNft_WPUNKS
 } from "../../markets/bitty/nftsConfigs";
 import { strategyUSDC, strategyUSDT, strategyWETH } from "../../markets/bitty/reservesConfigs";
@@ -457,6 +462,11 @@ task("sepolia:config-nfts", "")
       BAYC: strategyNft_BAYC,
       MAYC: strategyNft_MAYC,
       AZUKI: strategyNft_AZUKI,
+      MEEBITS: strategyNft_MEEBITS,
+      MIL: strategyNft_MIL,
+      PUDGY: strategyNft_PUDGY,
+      MFER: strategyNft_MFER,
+      LILP: strategyNft_LILP,
     };
     const nftsAssets = getParamPerNetwork(poolConfig.NftsAssets, network);
     if (!nftsAssets) {
@@ -469,7 +479,6 @@ task("sepolia:config-nfts", "")
 
 export const deployWETHGateway = async (verify?: boolean) => {
   const wethImpl = await new WETHGatewayFactory(await getDeploySigner()).deploy();
-  await insertContractAddressInDb(<eContractid>"WETHGatewayImpl", wethImpl.address);
   return withSaveAndVerify(wethImpl, "WETHGateway", [], verify);
 };
 
@@ -578,6 +587,19 @@ task("sepolia:deploy-data-provider", "Deploy data provider for full enviroment")
     }
   });
 
+task("sepolia:update-reserve-tokens", "Update reserve tokens")
+  .setAction(async ({ }, { run }) => {
+    await run("set-DRE");
+    await run("compile");
+    const bittyProtocolDataProvider = await getBittyProtocolDataProvider();
+    const reserveTokens = await bittyProtocolDataProvider.getAllReservesTokenDatas();
+    reserveTokens.forEach(async (token) => {
+      insertContractAddressInDb(token[0] as eContractid, token[1]);
+      insertContractAddressInDb(token[2] as eContractid, token[3]);
+      insertContractAddressInDb(token[4] as eContractid, token[5]);
+    });
+  });
+
 task("sepolia:deploy-all", "Deploy lend pool for full enviroment")
   .addFlag("verify", "Verify contracts at Etherscan")
   .setAction(async ({ verify }, { run }) => {
@@ -606,11 +628,14 @@ task("sepolia:deploy-all", "Deploy lend pool for full enviroment")
 
     await run("sepolia:config-reserves", { verify });
     await run("sepolia:config-nfts", { verify });
-
     await run("sepolia:deploy-punk-gateway", { verify, pool: ConfigNames.Bitty });
+
     await run("sepolia:deploy-weth-gateway", { verify });
     await run("sepolia:config-weth-gateway");
+    await run("sepolia:wethgateway-authorize-caller-whitelist", { caller: (await getPunkGateway()).address, flag: 1 });
+
     await run("sepolia:deploy-data-provider", { verify, wallet: true, protocol: true, ui: true });
+    await run("sepolia:update-reserve-tokens");
   });
 
 task("verify:All", "verify contract").setAction(async ({ address, args, contract }, { run }) => {
@@ -789,6 +814,7 @@ task("verify:Contract", "verify contract")
     await verifyEtherscanContract(address, args, contract);
   });
 
+
 task("sepolia:config-feed-admin", "")
   .addParam("address", "The feed admin address")
   .setAction(async ({ address }, { run }) => {
@@ -850,17 +876,36 @@ task(`sepolia:deploy-punk-gateway`, `Deploys the PunkGateway contract`)
 
   });
 
+
+task("sepolia:punkgateway-authorize-lendpool-erc20", "")
+.addVariadicPositionalParam("tokens", "Address of tokens")
+.setAction(async ({ tokens }, localBRE) => {
+  await localBRE.run("set-DRE");
+  const punkGateway = await getPunkGateway();
+  console.log("PunkGateway: %s auth tokens %s", punkGateway.address, tokens);
+  await waitForTx(await punkGateway.authorizeLendPoolERC20(tokens));
+});
+
 task("sepolia:punkgateway-authorize-caller-whitelist", "Initialize gateway configuration.")
-  .addParam("pool", `Pool name to retrieve configuration, supported: ${Object.values(ConfigNames)}`)
   .addParam("caller", "Address of whitelist")
   .addParam("flag", "Flag of whitelist, 0-1")
   .setAction(async ({ caller, flag }, localBRE) => {
     await localBRE.run("set-DRE");
     const punkGateway = await getPunkGateway();
-    console.log("PunkGateway:", punkGateway.address);
+    console.log("PunkGateway: %s auth caller %s", punkGateway.address, caller);
     await waitForTx(await punkGateway.authorizeCallerWhitelist([caller], flag));
   });
 
+
+  task("sepolia:wethgateway-authorize-caller-whitelist", "Initialize gateway configuration.")
+  .addParam("caller", "Address of whitelist")
+  .addParam("flag", "Flag of whitelist, 0-1")
+  .setAction(async ({ caller, flag }, localBRE) => {
+    await localBRE.run("set-DRE");
+    const wethGateway = await getWETHGateway();
+    console.log("WETHGateway: %s auth caller %s", wethGateway.address, caller);
+    await waitForTx(await wethGateway.authorizeCallerWhitelist([caller], flag));
+  });
 
 task("sepolia:deploy-mock-aggregator", "Deploy one mock aggregator for dev enviroment")
   .addFlag("verify", "Verify contracts at Etherscan")

@@ -101,5 +101,32 @@
   "PunkGateway": {
     "address": "0x1a7afb94762DEC4BeB037f1334Aa6B3FFa461311",
     "deployer": "0x68e9f64887d634250B4Da6965b6802039Fe89934"
+  },
+  "WETH": {
+    "address": "0x7b79995e5f793A07Bc00c21412e50Ecae098E7f9"
+  },
+  "bittyWETH": {
+    "address": "0xedd9A3566C5d1b1A67Ac85E3900cB7189aE16815"
+  },
+  "bittyDebtWETH": {
+    "address": "0xaf7422263e47346743A3de9430206696502C186f"
+  },
+  "USDT": {
+    "address": "0x7169D38820dfd117C3FA1f22a697dBA58d90BA06"
+  },
+  "bittyUSDT": {
+    "address": "0x9a7D156Ce1FbfF7B4576B6670775df1ab19D14BE"
+  },
+  "bittyDebtUSDT": {
+    "address": "0x4daD8dc171ceF16E2b674CD1bC8CE3E439168c3D"
+  },
+  "USDC": {
+    "address": "0x00000000100aaAF8Cff772A414b18168FA758af9"
+  },
+  "bittyUSDC": {
+    "address": "0x5f7D46556ca5615279b78b41E63BB45B5Ae6dF1a"
+  },
+  "bittyDebtUSDC": {
+    "address": "0x2D9E741c7CE47fAE717D80eE27dBd230255ae477"
   }
 }

@@ -73,6 +73,7 @@ import {
   rawInsertContractAddressInDb,
   getOptionalParamAddressPerNetwork,
   getContractAddressInDb,
+  verifyContract,
 } from "./contracts-helpers";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { LendPoolLibraryAddresses } from "../types/LendPoolFactory";
@@ -106,14 +107,18 @@ export const deployLendPoolConfigurator = async (verify?: boolean) => {
   };
 
   const lendPoolConfiguratorImpl = await new LendPoolConfiguratorFactory(libraries, await getDeploySigner()).deploy();
-  // await insertContractAddressInDb(eContractid.LendPoolConfiguratorImpl, lendPoolConfiguratorImpl.address);
-  return withSaveAndVerify(lendPoolConfiguratorImpl, eContractid.LendPoolConfigurator, [], verify);
+  if (verify) {
+    await verifyContract(eContractid.LendPoolConfiguratorImpl, lendPoolConfiguratorImpl, []);
+  }
+  return lendPoolConfiguratorImpl;
 };
 
 export const deployLendPoolLoan = async (verify?: boolean) => {
   const lendPoolLoanImpl = await new LendPoolLoanFactory(await getDeploySigner()).deploy();
-  // await insertContractAddressInDb(eContractid.LendPoolLoanImpl, lendPoolLoanImpl.address);
-  return withSaveAndVerify(lendPoolLoanImpl, eContractid.LendPoolLoan, [], verify);
+  if (verify) {
+    await verifyContract(eContractid.LendPoolLoanImpl, lendPoolLoanImpl, []);
+  }
+  return lendPoolLoanImpl;
 };
 
 export const deployBNFTRegistry = async (verify?: boolean) => {
@@ -284,14 +289,18 @@ export const deployConfiguratorLogicLibrary = async (verify?: boolean) => {
 export const deployLendPool = async (verify?: boolean) => {
   const libraries = await getLendPoolLibraries(verify);
   const lendPoolImpl = await new LendPoolFactory(libraries, await getDeploySigner()).deploy();
-  // await insertContractAddressInDb(eContractid.LendPoolImpl, lendPoolImpl.address);
-  return withSaveAndVerify(lendPoolImpl, eContractid.LendPool, [], verify);
+  if (verify) {
+    await verifyContract(eContractid.LendPoolImpl, lendPoolImpl, []);
+  }
+  return lendPoolImpl;
 };
 
 export const deployReserveOracle = async (args: [], verify?: boolean) => {
   const oracleImpl = await new ReserveOracleFactory(await getDeploySigner()).deploy();
-  // await insertContractAddressInDb(eContractid.ReserveOracleImpl, oracleImpl.address);
-  return withSaveAndVerify(oracleImpl, eContractid.ReserveOracle, [], verify);
+  if (verify) {
+    await verifyContract(eContractid.ReserveOracleImpl, oracleImpl, []);
+  }
+  return oracleImpl;
 };
 
 export const deployMockReserveOracle = async (args: [], verify?: boolean) =>
@@ -318,8 +327,10 @@ export const deployChainlinkAggregatorHelper = async (args: [], verify?: boolean
 
 export const deployNFTOracle = async (verify?: boolean) => {
   const oracleImpl = await new NFTOracleFactory(await getDeploySigner()).deploy();
-  // await insertContractAddressInDb(eContractid.NFTOracleImpl, oracleImpl.address);
-  return withSaveAndVerify(oracleImpl, eContractid.NFTOracle, [], verify);
+  if (verify) {
+    await verifyContract(eContractid.NFTOracleImpl, oracleImpl, []);
+  }
+  return oracleImpl;
 };
 
 export const deployMockNFTOracle = async (verify?: boolean) =>
@@ -477,7 +488,6 @@ export const deployAllMockNfts = async (verify?: boolean) => {
 
 export const deployWETHGateway = async (verify?: boolean) => {
   const wethImpl = await new WETHGatewayFactory(await getDeploySigner()).deploy();
-  // await insertContractAddressInDb(eContractid.WETHGatewayImpl, wethImpl.address);
   return withSaveAndVerify(wethImpl, eContractid.WETHGateway, [], verify);
 };
 
@@ -607,8 +617,10 @@ export const deployWrappedPunk = async (args: [tEthereumAddress], verify?: boole
 
 export const deployPunkGateway = async (verify?: boolean) => {
   const punkImpl = await new PunkGatewayFactory(await getDeploySigner()).deploy();
-  // await insertContractAddressInDb(eContractid.PunkGatewayImpl, punkImpl.address);
-  return withSaveAndVerify(punkImpl, eContractid.PunkGateway, [], verify);
+  if (verify) { 
+    await verifyContract(eContractid.PunkGatewayImpl, punkImpl, []);
+  }
+  return punkImpl;
 };
 
 export const deployBittyUpgradeableProxy = async (
@@ -638,8 +650,10 @@ export const deployMockIncentivesController = async (verify?: boolean) =>
 
 export const deployBittyCollector = async (args: [], verify?: boolean) => {
   const bittyCollectorImpl = await new BittyCollectorFactory(await getDeploySigner()).deploy();
-  // await insertContractAddressInDb(eContractid.BittyCollectorImpl, bittyCollectorImpl.address);
-  return withSaveAndVerify(bittyCollectorImpl, eContractid.BittyCollector, [], verify);
+  if (verify) {
+    await verifyContract(eContractid.BittyCollectorImpl, bittyCollectorImpl, []);
+  }
+  return bittyCollectorImpl;
 };
 
 export const deployTimelockController = async (

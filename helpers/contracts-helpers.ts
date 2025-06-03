@@ -60,7 +60,7 @@ export const registerContractInJsonDb = async (contractId: string, contractInsta
 
 export const insertContractAddressInDb = async (id: eContractid, address: tEthereumAddress) => {
   console.log("contracts-helpers:insertContractAddressInDb,", "id:", id, "address", address);
-  await getDb(DRE.network.name)
+  getDb(DRE.network.name)
     .set(`${id}`, {
       address,
     })
@@ -69,7 +69,7 @@ export const insertContractAddressInDb = async (id: eContractid, address: tEther
 
 export const rawInsertContractAddressInDb = async (id: string, address: tEthereumAddress) => {
   console.log("contracts-helpers:rawInsertContractAddressInDb,", "id:", id, "address", address);
-  await getDb(DRE.network.name)
+   getDb(DRE.network.name)
     .set(`${id}`, {
       address,
     })
