@@ -64,7 +64,6 @@ import {
 } from "../../helpers/contracts-getters";
 import {
   getContractAddressInDb,
-  getParamPerNetwork,
   insertContractAddressInDb,
   registerContractInJsonDb,
   verifyContract,
@@ -79,7 +78,7 @@ import {
 } from "../../helpers/init-helpers";
 import { DRE, getDb, notFalsyOrZeroAddress, waitForTx } from "../../helpers/misc-utils";
 import { deployChainlinkMockAggregator } from "../../helpers/oracles-helpers";
-import { ICommonConfiguration, eContractid, eNetwork, tEthereumAddress } from "../../helpers/types";
+import { eContractid, tEthereumAddress } from "../../helpers/types";
 import {
   strategyNft_AZUKI,
   strategyNft_BAYC,
@@ -100,6 +99,7 @@ import {
   PunkGateway,
   WETHGatewayFactory
 } from "../../types";
+import { BNFTRegistry, IncentivesController, NftAssets, ReserveAggregators, ReserveAssets } from "./config";
 
 task("sepolia:deploy-proxy-admin", "Deploy proxy admin contract")
   .addFlag("verify", "Verify contracts at Etherscan")
@@ -107,10 +107,9 @@ task("sepolia:deploy-proxy-admin", "Deploy proxy admin contract")
     await run("set-DRE");
     await run("compile");
 
-    const network = <eNetwork>DRE.network.name;
     let proxyAdmin: BittyProxyAdmin;
 
-    let proxyAdminAddress = await getDb(network).get(`${eContractid.BittyProxyAdminPool}`).value();
+    let proxyAdminAddress = await getDb(DRE.network.name).get(`${eContractid.BittyProxyAdminPool}`).value();
     if (!proxyAdminAddress || !notFalsyOrZeroAddress(proxyAdminAddress.address)) {
       proxyAdmin = await deployBittyProxyAdmin(eContractid.BittyProxyAdminPool, verify);
     } else {
@@ -147,7 +146,7 @@ task("sepolia:deploy-bitty-collector", "Deploy bitty collect contract")
 
 task("sepolia:deploy-address-provider", "Deploy address provider for full enviroment")
   .addFlag("verify", "Verify contracts at Etherscan")
-  .setAction(async ({ verify, network }, { run }) => {
+  .setAction(async ({ verify }, { run }) => {
     await run("set-DRE");
     await run("compile");
     const poolConfig = loadPoolConfig(ConfigNames.Bitty);
@@ -198,25 +197,23 @@ export const deployBittyUpgradeableProxy = async (
   return instance;
 };
 
-task("sepolia:config-incentive", "").setAction(async ({ }, { network, run }) => {
+task("sepolia:config-incentive", "").setAction(async ({ }, { run }) => {
   await run("set-DRE");
   await run("compile");
-  const poolConfig = loadPoolConfig(ConfigNames.Bitty);
   const addressesProvider = await getLendPoolAddressesProvider();
-  const incentivesControllerAddress = getParamPerNetwork(poolConfig.IncentivesController, network.name);
+  const incentivesControllerAddress = IncentivesController[DRE.network.name];
   if (incentivesControllerAddress != undefined || notFalsyOrZeroAddress(incentivesControllerAddress)) {
     console.log("Setting IncentivesController to address provider...");
     await waitForTx(await addressesProvider.setIncentivesController(incentivesControllerAddress));
   }
 });
 
-task("sepolia:config-bnft-registry", "").setAction(async ({ }, { network, run }) => {
+task("sepolia:config-bnft-registry", "").setAction(async ({ }, { run }) => {
   await run("set-DRE");
   await run("compile");
 
-  const poolConfig = loadPoolConfig(ConfigNames.Bitty);
   const addressesProvider = await getLendPoolAddressesProvider();
-  const bnftRegistryAddress = getParamPerNetwork(poolConfig.BNFTRegistry, network.name);
+  const bnftRegistryAddress = BNFTRegistry[DRE.network.name];
   if (bnftRegistryAddress == undefined || !notFalsyOrZeroAddress(bnftRegistryAddress)) {
     throw Error("Invalid BNFT Registry address in pool config");
   }
@@ -319,15 +316,13 @@ task("sepolia:deploy-debtToken", "")
 
 task("sepolia:deploy-reserve-oracle", "")
   .addFlag("verify", "Verify contracts at Etherscan")
-  .setAction(async ({ verify }, { network, run }) => {
+  .setAction(async ({ verify }, { run }) => {
     await run("set-DRE");
     await run("compile");
 
-    const poolConfig = loadPoolConfig(ConfigNames.Bitty);
-
     const proxyAdmin = await getBittyProxyAdminById(eContractid.BittyProxyAdminPool);
 
-    const weth = getParamPerNetwork(poolConfig.WrappedNativeToken, network.name);
+    const weth = ReserveAssets[DRE.network.name].WETH;
 
     const reserveOracleImpl = await deployReserveOracle([], verify);
     const initEncodedData = reserveOracleImpl.interface.encodeFunctionData("initialize", [weth]);
@@ -360,9 +355,7 @@ task("sepolia:config-nft-oracle", "").setAction(async ({ }, { run }) => {
   const oracleOwnerSigner = DRE.ethers.provider.getSigner(oracleOwnerAddress);
 
   // nft oracle set assets
-  const poolConfig = loadPoolConfig(ConfigNames.Bitty);
-  const { NftsAssets } = poolConfig as ICommonConfiguration;
-  const nftsAssets = getParamPerNetwork(NftsAssets, <eNetwork>DRE.network.name);
+  const nftsAssets = NftAssets[DRE.network.name];
   const tokens = Object.entries(nftsAssets).map(([, tokenAddress]) => {
     return tokenAddress;
   }) as string[];
@@ -422,7 +415,7 @@ task("sepolia:config-reserves", "")
     const admin = await addressesProvider.getPoolAdmin();
 
     const collectorAddress = await getBittyCollectorProxy();
-    const weth = getParamPerNetwork(poolConfig.WrappedNativeToken, network.name);
+    const weth = ReserveAssets[network.name].WETH;
 
     console.log("Init & Config Reserve assets");
 
@@ -448,10 +441,6 @@ task("sepolia:config-nfts", "")
   .addFlag("verify", "Verify contracts at Etherscan")
   .setAction(async ({ verify }, { run }) => {
     await run("set-DRE");
-    const network = <eNetwork>DRE.network.name;
-    const pool = ConfigNames.Bitty;
-    const poolConfig = loadPoolConfig(pool);
-
     const addressesProvider = await getLendPoolAddressesProvider();
 
     const admin = await addressesProvider.getPoolAdmin();
@@ -468,7 +457,7 @@ task("sepolia:config-nfts", "")
       MFER: strategyNft_MFER,
       LILP: strategyNft_LILP,
     };
-    const nftsAssets = getParamPerNetwork(poolConfig.NftsAssets, network);
+    const nftsAssets = NftAssets[DRE.network.name];
     if (!nftsAssets) {
       throw "NFT assets is undefined. Check NftsAssets configuration at config directory";
     }
@@ -487,19 +476,16 @@ task(`sepolia:deploy-weth-gateway`, ``)
   .setAction(async ({ verify }, { network, run }) => {
     await run("set-DRE");
     await run("compile");
-    const pool = ConfigNames.Bitty;
-    const poolConfig = loadPoolConfig(pool);
     if (!network.config.chainId) {
       throw new Error("INVALID_CHAIN_ID");
     }
-
     const addressesProvider = await getLendPoolAddressesProvider();
 
     const proxyAdmin = await getBittyProxyAdminById(eContractid.BittyProxyAdminPool);
     if (proxyAdmin == undefined || !notFalsyOrZeroAddress(proxyAdmin.address)) {
       throw Error("Invalid pool proxy admin in config");
     }
-    const weth = getParamPerNetwork(poolConfig.WrappedNativeToken, network.name);
+    const weth = WETH[DRE.network.name];
     console.log("WETH address", weth);
 
     const wethGatewayImpl = await deployWETHGateway(verify);
@@ -530,12 +516,10 @@ task(`sepolia:config-weth-gateway`, ``)
   .setAction(async ({ }, { network, run }) => {
     await run("set-DRE");
     await run("compile");
-    const pool = ConfigNames.Bitty;
-    const poolConfig = loadPoolConfig(pool);
     if (!network.config.chainId) {
       throw new Error("INVALID_CHAIN_ID");
     }
-    const nftsAssets = getParamPerNetwork(poolConfig.NftsAssets, network.name);
+    const nftsAssets = NftAssets[DRE.network.name];
     const wethGateway = await getWETHGateway();
     let nftAddresses: string[] = [];
     for (const [, assetAddress] of Object.entries(nftsAssets) as [string, string][]) {
@@ -600,45 +584,46 @@ task("sepolia:update-reserve-tokens", "Update reserve tokens")
     });
   });
 
+
 task("sepolia:deploy-all", "Deploy lend pool for full enviroment")
   .addFlag("verify", "Verify contracts at Etherscan")
   .setAction(async ({ verify }, { run }) => {
     await run("set-DRE");
     await run("compile");
+    const network = DRE.network.name;
+    const reserveAssets = ReserveAssets[network];
+    const reserveAggregators = ReserveAggregators[network];
+
     await run("sepolia:deploy-proxy-admin", { verify });
     await run("sepolia:deploy-bitty-collector", { verify });
-
     await run("sepolia:deploy-address-provider", { verify });
     await run("sepolia:deploy-address-provider-registry", { verify });
-
     await run("sepolia:config-pool-admin");
     await run("sepolia:config-bnft-registry");
     await run('sepolia:config-incentive')
-
     await run("sepolia:deploy-lend-libraries", { verify });
     await run("sepolia:deploy-lend-pool", { verify });
     await run("sepolia:deploy-lend-pool-loan", { verify });
     await run("sepolia:deploy-lend-pool-config", { verify });
     await run("sepolia:deploy-bToken", { verify });
     await run("sepolia:deploy-debtToken", { verify });
-
     await run("sepolia:deploy-reserve-oracle", { verify });
     await run("sepolia:deploy-nft-oracle", { verify });
     await run("sepolia:config-nft-oracle");
-
     await run("sepolia:config-reserves", { verify });
+    await run('sepolia:add-aggregator', { reserve: reserveAssets.USDT, aggregator: reserveAggregators.USDT });
+    await run('sepolia:add-aggregator', { reserve: reserveAssets.USDC, aggregator: reserveAggregators.USDC });
     await run("sepolia:config-nfts", { verify });
-    await run("sepolia:deploy-punk-gateway", { verify, pool: ConfigNames.Bitty });
-
     await run("sepolia:deploy-weth-gateway", { verify });
     await run("sepolia:config-weth-gateway");
-    await run("sepolia:wethgateway-authorize-caller-whitelist", { caller: (await getPunkGateway()).address, flag: 1 });
-
+    await run("sepolia:deploy-punk-gateway", { verify, pool: ConfigNames.Bitty });
+    await run('sepolia:punkgateway-authorize-lendpool-erc20', { tokens: [reserveAssets.USDT, reserveAssets.USDC] });
+    await run("sepolia:wethgateway-authorize-caller-whitelist", { caller: (await getPunkGateway()).address, flag: '1' });
     await run("sepolia:deploy-data-provider", { verify, wallet: true, protocol: true, ui: true });
     await run("sepolia:update-reserve-tokens");
   });
 
-task("verify:All", "verify contract").setAction(async ({ address, args, contract }, { run }) => {
+task("verify:All", "verify contract").setAction(async (_, { run }) => {
   await run("set-DRE");
   const poolConfig = loadPoolConfig(ConfigNames.Bitty);
   const bittyCollectorImpl = await getBittyCollectorImpl();
@@ -878,13 +863,13 @@ task(`sepolia:deploy-punk-gateway`, `Deploys the PunkGateway contract`)
 
 
 task("sepolia:punkgateway-authorize-lendpool-erc20", "")
-.addVariadicPositionalParam("tokens", "Address of tokens")
-.setAction(async ({ tokens }, localBRE) => {
-  await localBRE.run("set-DRE");
-  const punkGateway = await getPunkGateway();
-  console.log("PunkGateway: %s auth tokens %s", punkGateway.address, tokens);
-  await waitForTx(await punkGateway.authorizeLendPoolERC20(tokens));
-});
+  .addVariadicPositionalParam("tokens", "Address of tokens")
+  .setAction(async ({ tokens }, localBRE) => {
+    await localBRE.run("set-DRE");
+    const punkGateway = await getPunkGateway();
+    console.log("PunkGateway: %s auth tokens %s", punkGateway.address, tokens);
+    await waitForTx(await punkGateway.authorizeLendPoolERC20(tokens));
+  });
 
 task("sepolia:punkgateway-authorize-caller-whitelist", "Initialize gateway configuration.")
   .addParam("caller", "Address of whitelist")
@@ -897,7 +882,7 @@ task("sepolia:punkgateway-authorize-caller-whitelist", "Initialize gateway confi
   });
 
 
-  task("sepolia:wethgateway-authorize-caller-whitelist", "Initialize gateway configuration.")
+task("sepolia:wethgateway-authorize-caller-whitelist", "Initialize gateway configuration.")
   .addParam("caller", "Address of whitelist")
   .addParam("flag", "Flag of whitelist, 0-1")
   .setAction(async ({ caller, flag }, localBRE) => {
@@ -920,7 +905,7 @@ task("sepolia:deploy-mock-aggregator", "Deploy one mock aggregator for dev envir
 
 
 task("sepolia:add-aggregator", "Doing oracle admin task")
-  .addParam("reserve", "reserve address")
+  .addParam("reserve", "reserve name")
   .addParam("aggregator", "aggregator address")
   .setAction(async ({ reserve, aggregator }, DRE) => {
     await DRE.run("set-DRE");
@@ -928,7 +913,24 @@ task("sepolia:add-aggregator", "Doing oracle admin task")
     const oracle = await getReserveOracle(await addressesProvider.getReserveOracle());
     const owwnerAddress = await oracle.owner();
     const ownerSigner = DRE.ethers.provider.getSigner(owwnerAddress);
-    await waitForTx(await oracle.connect(ownerSigner).addAggregator(reserve, aggregator));
-    const price = await oracle.getAssetPrice(reserve);
+    const reserveAddress = reserve;
+    if (!reserveAddress || reserveAddress === "") {
+      throw new Error(`Reserve ${reserve} not found`);
+    }
+    console.log("reserveAddress", reserveAddress);
+    await waitForTx(await oracle.connect(ownerSigner).addAggregator(reserveAddress, aggregator));
+    await insertContractAddressInDb(`${reserve}EthAggregator` as eContractid, aggregator);
+    const price = await oracle.getAssetPrice(reserveAddress);
     console.log(price.toString());
+  });
+
+
+task("sepolia:proxyAdmin:transferOwnership", "Transfer ownership of proxy admin to new address")
+  .addParam("newOwner", "New owner address")
+  .setAction(async ({ newOwner }, DRE) => {
+    await DRE.run("set-DRE");
+    let proxyAdminAddress = await getDb(DRE.network.name).get(`${eContractid.BittyProxyAdminPool}`).value();
+    const proxyAdmin = await getBittyProxyAdminByAddress(proxyAdminAddress.address);
+    await waitForTx(await proxyAdmin.transferOwnership(newOwner));
+    console.log("ProxyAdmin ownership transferred to", newOwner);
   });

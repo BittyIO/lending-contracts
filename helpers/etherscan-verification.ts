@@ -10,6 +10,10 @@ const fatalErrors = [
   `The constructor for`,
 ];
 
+const retryErrors = [
+  `does not have bytecode`
+];
+
 const okErrors = [`Contract source code already verified`, `Already Verified`];
 
 const unableVerifyError = "Fail - Unable to verify";
@@ -42,7 +46,7 @@ export const verifyEtherscanContract = async (
       "[ETHERSCAN][WARNING] Delaying Etherscan verification due their API can not find newly deployed contracts"
     );
     const msDelay = 3000;
-    const times = 4;
+    const times = 5;
     //write a javascript module that exports the argument list
     //https://hardhat.org/plugins/nomiclabs-hardhat-etherscan.html#complex-arguments
     const { fd, path, cleanup } = await file({
@@ -100,7 +104,12 @@ export const runTaskWithRetry = async (
       console.error("[ETHERSCAN][ERROR] Fatal error detected, skip retries and resume deployment.", error.message);
       return;
     }
-    console.error("[ETHERSCAN][ERROR]", error.message);
+    if (retryErrors.some((retryError) => error.message.includes(retryError))) {
+      console.error("[ETHERSCAN][ERROR] Retrying due to bytecode not ready");
+      await delay(msDelay); 
+    } else {
+      console.error("[ETHERSCAN][ERROR]", error.message);
+    }
     console.log();
     console.info(`[ETHERSCAN][[INFO] Retrying attemps: ${counter}.`);
     if (error.message.includes(unableVerifyError)) {
