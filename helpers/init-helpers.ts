@@ -1,18 +1,17 @@
-import {
-  eContractid,
-  eNetwork,
-  iMultiPoolsAssets,
-  IReserveParams,
-  iMultiPoolsNfts,
-  INftParams,
-  tEthereumAddress,
-} from "./types";
-import { chunk, waitForTx } from "./misc-utils";
-import { getLendPoolAddressesProvider, getLendPoolConfiguratorProxy } from "./contracts-getters";
-import { getContractAddressWithJsonFallback, rawInsertContractAddressInDb } from "./contracts-helpers";
 import { BigNumberish } from "ethers";
 import { ConfigNames } from "./configuration";
 import { deployRateStrategy } from "./contracts-deployments";
+import { getLendPoolAddressesProvider, getLendPoolConfiguratorProxy } from "./contracts-getters";
+import { getContractAddressWithJsonFallback, rawInsertContractAddressInDb } from "./contracts-helpers";
+import { chunk, waitForTx } from "./misc-utils";
+import {
+  eContractid,
+  iMultiPoolsAssets,
+  iMultiPoolsNfts,
+  INftParams,
+  IReserveParams,
+  tEthereumAddress
+} from "./types";
 
 export const getBTokenExtraParams = async (bTokenName: string, tokenAddress: tEthereumAddress) => {
   //console.log(bTokenName);
@@ -29,7 +28,6 @@ export const initReservesByHelper = async (
   bTokenSymbolPrefix: string,
   debtTokenNamePrefix: string,
   debtTokenSymbolPrefix: string,
-  admin: tEthereumAddress,
   collectorAddress: tEthereumAddress,
   poolName: ConfigNames,
   verify: boolean
@@ -140,13 +138,7 @@ export const getBNftExtraParams = async (bNftName: string, nftAddress: tEthereum
 export const initNftsByHelper = async (
   nftsParams: iMultiPoolsNfts<INftParams>,
   nftAddresses: { [symbol: string]: tEthereumAddress },
-  admin: tEthereumAddress,
-  poolName: ConfigNames,
-  verify: boolean
 ) => {
-  const addressProvider = await getLendPoolAddressesProvider();
-  const bnftRegistry = await addressProvider.getBNFTRegistry();
-
   // CHUNK CONFIGURATION
   const initChunks = 1;
 
@@ -219,7 +211,6 @@ export const getPairsTokenAggregator = (
 export const configureReservesByHelper = async (
   reservesParams: iMultiPoolsAssets<IReserveParams>,
   tokenAddresses: { [symbol: string]: tEthereumAddress },
-  admin: tEthereumAddress
 ) => {
   const addressProvider = await getLendPoolAddressesProvider();
   const configuator = await getLendPoolConfiguratorProxy();
@@ -282,7 +273,6 @@ export const configureReservesByHelper = async (
 export const configureNftsByHelper = async (
   nftsParams: iMultiPoolsNfts<INftParams>,
   nftAddresses: { [symbol: string]: tEthereumAddress },
-  admin: tEthereumAddress
 ) => {
   const addressProvider = await getLendPoolAddressesProvider();
   const configuator = await getLendPoolConfiguratorProxy();

@@ -2,10 +2,8 @@ import { BytesLike } from "ethers";
 import { task } from "hardhat/config";
 import {
   ConfigNames,
-  getCryptoPunksMarketAddress,
   getEmergencyAdmin,
   getWrappedNativeTokenAddress,
-  getWrappedPunkTokenAddress,
   loadPoolConfig
 } from "../../helpers/configuration";
 import { ADDRESS_ID_PUNK_GATEWAY, ADDRESS_ID_WETH_GATEWAY } from "../../helpers/constants";
@@ -80,18 +78,6 @@ import { DRE, getDb, notFalsyOrZeroAddress, waitForTx } from "../../helpers/misc
 import { deployChainlinkMockAggregator } from "../../helpers/oracles-helpers";
 import { eContractid, tEthereumAddress } from "../../helpers/types";
 import {
-  strategyNft_AZUKI,
-  strategyNft_BAYC,
-  strategyNft_LILP,
-  strategyNft_MAYC,
-  strategyNft_MEEBITS,
-  strategyNft_MFER,
-  strategyNft_MIL,
-  strategyNft_PUDGY,
-  strategyNft_WPUNKS
-} from "../../markets/bitty/nftsConfigs";
-import { strategyUSDC, strategyUSDT, strategyWETH } from "../../markets/bitty/reservesConfigs";
-import {
   BittyCollectorFactory,
   BittyProxyAdmin,
   BittyUpgradeableProxy,
@@ -99,7 +85,45 @@ import {
   PunkGateway,
   WETHGatewayFactory
 } from "../../types";
-import { BNFTRegistry, IncentivesController, NftAssets, ReserveAggregators, ReserveAssets } from "./config";
+import { BNFTRegistry, IncentivesController, NftAssets, NftConfigs, Punk, ReserveAggregators, ReserveAssets, ReserveConfigs } from "./config";
+
+task("sepolia:deploy-all", "Deploy lend pool for full enviroment")
+  .addFlag("verify", "Verify contracts at Etherscan")
+  .setAction(async ({ verify }, { run }) => {
+    await run("set-DRE");
+    await run("compile");
+    const network = DRE.network.name;
+    const reserveAssets = ReserveAssets[network];
+    const reserveAggregators = ReserveAggregators[network];
+
+    await run("sepolia:deploy-proxy-admin", { verify });
+    await run("sepolia:deploy-bitty-collector", { verify });
+    await run("sepolia:deploy-address-provider", { verify });
+    await run("sepolia:deploy-address-provider-registry", { verify });
+    await run("sepolia:config-pool-admin");
+    await run("sepolia:config-bnft-registry");
+    await run('sepolia:config-incentive')
+    await run("sepolia:deploy-lend-libraries", { verify });
+    await run("sepolia:deploy-lend-pool", { verify });
+    await run("sepolia:deploy-lend-pool-loan", { verify });
+    await run("sepolia:deploy-lend-pool-config", { verify });
+    await run("sepolia:deploy-bToken", { verify });
+    await run("sepolia:deploy-debtToken", { verify });
+    await run("sepolia:deploy-reserve-oracle", { verify });
+    await run("sepolia:deploy-nft-oracle", { verify });
+    await run("sepolia:config-nft-oracle");
+    await run("sepolia:config-reserves", { verify });
+    await run('sepolia:add-aggregator', { reserve: reserveAssets.USDT, aggregator: reserveAggregators.USDT });
+    await run('sepolia:add-aggregator', { reserve: reserveAssets.USDC, aggregator: reserveAggregators.USDC });
+    await run("sepolia:config-nfts");
+    await run("sepolia:deploy-weth-gateway", { verify });
+    await run("sepolia:config-weth-gateway");
+    await run("sepolia:deploy-punk-gateway", { verify });
+    await run('sepolia:punkgateway-authorize-lendpool-erc20', { tokens: [reserveAssets.USDT, reserveAssets.USDC] });
+    await run("sepolia:wethgateway-authorize-caller-whitelist", { caller: (await getPunkGateway()).address, flag: '1' });
+    await run("sepolia:deploy-data-provider", { verify, wallet: true, protocol: true, ui: true });
+    await run("sepolia:update-reserve-tokens");
+  });
 
 task("sepolia:deploy-proxy-admin", "Deploy proxy admin contract")
   .addFlag("verify", "Verify contracts at Etherscan")
@@ -130,7 +154,6 @@ task("sepolia:deploy-bitty-collector", "Deploy bitty collect contract")
 
     const bittyCollectorImpl = await new BittyCollectorFactory(await getDeploySigner()).deploy();
     await bittyCollectorImpl.deployed();
-    withSaveAndVerify(bittyCollectorImpl, eContractid.BittyCollectorImpl, [], verify);
 
     const initEncodedData = bittyCollectorImpl.interface.encodeFunctionData("initialize");
 
@@ -410,17 +433,12 @@ task("sepolia:config-reserves", "")
     const pool = ConfigNames.Bitty;
     const poolConfig = loadPoolConfig(pool);
 
-    const addressesProvider = await getLendPoolAddressesProvider();
-
-    const admin = await addressesProvider.getPoolAdmin();
-
     const collectorAddress = await getBittyCollectorProxy();
-    const weth = ReserveAssets[network.name].WETH;
 
     console.log("Init & Config Reserve assets");
 
-    const reserveAssets = { WETH: weth, USDT: '0x7169D38820dfd117C3FA1f22a697dBA58d90BA06', USDC: '0x00000000100aaaf8cff772a414b18168fa758af9' };
-    const reservesConfig = { WETH: strategyWETH, USDT: strategyUSDT, USDC: strategyUSDC };
+    const reserveAssets = ReserveAssets[network.name];
+    const reservesConfig = ReserveConfigs[network.name];
 
     await initReservesByHelper(
       reservesConfig,
@@ -429,41 +447,25 @@ task("sepolia:config-reserves", "")
       poolConfig.BTokenSymbolPrefix,
       poolConfig.DebtTokenNamePrefix,
       poolConfig.DebtTokenSymbolPrefix,
-      admin,
       collectorAddress.address,
       pool,
       verify
     );
-    await configureReservesByHelper(reservesConfig, reserveAssets, admin);
+    await configureReservesByHelper(reservesConfig, reserveAssets);
   });
 
 task("sepolia:config-nfts", "")
-  .addFlag("verify", "Verify contracts at Etherscan")
-  .setAction(async ({ verify }, { run }) => {
+  .setAction(async ({ }, { run }) => {
     await run("set-DRE");
-    const addressesProvider = await getLendPoolAddressesProvider();
-
-    const admin = await addressesProvider.getPoolAdmin();
-
     console.log("Init & Config NFT assets");
-    const nftsConfig = {
-      WPUNKS: strategyNft_WPUNKS,
-      BAYC: strategyNft_BAYC,
-      MAYC: strategyNft_MAYC,
-      AZUKI: strategyNft_AZUKI,
-      MEEBITS: strategyNft_MEEBITS,
-      MIL: strategyNft_MIL,
-      PUDGY: strategyNft_PUDGY,
-      MFER: strategyNft_MFER,
-      LILP: strategyNft_LILP,
-    };
     const nftsAssets = NftAssets[DRE.network.name];
     if (!nftsAssets) {
       throw "NFT assets is undefined. Check NftsAssets configuration at config directory";
     }
 
-    await initNftsByHelper(nftsConfig, nftsAssets, admin, pool, verify);
-    await configureNftsByHelper(nftsConfig, nftsAssets, admin);
+    const nftsConfig = NftConfigs[DRE.network.name];
+    await initNftsByHelper(nftsConfig, nftsAssets);
+    await configureNftsByHelper(nftsConfig, nftsAssets);
   });
 
 export const deployWETHGateway = async (verify?: boolean) => {
@@ -485,7 +487,7 @@ task(`sepolia:deploy-weth-gateway`, ``)
     if (proxyAdmin == undefined || !notFalsyOrZeroAddress(proxyAdmin.address)) {
       throw Error("Invalid pool proxy admin in config");
     }
-    const weth = WETH[DRE.network.name];
+    const weth = ReserveAssets[DRE.network.name].WETH;
     console.log("WETH address", weth);
 
     const wethGatewayImpl = await deployWETHGateway(verify);
@@ -582,45 +584,6 @@ task("sepolia:update-reserve-tokens", "Update reserve tokens")
       insertContractAddressInDb(token[2] as eContractid, token[3]);
       insertContractAddressInDb(token[4] as eContractid, token[5]);
     });
-  });
-
-
-task("sepolia:deploy-all", "Deploy lend pool for full enviroment")
-  .addFlag("verify", "Verify contracts at Etherscan")
-  .setAction(async ({ verify }, { run }) => {
-    await run("set-DRE");
-    await run("compile");
-    const network = DRE.network.name;
-    const reserveAssets = ReserveAssets[network];
-    const reserveAggregators = ReserveAggregators[network];
-
-    await run("sepolia:deploy-proxy-admin", { verify });
-    await run("sepolia:deploy-bitty-collector", { verify });
-    await run("sepolia:deploy-address-provider", { verify });
-    await run("sepolia:deploy-address-provider-registry", { verify });
-    await run("sepolia:config-pool-admin");
-    await run("sepolia:config-bnft-registry");
-    await run('sepolia:config-incentive')
-    await run("sepolia:deploy-lend-libraries", { verify });
-    await run("sepolia:deploy-lend-pool", { verify });
-    await run("sepolia:deploy-lend-pool-loan", { verify });
-    await run("sepolia:deploy-lend-pool-config", { verify });
-    await run("sepolia:deploy-bToken", { verify });
-    await run("sepolia:deploy-debtToken", { verify });
-    await run("sepolia:deploy-reserve-oracle", { verify });
-    await run("sepolia:deploy-nft-oracle", { verify });
-    await run("sepolia:config-nft-oracle");
-    await run("sepolia:config-reserves", { verify });
-    await run('sepolia:add-aggregator', { reserve: reserveAssets.USDT, aggregator: reserveAggregators.USDT });
-    await run('sepolia:add-aggregator', { reserve: reserveAssets.USDC, aggregator: reserveAggregators.USDC });
-    await run("sepolia:config-nfts", { verify });
-    await run("sepolia:deploy-weth-gateway", { verify });
-    await run("sepolia:config-weth-gateway");
-    await run("sepolia:deploy-punk-gateway", { verify, pool: ConfigNames.Bitty });
-    await run('sepolia:punkgateway-authorize-lendpool-erc20', { tokens: [reserveAssets.USDT, reserveAssets.USDC] });
-    await run("sepolia:wethgateway-authorize-caller-whitelist", { caller: (await getPunkGateway()).address, flag: '1' });
-    await run("sepolia:deploy-data-provider", { verify, wallet: true, protocol: true, ui: true });
-    await run("sepolia:update-reserve-tokens");
   });
 
 task("verify:All", "verify contract").setAction(async (_, { run }) => {
@@ -809,9 +772,8 @@ task("sepolia:config-feed-admin", "")
   });
 
 task(`sepolia:deploy-punk-gateway`, `Deploys the PunkGateway contract`)
-  .addParam("pool", `Pool name to retrieve configuration, supported: ${Object.values(ConfigNames)}`)
   .addFlag("verify", `Verify contract via Etherscan API.`)
-  .setAction(async ({ verify, pool }, DRE) => {
+  .setAction(async ({ verify}, DRE) => {
     await DRE.run("set-DRE");
     await DRE.run("compile");
 
@@ -819,7 +781,6 @@ task(`sepolia:deploy-punk-gateway`, `Deploys the PunkGateway contract`)
       throw new Error("INVALID_CHAIN_ID");
     }
 
-    const poolConfig = loadPoolConfig(pool);
     const addressesProvider = await getLendPoolAddressesProvider();
 
     const proxyAdmin = await getBittyProxyAdminById(eContractid.BittyProxyAdminPool);
@@ -830,10 +791,10 @@ task(`sepolia:deploy-punk-gateway`, `Deploys the PunkGateway contract`)
     const wethGateWay = await getWETHGateway();
     console.log("wethGateWay.address", wethGateWay.address);
 
-    const punk = await getCryptoPunksMarketAddress(poolConfig);
+    const punk = Punk[DRE.network.name];
     console.log("CryptoPunksMarket.address", punk);
 
-    const wpunk = await getWrappedPunkTokenAddress(poolConfig, punk);
+    const wpunk = NftAssets[DRE.network.name].WPUNKS;
     console.log("WPUNKS.address", wpunk);
 
     // this contract is not support upgrade, just deploy new contract
