@@ -115,7 +115,7 @@ task("sepolia:deploy-all", "Deploy lend pool for full enviroment")
     await run("sepolia:config-reserves", { verify });
     await run('sepolia:add-aggregator', { reserve: reserveAssets.USDT, aggregator: reserveAggregators.USDT });
     await run('sepolia:add-aggregator', { reserve: reserveAssets.USDC, aggregator: reserveAggregators.USDC });
-    await run("sepolia:config-nfts");
+    await run("sepolia:config-nfts", { init: true });
     await run("sepolia:deploy-weth-gateway", { verify });
     await run("sepolia:config-weth-gateway");
     await run("sepolia:deploy-punk-gateway", { verify });
@@ -455,7 +455,8 @@ task("sepolia:config-reserves", "")
   });
 
 task("sepolia:config-nfts", "")
-  .setAction(async ({ }, { run }) => {
+  .addOptionalParam("init", "Initialize nfts")
+  .setAction(async ({ init }, { run }) => {
     await run("set-DRE");
     console.log("Init & Config NFT assets");
     const nftsAssets = NftAssets[DRE.network.name];
@@ -464,7 +465,9 @@ task("sepolia:config-nfts", "")
     }
 
     const nftsConfig = NftConfigs[DRE.network.name];
-    await initNftsByHelper(nftsConfig, nftsAssets);
+    if (init) {
+      await initNftsByHelper(nftsConfig, nftsAssets);
+    }
     await configureNftsByHelper(nftsConfig, nftsAssets);
   });
 
@@ -773,7 +776,7 @@ task("sepolia:config-feed-admin", "")
 
 task(`sepolia:deploy-punk-gateway`, `Deploys the PunkGateway contract`)
   .addFlag("verify", `Verify contract via Etherscan API.`)
-  .setAction(async ({ verify}, DRE) => {
+  .setAction(async ({ verify }, DRE) => {
     await DRE.run("set-DRE");
     await DRE.run("compile");
 
@@ -894,4 +897,58 @@ task("sepolia:proxyAdmin:transferOwnership", "Transfer ownership of proxy admin 
     const proxyAdmin = await getBittyProxyAdminByAddress(proxyAdminAddress.address);
     await waitForTx(await proxyAdmin.transferOwnership(newOwner));
     console.log("ProxyAdmin ownership transferred to", newOwner);
+  });
+
+task("sepolia:set-emergencyAdmin", "Set emergency admin address")
+  .addParam("emergencyAdmin", "Emergency admin address")
+  .setAction(async ({ emergencyAdmin }, DRE) => {
+    await DRE.run("set-DRE");
+    await DRE.run("compile");
+    const addressesProvider = await getLendPoolAddressesProvider();
+    await addressesProvider.setEmergencyAdmin(emergencyAdmin);
+    console.log("Emergency admin set to", emergencyAdmin);
+  });
+
+
+task("sepolia:set-multisig", "Set multisig address")
+  .addParam("multisig", "Multisig address")
+  .setAction(async ({ multisig }, DRE) => {
+    await DRE.run("set-DRE");
+    await DRE.run("compile");
+    console.log("multisig", multisig);
+    const collector = await getBittyCollectorProxy();
+    await collector.transferOwnership(multisig);
+    console.log("collector transfer ownership to", multisig);
+    const addressesProvider = await getLendPoolAddressesProvider();
+    await addressesProvider.setEmergencyAdmin(multisig);
+    console.log("addressesProvider set emergency admin to", multisig);
+  });
+
+
+task("sepolia:set-timelock", "Set timelock address")
+  .addParam("timelock", "Timelock address")
+  .setAction(async ({ timelock }, DRE) => {
+    await DRE.run("set-DRE");
+    await DRE.run("compile");
+    console.log("timelock", timelock);
+    const addressesProvider = await getLendPoolAddressesProvider();
+    await addressesProvider.setPoolAdmin(timelock);
+    console.log("addressesProvider set pool admin to", timelock);
+    await addressesProvider.transferOwnership(timelock);
+    console.log("addressesProvider transfer ownership to", timelock);
+    const LendPoolAddressesProviderRegistry = await getLendPoolAddressesProviderRegistry();
+    await LendPoolAddressesProviderRegistry.transferOwnership(timelock);
+    console.log("LendPoolAddressesProviderRegistry transfer ownership to", timelock);
+    const reserveOracle = await getReserveOracle();
+    await reserveOracle.transferOwnership(timelock);
+    console.log("reserveOracle transfer ownership to", timelock);
+    const nftOracle = await getNFTOracle();
+    await nftOracle.transferOwnership(timelock);
+    console.log("nftOracle transfer ownership to", timelock);
+    const wethGateway = await getWETHGateway();
+    await wethGateway.transferOwnership(timelock);
+    console.log("wethGateway transfer ownership to", timelock);
+    const punkGateway = await getPunkGateway();
+    await punkGateway.transferOwnership(timelock);
+    console.log("punkGateway transfer ownership to", timelock);
   });

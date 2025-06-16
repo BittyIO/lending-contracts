@@ -13,13 +13,13 @@ export enum Network {
 
   export const strategyNft: INftParams = {
     baseLTVAsCollateral: "4000", // 40%
-    liquidationThreshold: "9000", // 90%
+    liquidationThreshold: "8500", // 85%
     liquidationBonus: "10000", // 5%
-    redeemDuration: "4", // 4 hours
-    auctionDuration: "4", // 4 hours
+    redeemDuration: "12", // 12 hours
+    auctionDuration: "12", // 12 hours
     redeemFine: "500", // 5%
     redeemThreshold: "5000", // 50%
-    minBidFine: "20", // 0.2 ETH
+    minBidFine: "500", // 0.05 ETH
     bNftImpl: eContractid.BNFT,
     maxSupply: "0",
     maxTokenId: "0",
@@ -121,16 +121,18 @@ export enum Network {
         ...strategyNft,
         maxSupply: "21905",
         maxTokenId: "21904",
-      },
+      }, 
     },
     [Network.main]: {
       WPUNKS: {
         ...strategyNft,
+        baseLTVAsCollateral: "4500", 
         maxSupply: "10000",
         maxTokenId: "9999",
       },
       BAYC: {
         ...strategyNft,
+        baseLTVAsCollateral: "4300", 
         maxSupply: "10000",
         maxTokenId: "9999",
       },
@@ -141,6 +143,7 @@ export enum Network {
       },
       AZUKI: {
         ...strategyNft,
+        baseLTVAsCollateral: "3000", 
         maxSupply: "10000",
         maxTokenId: "9999",
       },
@@ -156,6 +159,7 @@ export enum Network {
       },
       PUDGY: {
         ...strategyNft,
+        baseLTVAsCollateral: "4300", 
         maxSupply: "8888",
         maxTokenId: "8887",
       },
@@ -168,8 +172,8 @@ export enum Network {
         ...strategyNft,
         maxSupply: "21905",
         maxTokenId: "21904",
-      }, 
-    },
+      },
+    }
   };
 
   export const ReserveAssets: Params<Record<string, string>> = {
