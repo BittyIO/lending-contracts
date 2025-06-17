@@ -21,7 +21,7 @@ interface IWrapperGateway {
     uint256 amount,
     uint256 nftTokenId,
     address onBehalfOf,
-    uint16 referralCode
+    string calldata referralCode
   ) external;
 
   function batchBorrow(
@@ -29,7 +29,7 @@ interface IWrapperGateway {
     uint256[] calldata amounts,
     uint256[] calldata nftTokenIds,
     address onBehalfOf,
-    uint16 referralCode
+    string calldata referralCode
   ) external;
 
   /**
@@ -91,14 +91,14 @@ interface IWrapperGateway {
     uint256 amount,
     uint256 nftTokenId,
     address onBehalfOf,
-    uint16 referralCode
+    string calldata referralCode
   ) external;
 
   function batchBorrowETH(
     uint256[] calldata amounts,
     uint256[] calldata nftTokenIds,
     address onBehalfOf,
-    uint16 referralCode
+    string calldata referralCode
   ) external;
 
   /**

@@ -8,7 +8,7 @@ interface IWETHGateway {
    * @param onBehalfOf address of the user who will receive the bTokens representing the deposit
    * @param referralCode integrators are assigned a referral code and can potentially receive rewards.
    **/
-  function depositETH(address onBehalfOf, uint16 referralCode) external payable;
+  function depositETH(address onBehalfOf, string calldata referralCode) external payable;
 
   /**
    * @dev withdraws the WETH _reserves of msg.sender.
@@ -32,7 +32,7 @@ interface IWETHGateway {
     address nftAsset,
     uint256 nftTokenId,
     address onBehalfOf,
-    uint16 referralCode
+    string calldata referralCode
   ) external;
 
   function batchBorrowETH(
@@ -40,7 +40,7 @@ interface IWETHGateway {
     address[] calldata nftAssets,
     uint256[] calldata nftTokenIds,
     address onBehalfOf,
-    uint16 referralCode
+    string calldata referralCode
   ) external;
 
   /**

@@ -93,7 +93,7 @@ contract WETHGateway is IWETHGateway, ERC721HolderUpgradeable, EmergencyTokenRec
     );
   }
 
-  function depositETH(address onBehalfOf, uint16 referralCode) external payable override nonReentrant {
+  function depositETH(address onBehalfOf, string calldata referralCode) external payable override nonReentrant {
     _checkValidCallerAndOnBehalfOf(onBehalfOf);
 
     ILendPool cachedPool = _getLendPool();
@@ -127,7 +127,7 @@ contract WETHGateway is IWETHGateway, ERC721HolderUpgradeable, EmergencyTokenRec
     address nftAsset,
     uint256 nftTokenId,
     address onBehalfOf,
-    uint16 referralCode
+    string calldata referralCode
   ) external override nonReentrant {
     _checkValidCallerAndOnBehalfOf(onBehalfOf);
 
@@ -148,7 +148,7 @@ contract WETHGateway is IWETHGateway, ERC721HolderUpgradeable, EmergencyTokenRec
     address[] calldata nftAssets,
     uint256[] calldata nftTokenIds,
     address onBehalfOf,
-    uint16 referralCode
+    string calldata referralCode
   ) external override nonReentrant {
     require(nftAssets.length == nftTokenIds.length, "inconsistent tokenIds length");
     require(nftAssets.length == amounts.length, "inconsistent amounts length");

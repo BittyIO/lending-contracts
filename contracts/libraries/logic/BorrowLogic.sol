@@ -55,7 +55,7 @@ library BorrowLogic {
     address indexed onBehalfOf,
     uint256 borrowRate,
     uint256 loanId,
-    uint16 indexed referral
+    string referral
   );
 
   /**

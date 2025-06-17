@@ -106,7 +106,7 @@ contract WrapperGateway is
     uint256 amount,
     uint256 nftTokenId,
     address onBehalfOf,
-    uint16 referralCode
+    string calldata referralCode
   ) external override nonReentrant {
     _checkValidCallerAndOnBehalfOf(onBehalfOf);
 
@@ -124,7 +124,7 @@ contract WrapperGateway is
     uint256[] calldata amounts,
     uint256[] calldata nftTokenIds,
     address onBehalfOf,
-    uint16 referralCode
+    string calldata referralCode
   ) external override nonReentrant {
     require(nftTokenIds.length == reserveAssets.length, "WrapperGateway: inconsistent reserveAssets length");
     require(nftTokenIds.length == amounts.length, "WrapperGateway: inconsistent amounts length");
@@ -274,7 +274,7 @@ contract WrapperGateway is
     uint256 amount,
     uint256 nftTokenId,
     address onBehalfOf,
-    uint16 referralCode
+    string calldata referralCode
   ) external override nonReentrant {
     _checkValidCallerAndOnBehalfOf(onBehalfOf);
 
@@ -287,7 +287,7 @@ contract WrapperGateway is
     uint256[] calldata amounts,
     uint256[] calldata nftTokenIds,
     address onBehalfOf,
-    uint16 referralCode
+    string calldata referralCode
   ) external override nonReentrant {
     require(nftTokenIds.length == amounts.length, "inconsistent amounts length");
 

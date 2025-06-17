@@ -18,7 +18,7 @@ interface ILendPool {
     address indexed reserve,
     uint256 amount,
     address indexed onBehalfOf,
-    uint16 indexed referral
+    string referral
   );
 
   /**
@@ -49,7 +49,7 @@ interface ILendPool {
     address indexed onBehalfOf,
     uint256 borrowRate,
     uint256 loanId,
-    uint16 indexed referral
+    string referral
   );
 
   /**
@@ -181,7 +181,7 @@ interface ILendPool {
     address reserve,
     uint256 amount,
     address onBehalfOf,
-    uint16 referralCode
+    string calldata referralCode
   ) external;
 
   /**
@@ -222,7 +222,7 @@ interface ILendPool {
     address nftAsset,
     uint256 nftTokenId,
     address onBehalfOf,
-    uint16 referralCode
+    string calldata referralCode
   ) external;
 
   function batchBorrow(
@@ -231,7 +231,7 @@ interface ILendPool {
     address[] calldata nftAssets,
     uint256[] calldata nftTokenIds,
     address onBehalfOf,
-    uint16 referralCode
+    string calldata referralCode
   ) external;
 
   /**

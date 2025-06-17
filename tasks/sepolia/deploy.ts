@@ -86,16 +86,13 @@ import {
   WETHGatewayFactory
 } from "../../types";
 import { BNFTRegistry, IncentivesController, NftAssets, NftConfigs, Punk, ReserveAggregators, ReserveAssets, ReserveConfigs } from "./config";
+import { boolean } from "hardhat/internal/core/params/argumentTypes";
 
 task("sepolia:deploy-all", "Deploy lend pool for full enviroment")
   .addFlag("verify", "Verify contracts at Etherscan")
   .setAction(async ({ verify }, { run }) => {
     await run("set-DRE");
     await run("compile");
-    const network = DRE.network.name;
-    const reserveAssets = ReserveAssets[network];
-    const reserveAggregators = ReserveAggregators[network];
-
     await run("sepolia:deploy-proxy-admin", { verify });
     await run("sepolia:deploy-bitty-collector", { verify });
     await run("sepolia:deploy-address-provider", { verify });
@@ -113,13 +110,12 @@ task("sepolia:deploy-all", "Deploy lend pool for full enviroment")
     await run("sepolia:deploy-nft-oracle", { verify });
     await run("sepolia:config-nft-oracle");
     await run("sepolia:config-reserves", { verify });
-    await run('sepolia:add-aggregator', { reserve: reserveAssets.USDT, aggregator: reserveAggregators.USDT });
-    await run('sepolia:add-aggregator', { reserve: reserveAssets.USDC, aggregator: reserveAggregators.USDC });
+    await run('sepolia:add-aggregators');
     await run("sepolia:config-nfts", { init: true });
     await run("sepolia:deploy-weth-gateway", { verify });
     await run("sepolia:config-weth-gateway");
     await run("sepolia:deploy-punk-gateway", { verify });
-    await run('sepolia:punkgateway-authorize-lendpool-erc20', { tokens: [reserveAssets.USDT, reserveAssets.USDC] });
+    await run('sepolia:punkgateway-authorize-lendpool-erc20-tokens');
     await run("sepolia:wethgateway-authorize-caller-whitelist", { caller: (await getPunkGateway()).address, flag: '1' });
     await run("sepolia:deploy-data-provider", { verify, wallet: true, protocol: true, ui: true });
     await run("sepolia:update-reserve-tokens");
@@ -227,7 +223,7 @@ task("sepolia:config-incentive", "").setAction(async ({ }, { run }) => {
   const incentivesControllerAddress = IncentivesController[DRE.network.name];
   if (incentivesControllerAddress != undefined || notFalsyOrZeroAddress(incentivesControllerAddress)) {
     console.log("Setting IncentivesController to address provider...");
-    await waitForTx(await addressesProvider.setIncentivesController(incentivesControllerAddress));
+    await addressesProvider.setIncentivesController(incentivesControllerAddress);
   }
 });
 
@@ -455,7 +451,7 @@ task("sepolia:config-reserves", "")
   });
 
 task("sepolia:config-nfts", "")
-  .addOptionalParam("init", "Initialize nfts")
+  .addOptionalParam<boolean>("init", "Initialize nfts", false, boolean)
   .setAction(async ({ init }, { run }) => {
     await run("set-DRE");
     console.log("Init & Config NFT assets");
@@ -558,21 +554,21 @@ task("sepolia:deploy-data-provider", "Deploy data provider for full enviroment")
     if (wallet) {
       const walletBalanceProvider = await deployWalletBalancerProvider(verify);
       console.log("WalletBalancerProvider deployed at:", walletBalanceProvider.address);
-      await waitForTx(await addressesProvider.setWalletBalanceProvider(walletBalanceProvider.address));
+      await addressesProvider.setWalletBalanceProvider(walletBalanceProvider.address);
     }
 
     // this contract is not support upgrade, just deploy new contract
     if (protocol) {
       const bittyProtocolDataProvider = await deployBittyProtocolDataProvider(addressesProvider.address, verify);
       console.log("BittyProtocolDataProvider deployed at:", bittyProtocolDataProvider.address);
-      await waitForTx(await addressesProvider.setBittyDataProvider(bittyProtocolDataProvider.address));
+      await addressesProvider.setBittyDataProvider(bittyProtocolDataProvider.address);
     }
 
     // this contract is not support upgrade, just deploy new contract
     if (ui) {
       const uiPoolDataProvider = await deployUiPoolDataProvider(reserveOracle, nftOracle, verify);
       console.log("UiPoolDataProvider deployed at:", uiPoolDataProvider.address);
-      await waitForTx(await addressesProvider.setUIDataProvider(uiPoolDataProvider.address));
+      await addressesProvider.setUIDataProvider(uiPoolDataProvider.address);
     }
   });
 
@@ -835,6 +831,16 @@ task("sepolia:punkgateway-authorize-lendpool-erc20", "")
     await waitForTx(await punkGateway.authorizeLendPoolERC20(tokens));
   });
 
+
+task("sepolia:punkgateway-authorize-lendpool-erc20-tokens", "Authorize tokens to lend pool")
+  .setAction(async (_, { run }) => {
+    await run("set-DRE");
+    const punkGateway = await getPunkGateway();
+    const tokens = Object.values(ReserveAssets[DRE.network.name]) as string[];
+    console.log("PunkGateway: %s auth tokens %s", punkGateway.address, tokens);
+    await waitForTx(await punkGateway.authorizeLendPoolERC20(tokens));
+  });
+
 task("sepolia:punkgateway-authorize-caller-whitelist", "Initialize gateway configuration.")
   .addParam("caller", "Address of whitelist")
   .addParam("flag", "Flag of whitelist, 0-1")
@@ -868,24 +874,34 @@ task("sepolia:deploy-mock-aggregator", "Deploy one mock aggregator for dev envir
   });
 
 
-task("sepolia:add-aggregator", "Doing oracle admin task")
-  .addParam("reserve", "reserve name")
+task("sepolia:add-aggregator", "Add aggregator to reserve")
+  .addParam("reserveName", "reserve name")
+  .addParam("reserveAddress", "reserve address")
   .addParam("aggregator", "aggregator address")
-  .setAction(async ({ reserve, aggregator }, DRE) => {
+  .setAction(async ({ reserveName, reserveAddress, aggregator }, DRE) => {
     await DRE.run("set-DRE");
     const addressesProvider = await getLendPoolAddressesProvider();
     const oracle = await getReserveOracle(await addressesProvider.getReserveOracle());
     const owwnerAddress = await oracle.owner();
     const ownerSigner = DRE.ethers.provider.getSigner(owwnerAddress);
-    const reserveAddress = reserve;
-    if (!reserveAddress || reserveAddress === "") {
-      throw new Error(`Reserve ${reserve} not found`);
-    }
-    console.log("reserveAddress", reserveAddress);
     await waitForTx(await oracle.connect(ownerSigner).addAggregator(reserveAddress, aggregator));
-    await insertContractAddressInDb(`${reserve}EthAggregator` as eContractid, aggregator);
+    await insertContractAddressInDb(`${reserveName}Aggregator` as eContractid, aggregator);
     const price = await oracle.getAssetPrice(reserveAddress);
-    console.log(price.toString());
+    console.log("reserveName", reserveName, "reserveAddress", reserveAddress, "aggregator", aggregator, "price", price.toString());
+  });
+
+
+task("sepolia:add-aggregators", "Add aggregators to reserve")
+  .setAction(async (_, { run }) => {
+    await run("set-DRE");
+    const reserveAssets = ReserveAssets[DRE.network.name];
+    const reserveAggregators = ReserveAggregators[DRE.network.name];
+    for (const [reserveName, reserveAddress] of Object.entries(reserveAssets)) {
+      const aggregator = reserveAggregators[reserveName];
+      if (aggregator) {
+        await run("sepolia:add-aggregator", { reserveName: reserveName, reserveAddress: reserveAddress, aggregator: aggregator });
+      }
+    }
   });
 
 

@@ -21,7 +21,7 @@ interface IPunkGateway {
     uint256 amount,
     uint256 punkIndex,
     address onBehalfOf,
-    uint16 referralCode
+    string calldata referralCode
   ) external;
 
   function batchBorrow(
@@ -29,7 +29,7 @@ interface IPunkGateway {
     uint256[] calldata amounts,
     uint256[] calldata punkIndexs,
     address onBehalfOf,
-    uint16 referralCode
+    string calldata referralCode
   ) external;
 
   /**
@@ -91,14 +91,14 @@ interface IPunkGateway {
     uint256 amount,
     uint256 punkIndex,
     address onBehalfOf,
-    uint16 referralCode
+    string calldata referralCode
   ) external;
 
   function batchBorrowETH(
     uint256[] calldata amounts,
     uint256[] calldata punkIndexs,
     address onBehalfOf,
-    uint16 referralCode
+    string calldata referralCode
   ) external;
 
   /**
