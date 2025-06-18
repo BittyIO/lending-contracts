@@ -514,7 +514,7 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "asset",
+        "name": "reserveAsset",
         "type": "address"
       },
       {
@@ -552,7 +552,7 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "asset",
+        "name": "reserve",
         "type": "address"
       },
       {
@@ -1182,19 +1182,6 @@
   {
     "inputs": [
       {
-        "internalType": "contract ILendPoolAddressesProvider",
-        "name": "provider",
-        "type": "address"
-      }
-    ],
-    "name": "initialize",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
         "internalType": "address",
         "name": "nftAsset",
         "type": "address"
@@ -1219,40 +1206,6 @@
       }
     ],
     "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "operator",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "from",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "tokenId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "bytes",
-        "name": "data",
-        "type": "bytes"
-      }
-    ],
-    "name": "onERC721Received",
-    "outputs": [
-      {
-        "internalType": "bytes4",
-        "name": "",
-        "type": "bytes4"
-      }
-    ],
-    "stateMutability": "pure",
     "type": "function"
   },
   {
@@ -1474,7 +1427,7 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "asset",
+        "name": "reserve",
         "type": "address"
       },
       {

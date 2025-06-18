@@ -118,9 +118,9 @@
         "type": "address"
       },
       {
-        "internalType": "uint16",
+        "internalType": "string",
         "name": "referralCode",
-        "type": "uint16"
+        "type": "string"
       }
     ],
     "name": "batchBorrowETH",
@@ -185,9 +185,9 @@
         "type": "address"
       },
       {
-        "internalType": "uint16",
+        "internalType": "string",
         "name": "referralCode",
-        "type": "uint16"
+        "type": "string"
       }
     ],
     "name": "borrowETH",
@@ -203,9 +203,9 @@
         "type": "address"
       },
       {
-        "internalType": "uint16",
+        "internalType": "string",
         "name": "referralCode",
-        "type": "uint16"
+        "type": "string"
       }
     ],
     "name": "depositETH",
