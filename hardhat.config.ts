@@ -24,6 +24,7 @@ import "hardhat-dependency-compiler";
 import "hardhat-gas-reporter";
 import "solidity-coverage";
 require("hardhat-storage-layout-diff");
+import "hardhat-abi-exporter";
 
 const SKIP_LOAD = process.env.SKIP_LOAD === "true";
 const DEFAULT_BLOCK_GAS_LIMIT = 12450000;
@@ -67,6 +68,14 @@ const getCommonNetworkConfig = (networkName: eNetwork, networkId: number) => ({
 });
 
 const buidlerConfig: HardhatUserConfig = {
+  abiExporter: {
+    path: "./abis",
+    runOnCompile: true,
+    clear: true,
+    flat: true,
+    pretty: false,
+    except: ["test*", "@openzeppelin*", "Mock*", "Test*", "mock*"],
+  },
   gasReporter: {
     reportFormat: "markdown",
     enabled: process.env.REPORT_GAS ? true : false,
