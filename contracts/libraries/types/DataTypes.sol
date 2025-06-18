@@ -110,7 +110,7 @@ library DataTypes {
     address asset;
     uint256 amount;
     address onBehalfOf;
-    uint16 referralCode;
+    string referralCode;
   }
 
   struct ExecuteWithdrawParams {
@@ -127,7 +127,7 @@ library DataTypes {
     address nftAsset;
     uint256 nftTokenId;
     address onBehalfOf;
-    uint16 referralCode;
+    string referralCode;
   }
 
   struct ExecuteBatchBorrowParams {
@@ -137,7 +137,7 @@ library DataTypes {
     address[] nftAssets;
     uint256[] nftTokenIds;
     address onBehalfOf;
-    uint16 referralCode;
+    string referralCode;
   }
 
   struct ExecuteRepayParams {

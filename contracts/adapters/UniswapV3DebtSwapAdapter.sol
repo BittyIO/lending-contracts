@@ -321,7 +321,7 @@ contract UniswapV3DebtSwapAdapter is
     );
     require(vars.toDebtAmount > 0, "U3DSA: invalid to debt amount");
 
-    bittyLendPool.borrow(vars.toDebtReserve, vars.toDebtAmount, vars.nftAsset, vars.nftTokenId, vars.fromBorrower, 0);
+    bittyLendPool.borrow(vars.toDebtReserve, vars.toDebtAmount, vars.nftAsset, vars.nftTokenId, vars.fromBorrower, "");
 
     vars.toReserveBalanceAfterBorrow = IERC20Upgradeable(vars.toDebtReserve).balanceOf(address(this));
     require(

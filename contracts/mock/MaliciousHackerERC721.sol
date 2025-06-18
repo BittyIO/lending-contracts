@@ -43,7 +43,7 @@ contract MaliciousHackerERC721 is IERC721Receiver {
     address[] nfts;
     address onBehalfOf;
     address to;
-    uint16 referralCode;
+    string referralCode;
     uint256 amount;
     uint256 bidPrice;
     uint256 bidFine;
@@ -66,7 +66,7 @@ contract MaliciousHackerERC721 is IERC721Receiver {
     vars.nfts = _pool.getNftsList();
     vars.onBehalfOf = msg.sender;
     vars.to = msg.sender;
-    vars.referralCode = 0;
+    vars.referralCode = "0";
     vars.amount = 1 ether;
     vars.bidPrice = 2 ether;
     vars.bidFine = 0.1 ether;

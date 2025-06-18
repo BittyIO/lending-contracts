@@ -34,7 +34,7 @@ library SupplyLogic {
     address indexed reserve,
     uint256 amount,
     address indexed onBehalfOf,
-    uint16 indexed referral
+    string referral
   );
 
   /**

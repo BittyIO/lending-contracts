@@ -130,7 +130,7 @@ contract LendPool is
     address asset,
     uint256 amount,
     address onBehalfOf,
-    uint16 referralCode
+    string calldata referralCode
   ) external override nonReentrant whenNotPaused {
     SupplyLogic.executeDeposit(
       _reserves,
@@ -186,7 +186,7 @@ contract LendPool is
     address nftAsset,
     uint256 nftTokenId,
     address onBehalfOf,
-    uint16 referralCode
+    string calldata referralCode
   ) external override nonReentrant whenNotPaused {
     BorrowLogic.executeBorrow(
       _addressesProvider,
@@ -210,7 +210,7 @@ contract LendPool is
     address[] calldata nftAssets,
     uint256[] calldata nftTokenIds,
     address onBehalfOf,
-    uint16 referralCode
+    string calldata referralCode
   ) external override nonReentrant whenNotPaused {
     DataTypes.ExecuteBatchBorrowParams memory params;
     params.initiator = _msgSender();

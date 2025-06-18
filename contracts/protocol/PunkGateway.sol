@@ -133,7 +133,7 @@ contract PunkGateway is IPunkGateway, ERC721HolderUpgradeable, EmergencyTokenRec
     uint256 amount,
     uint256 punkIndex,
     address onBehalfOf,
-    uint16 referralCode
+    string calldata referralCode
   ) external override nonReentrant {
     _checkValidCallerAndOnBehalfOf(onBehalfOf);
 
@@ -150,7 +150,7 @@ contract PunkGateway is IPunkGateway, ERC721HolderUpgradeable, EmergencyTokenRec
     uint256[] calldata amounts,
     uint256[] calldata punkIndexs,
     address onBehalfOf,
-    uint16 referralCode
+    string calldata referralCode
   ) external override nonReentrant {
     require(punkIndexs.length == reserveAssets.length, "inconsistent reserveAssets length");
     require(punkIndexs.length == amounts.length, "inconsistent amounts length");
@@ -299,7 +299,7 @@ contract PunkGateway is IPunkGateway, ERC721HolderUpgradeable, EmergencyTokenRec
     uint256 amount,
     uint256 punkIndex,
     address onBehalfOf,
-    uint16 referralCode
+    string calldata referralCode
   ) external override nonReentrant {
     _checkValidCallerAndOnBehalfOf(onBehalfOf);
 
@@ -311,7 +311,7 @@ contract PunkGateway is IPunkGateway, ERC721HolderUpgradeable, EmergencyTokenRec
     uint256[] calldata amounts,
     uint256[] calldata punkIndexs,
     address onBehalfOf,
-    uint16 referralCode
+    string calldata referralCode
   ) external override nonReentrant {
     require(punkIndexs.length == amounts.length, "inconsistent amounts length");
 
