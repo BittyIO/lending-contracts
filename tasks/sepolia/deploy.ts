@@ -1,5 +1,6 @@
 import { BytesLike } from "ethers";
 import { task } from "hardhat/config";
+import { boolean } from "hardhat/internal/core/params/argumentTypes";
 import {
   ConfigNames,
   getEmergencyAdmin,
@@ -83,10 +84,10 @@ import {
   BittyUpgradeableProxy,
   BittyUpgradeableProxyFactory,
   PunkGateway,
-  WETHGatewayFactory
+  WETHGatewayFactory,
 } from "../../types";
+import { TestEventFactory } from "../../types/TestEventFactory";
 import { BNFTRegistry, IncentivesController, NftAssets, NftConfigs, Punk, ReserveAggregators, ReserveAssets, ReserveConfigs } from "./config";
-import { boolean } from "hardhat/internal/core/params/argumentTypes";
 
 task("sepolia:deploy-all", "Deploy lend pool for full enviroment")
   .addFlag("verify", "Verify contracts at Etherscan")
@@ -469,7 +470,12 @@ task("sepolia:config-nfts", "")
 
 export const deployWETHGateway = async (verify?: boolean) => {
   const wethImpl = await new WETHGatewayFactory(await getDeploySigner()).deploy();
-  return withSaveAndVerify(wethImpl, "WETHGateway", [], verify);
+  return await withSaveAndVerify(wethImpl, "WETHGatewayImpl", [], verify);
+};
+
+export const deployTestEvent = async (verify?: boolean) => {
+  const testEvent = await new TestEventFactory(await getDeploySigner()).deploy();
+  return await withSaveAndVerify(testEvent, "TestEvent", [], verify);
 };
 
 task(`sepolia:deploy-weth-gateway`, ``)

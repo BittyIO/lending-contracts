@@ -16,31 +16,31 @@
     "deployer": "0x75b38661D59706aD533bA8905502dd19957dc228"
   },
   "ReserveLogic": {
-    "address": "0x56f96aE6B480211e117f749C9b44958aBd139DEc",
+    "address": "0x1a79892177B9B54D73156db4b39200c97732c42a",
     "deployer": "0x75b38661D59706aD533bA8905502dd19957dc228"
   },
   "GenericLogic": {
-    "address": "0x80cbe353C4D1006E6C5133eA0FA3Aa51bEAbe4Fd",
+    "address": "0x7D61f9DD564A84F18c1DCc7c9d0166BE66970aDf",
     "deployer": "0x75b38661D59706aD533bA8905502dd19957dc228"
   },
   "NftLogic": {
-    "address": "0xf55C21f5cf979cAfBF4f162A520B05968Ce81F56",
+    "address": "0x6e87FADEb8aEdBa5d960e3cf242b917daDd8A5b9",
     "deployer": "0x75b38661D59706aD533bA8905502dd19957dc228"
   },
   "ValidationLogic": {
-    "address": "0x3Bbd34C2c502878Dc27ecC0DA2D2c3b8BE4d1857",
+    "address": "0x2D371421E6a4Eb7f139cb8ABc64A58788F0bb2b8",
     "deployer": "0x75b38661D59706aD533bA8905502dd19957dc228"
   },
   "SupplyLogic": {
-    "address": "0xE7ee1608eD0a67DA5dCE0d25785Ee94f8aD9fa33",
+    "address": "0x8Daba2c27eBD904f5CE52f93784b7240A635975D",
     "deployer": "0x75b38661D59706aD533bA8905502dd19957dc228"
   },
   "BorrowLogic": {
-    "address": "0x79BCD2CCBB5c52889Ee0DdEaCE7CaE346351Ab45",
+    "address": "0x030a71D598BA91A891997ca94867A261A9bAF439",
     "deployer": "0x75b38661D59706aD533bA8905502dd19957dc228"
   },
   "LiquidateLogic": {
-    "address": "0xDBbaBcCAde58dC74D01F1dD400d137D5454daf0E",
+    "address": "0xEa2aC2d19Cfc7134CbA865732059bc4E35c277dA",
     "deployer": "0x75b38661D59706aD533bA8905502dd19957dc228"
   },
   "ConfiguratorLogic": {
@@ -88,9 +88,15 @@
   "USDCAggregator": {
     "address": "0x986b5E1e1755e3C2440e960477f25201B0a8bbD4"
   },
+  "WETHGatewayImpl": {
+    "address": "0xA6EAd96A914c2F8b8D3065e2778f8F11359C0B52"
+  },
   "WETHGateway": {
     "address": "0xCA12e226b2bb487684e6dB99B93AefFBb9319D5f",
     "deployer": "0x75b38661D59706aD533bA8905502dd19957dc228"
+  },
+  "PunkGatewayImpl": {
+    "address": "0x2428bdCA11A2248E9F27c0Db2bD5F24bf4Cf534f"
   },
   "PunkGateway": {
     "address": "0xF74c68C3383Ab98379eDb96f0a7BFE4E448bb4C6",
@@ -134,5 +140,9 @@
   },
   "bittyDebtUSDC": {
     "address": "0xfF31dF7334a09A44c2a1D3E913A1B3f2f5a95B57"
+  },
+  "LendPoolImpl": {
+    "address": "0x99a3995aBF912DC362B0a9552faA7A69C7ea9202",
+    "deployer": "0x75b38661D59706aD533bA8905502dd19957dc228"
   }
 }
