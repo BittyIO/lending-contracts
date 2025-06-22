@@ -270,12 +270,7 @@ const buildTestEnv = async (deployer: Signer, secondaryWallet: Signer) => {
   const nftOracleImpl = await deployNFTOracle();
   await waitForTx(
     await nftOracleImpl.initialize(
-      await addressesProvider.getPoolAdmin(),
-      "20000000000000000000",
-      "10000000000000000000",
-      1,
-      1,
-      100
+      await addressesProvider.getPoolAdmin()
     )
   );
   await waitForTx(await addressesProvider.setNFTOracle(nftOracleImpl.address));
@@ -286,12 +281,7 @@ const buildTestEnv = async (deployer: Signer, secondaryWallet: Signer) => {
   const mockNftOracleImpl = await deployMockNFTOracle();
   await waitForTx(
     await mockNftOracleImpl.initialize(
-      await addressesProvider.getPoolAdmin(),
-      "20000000000000000000",
-      "10000000000000000000",
-      1,
-      1,
-      100
+      await addressesProvider.getPoolAdmin()
     )
   );
 
@@ -321,13 +311,12 @@ const buildTestEnv = async (deployer: Signer, secondaryWallet: Signer) => {
     BTokenSymbolPrefix,
     DebtTokenNamePrefix,
     DebtTokenSymbolPrefix,
-    poolAdmin,
     collectorAddress,
     ConfigNames.Bitty,
     false
   );
 
-  await configureReservesByHelper(reservesParams, allReservesAddresses, poolAdmin);
+  await configureReservesByHelper(reservesParams, allReservesAddresses);
 
   //////////////////////////////////////////////////////////////////////////////
   console.log("-> Prepare NFT pools...");
@@ -341,9 +330,9 @@ const buildTestEnv = async (deployer: Signer, secondaryWallet: Signer) => {
   };
 
   console.log("-> Prepare NFT init and configure...");
-  await initNftsByHelper(nftsParams, allNftsAddresses, poolAdmin, ConfigNames.Bitty, false);
+  await initNftsByHelper(nftsParams, allNftsAddresses);
 
-  await configureNftsByHelper(nftsParams, allNftsAddresses, poolAdmin);
+  await configureNftsByHelper(nftsParams, allNftsAddresses);
 
   //////////////////////////////////////////////////////////////////////////////
   console.log("-> Prepare wallet & data & ui provider...");

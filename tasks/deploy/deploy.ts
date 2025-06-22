@@ -86,7 +86,6 @@ import {
   PunkGateway,
   WETHGatewayFactory,
 } from "../../types";
-import { TestEventFactory } from "../../types/TestEventFactory";
 import { BNFTRegistry, IncentivesController, NftAssets, NftConfigs, Punk, ReserveAggregators, ReserveAssets, ReserveConfigs } from "./config";
 
 task("deploy:deploy-all", "Deploy lend pool for full enviroment")
@@ -471,11 +470,6 @@ task("config:config-nfts", "")
 export const deployWETHGateway = async (verify?: boolean) => {
   const wethImpl = await new WETHGatewayFactory(await getDeploySigner()).deploy();
   return await withSaveAndVerify(wethImpl, "WETHGatewayImpl", [], verify);
-};
-
-export const deployTestEvent = async (verify?: boolean) => {
-  const testEvent = await new TestEventFactory(await getDeploySigner()).deploy();
-  return await withSaveAndVerify(testEvent, "TestEvent", [], verify);
 };
 
 task(`deploy:deploy-weth-gateway`, ``)

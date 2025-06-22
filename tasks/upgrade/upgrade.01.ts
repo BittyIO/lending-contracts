@@ -2,7 +2,6 @@ import { task } from "hardhat/config";
 import { ZERO_ADDRESS } from "../../helpers/constants";
 import {
     deployBorrowLogicLibrary,
-    deployConfiguratorLogicLibrary,
     deployGenericLogic,
     deployLendPool,
     deployLiquidateLogicLibrary,
