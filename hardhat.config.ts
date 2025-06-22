@@ -38,7 +38,7 @@ const PRIVATE_KEY = process.env.PRIVATE_KEY || "";
 
 // Prevent to load scripts before compilation and typechain
 if (!SKIP_LOAD) {
-  ["misc", "migrations", "dev", "full", "verifications", "deployments", "helpers", "sepolia"].forEach((folder) => {
+  ["misc", "dev", "full", "verifications", "deployments", "helpers", "sepolia", "upgrade"].forEach((folder) => {
     const tasksPath = path.join(__dirname, "tasks", folder);
     fs.readdirSync(tasksPath)
       .filter((pth) => pth.includes(".ts"))

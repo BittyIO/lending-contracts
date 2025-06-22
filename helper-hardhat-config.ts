@@ -5,6 +5,7 @@ import { eEthereumNetwork, iParamsPerNetwork } from "./helpers/types";
 require("dotenv").config();
 
 const ALCHEMY_KEY = process.env.ALCHEMY_KEY || "";
+const INFURA_KEY = process.env.INFURA_KEY || "";
 const FORK = process.env.FORK || "";
 const FORK_BLOCK_NUMBER = process.env.FORK_BLOCK_NUMBER ? parseInt(process.env.FORK_BLOCK_NUMBER) : 0;
 
@@ -26,7 +27,7 @@ export const buildForkConfig = (): HardhatNetworkForkingUserConfig | undefined =
 export const NETWORKS_RPC_URL: iParamsPerNetwork<string> = {
   [eEthereumNetwork.goerli]: `https://eth-goerli.g.alchemy.com/v2/${ALCHEMY_KEY}`,
   [eEthereumNetwork.rinkeby]: `https://eth-rinkeby.g.alchemy.com/v2/${ALCHEMY_KEY}`,
-  [eEthereumNetwork.main]: `https://eth-mainnet.g.alchemy.com/v2/${ALCHEMY_KEY}`,
+  [eEthereumNetwork.main]: `https://mainnet.infura.io/v3/${INFURA_KEY}`,
   [eEthereumNetwork.coverage]: "http://localhost:8555",
   [eEthereumNetwork.hardhat]: "http://localhost:8545",
   [eEthereumNetwork.localhost]: "http://localhost:8545",
