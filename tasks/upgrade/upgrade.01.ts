@@ -15,7 +15,7 @@ import {
 import { getDeploySigner, getPunkGateway } from "../../helpers/contracts-getters";
 import { getContractAddressInDb } from "../../helpers/contracts-helpers";
 import { BittyProxyAdminFactory, LendPoolAddressesProviderFactory } from "../../types";
-import { deployWETHGateway, getWETHGateway } from "../sepolia/deploy";
+import { deployWETHGateway, getWETHGateway } from "../deploy/deploy";
 
 task(`upgrade:referral`, ``)
     .addFlag("verify", `Verify contracts at Etherscan`)
