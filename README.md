@@ -11,18 +11,9 @@ Bitty Lending Protocol is a decentralized non-custodial NFT lending protocol whe
 Bitty lending protocol fork from [bend-lending-protocol](https://github.com/BendDAO/bend-lending-protocol) and refers to the architecture design and adopts some of the code of [AAVE](https://github.com/aave),
 Thanks AAVE and BendDAO for the opensouce spirit & code.
 
-```
-
 ## Setup
 
-The repository uses Docker Compose to manage sensitive keys and load the configuration. Prior any action like test or deploy, you must run `docker-compose up` to start the `contracts-env` container, and then connect to the container console via `docker-compose exec contracts-env bash`.
-
-Follow the next steps to setup the repository:
-
-- Install `docker` and `docker-compose`
-- Create an environment file named `.env` and fill the next environment variables
-
-```
+Create an enviroment file named `.env` and fill the next enviroment variables
 
 ```
 # private key for deoployer
