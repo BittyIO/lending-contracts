@@ -23,8 +23,10 @@ Follow the next steps to setup the repository:
 - Create an environment file named `.env` and fill the next environment variables
 
 ```
-# Mnemonic, only first address will be used
-MNEMONIC=""
+
+```
+# private key for deoployer
+PRIVATE_KEY=""
 
 # Add Alchemy or Infura provider keys, alchemy takes preference at the config level
 ALCHEMY_KEY=""
