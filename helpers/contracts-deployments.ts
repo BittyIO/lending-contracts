@@ -294,10 +294,8 @@ export const deployLendPool = async (verify?: boolean) => {
 
 export const deployReserveOracle = async (args: [], verify?: boolean) => {
   const oracleImpl = await (await new ReserveOracleFactory(await getDeploySigner()).deploy()).deployed();
-  if (verify) {
-    await verifyContract(eContractid.ReserveOracleImpl, oracleImpl, []);
-  }
-  return oracleImpl;
+  await insertContractAddressInDb(eContractid.ReserveOracleImpl, oracleImpl.address);
+  return await withSaveAndVerify(oracleImpl, eContractid.ReserveOracle, [], verify);
 };
 
 export const deployMockReserveOracle = async (args: [], verify?: boolean) =>
@@ -324,10 +322,8 @@ export const deployChainlinkAggregatorHelper = async (args: [], verify?: boolean
 
 export const deployNFTOracle = async (verify?: boolean) => {
   const oracleImpl = await (await new NFTOracleFactory(await getDeploySigner()).deploy()).deployed();
-  if (verify) {
-    await verifyContract(eContractid.NFTOracleImpl, oracleImpl, []);
-  }
-  return oracleImpl;
+  await insertContractAddressInDb(eContractid.NFTOracleImpl, oracleImpl.address);
+  return await withSaveAndVerify(oracleImpl, eContractid.NFTOracle, [], verify);
 };
 
 export const deployMockNFTOracle = async (verify?: boolean) =>

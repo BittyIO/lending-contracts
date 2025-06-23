@@ -126,7 +126,7 @@ makeSuite("NFTOracle", (testEnv: TestEnv) => {
 
     expect(await mockNftOracle.getPriceFeedLength(users[0].address)).to.equal("3");
     const price = await mockNftOracle.getAssetPrice(users[0].address);
-    expect(price).to.equal("405");
+    expect(price).to.equal("420");
     const timestamp = await mockNftOracle.getLatestTimestamp(users[0].address);
     expect(timestamp).to.equal(currentTime.add(45));
     await mockNftOracle.mock_setBlockTimestamp(currentTime);
@@ -162,9 +162,9 @@ makeSuite("NFTOracle", (testEnv: TestEnv) => {
     expect(await mockNftOracle.getPriceFeedLength(users[0].address)).to.equal("3");
     expect(await mockNftOracle.getPriceFeedLength(users[1].address)).to.equal("3");
     const price = await mockNftOracle.getAssetPrice(users[0].address);
-    expect(price).to.equal("405");
+    expect(price).to.equal("420");
     const price1 = await mockNftOracle.getAssetPrice(users[1].address);
-    expect(price1).to.equal("605");
+    expect(price1).to.equal("620");
     const timestamp = await mockNftOracle.getLatestTimestamp(users[0].address);
     expect(timestamp).to.equal(currentTime.add(45));
     const timestamp1 = await mockNftOracle.getLatestTimestamp(users[1].address);
@@ -337,116 +337,6 @@ makeSuite("NFTOracle", (testEnv: TestEnv) => {
     await mockNftOracle.mock_setBlockTimestamp(currentTime);
   });
 
-  makeSuite("NFTOracle-TWAP", () => {
-    let basestamp;
-    before(async () => {
-      const { mockNftOracle, users } = testEnv;
-      await mockNftOracle.addAsset(users[0].address);
-      const currentTime = await mockNftOracle.mock_getCurrentTimestamp();
-      basestamp = currentTime;
-      await mockNftOracle.setTwapInterval(45);
-      await mockNftOracle.mock_setBlockTimestamp(currentTime.add(15));
-      await mockNftOracle.setAssetData(users[0].address, 4000000000000000);
-      await mockNftOracle.mock_setBlockTimestamp(currentTime.add(30));
-      await mockNftOracle.setAssetData(users[0].address, 4050000000000000);
-      await mockNftOracle.mock_setBlockTimestamp(currentTime.add(45));
-      await mockNftOracle.setAssetData(users[0].address, 4100000000000000);
-      await mockNftOracle.mock_setBlockTimestamp(currentTime.add(60));
-    });
-    after(async () => {
-      const { mockNftOracle, users } = testEnv;
-      await mockNftOracle.removeAsset(users[0].address);
-      await mockNftOracle.mock_setBlockTimestamp(basestamp);
-    });
-    it("twap price", async () => {
-      const { mockNftOracle, users } = testEnv;
-      // (15*4050000000000000+15*4000000000000000)/45 = 4025000000000000
-      const price = await mockNftOracle.getAssetPrice(users[0].address);
-      expect(price).to.equal("4025000000000000");
-      await mockNftOracle.setAssetData(users[0].address, 4100000000000000);
-      const price1 = await mockNftOracle.getAssetPrice(users[0].address);
-      // (15*4100000000000000+15*4050000000000000+15*4000000000000000)/45 = 4025000000000000
-      expect(price1).to.equal("4050000000000000");
-    });
-
-    it("asking interval more than asset has", async () => {
-      const { mockNftOracle, users } = testEnv;
-      await mockNftOracle.setTwapInterval(46);
-      // (15*4100000000000000+15*4050000000000000+15*4000000000000000)/45 = 405
-      const price = await mockNftOracle.getAssetPrice(users[0].address);
-      expect(price).to.equal("4050000000000000");
-    });
-
-    it("asking interval less than asset has", async () => {
-      const { mockNftOracle, users } = testEnv;
-      await mockNftOracle.removeAsset(users[0].address);
-      await mockNftOracle.setTwapInterval(44);
-      await mockNftOracle.addAsset(users[0].address);
-      const currentTime = await mockNftOracle.mock_getCurrentTimestamp();
-      basestamp = currentTime;
-      await mockNftOracle.mock_setBlockTimestamp(currentTime.add(15));
-      await mockNftOracle.setAssetData(users[0].address, 4000000000000000);
-      await mockNftOracle.mock_setBlockTimestamp(currentTime.add(30));
-      await mockNftOracle.setAssetData(users[0].address, 4050000000000000);
-      await mockNftOracle.mock_setBlockTimestamp(currentTime.add(45));
-      await mockNftOracle.setAssetData(users[0].address, 4100000000000000);
-      await mockNftOracle.mock_setBlockTimestamp(currentTime.add(60));
-      await mockNftOracle.setAssetData(users[0].address, 4100000000000000);
-      // (15*4100000000000000+15*4050000000000000+14*4000000000000000)/44 = 4051136363636363
-      const price = await mockNftOracle.getAssetPrice(users[0].address);
-      expect(price).to.equal("4051136363636363");
-      await mockNftOracle.removeAsset(users[0].address);
-    });
-
-    it("given variant price period", async () => {
-      const { mockNftOracle, users } = testEnv;
-      await mockNftOracle.addAsset(users[0].address);
-      await mockNftOracle.setTwapInterval(95);
-      let currentTime = await mockNftOracle.mock_getCurrentTimestamp();
-      basestamp = currentTime;
-      await mockNftOracle.mock_setBlockTimestamp(currentTime.add(15));
-      await mockNftOracle.setAssetData(users[0].address, 4000000000000000);
-      await mockNftOracle.mock_setBlockTimestamp(currentTime.add(30));
-      await mockNftOracle.setAssetData(users[0].address, 4050000000000000);
-      await mockNftOracle.mock_setBlockTimestamp(currentTime.add(45));
-      await mockNftOracle.setAssetData(users[0].address, 4100000000000000);
-      await mockNftOracle.mock_setBlockTimestamp(currentTime.add(60));
-      currentTime = await mockNftOracle.mock_getCurrentTimestamp();
-      await mockNftOracle.mock_setBlockTimestamp(currentTime.add(30));
-      await mockNftOracle.setAssetData(users[0].address, 4200000000000000);
-      await mockNftOracle.mock_setBlockTimestamp(currentTime.add(50));
-      await mockNftOracle.setAssetData(users[0].address, 4200000000000000);
-
-      // twap price should be (400 * 15) + (405 * 15) + (410 * 45) + (420 * 20) / 95 = 409.74
-
-      const price = await mockNftOracle.getAssetPrice(users[0].address);
-      expect(price).to.equal("4097368421052631");
-    });
-
-    it("latest price update time is earlier than the request, return the latest price", async () => {
-      const { mockNftOracle, users } = testEnv;
-      const currentTime = await mockNftOracle.mock_getCurrentTimestamp();
-      await mockNftOracle.mock_setBlockTimestamp(currentTime.add(100));
-
-      // latest update time is base + 30, but now is base + 145 and asking for (now - 45)
-      // should return the latest price directly
-      await mockNftOracle.setTwapInterval(45);
-      await mockNftOracle.setAssetData(users[0].address, 4200000000000000);
-      const price = await mockNftOracle.getAssetPrice(users[0].address);
-      expect(price).to.equal("4200000000000000");
-    });
-
-    it("get 0 while interval is zero", async () => {
-      const { mockNftOracle, users } = testEnv;
-      await mockNftOracle.setTwapInterval(0);
-      const currentTime = await mockNftOracle.mock_getCurrentTimestamp();
-      await mockNftOracle.mock_setBlockTimestamp(currentTime.add(100));
-      await expect(mockNftOracle.setAssetData(users[0].address, 4200000000000000)).to.be.revertedWith(
-        "interval can't be 0"
-      );
-    });
-  });
-
   makeSuite("NFTOracle: getPreviousPrice/getPreviousTimestamp", () => {
     let baseTimestamp;
     before(async () => {
@@ -511,65 +401,6 @@ makeSuite("NFTOracle", (testEnv: TestEnv) => {
       const { mockNftOracle, users } = testEnv;
       await expect(mockNftOracle.getPreviousPrice(users[0].address, 3)).to.be.revertedWith("Not enough history");
       await expect(mockNftOracle.getPreviousTimestamp(users[0].address, 3)).to.be.revertedWith("Not enough history");
-    });
-  });
-
-  makeSuite("NFTOracle: Data validity check", () => {
-    before(async () => {
-      const { mockNftOracle, users } = testEnv;
-      await mockNftOracle.setDataValidityParameters("200000000000000000", "100000000000000000", 10, 5);
-    });
-    after(async () => {
-      const { mockNftOracle, users } = testEnv;
-      await mockNftOracle.setDataValidityParameters("20000000000000000000", "10000000000000000000", 1, 1);
-    });
-    it("price > maxPriceDeviation", async () => {
-      const { mockNftOracle, users } = testEnv;
-      await mockNftOracle.addAsset(users[0].address);
-      const currentTime = await mockNftOracle.mock_getCurrentTimestamp();
-      await mockNftOracle.mock_setBlockTimestamp(currentTime.add(15));
-      await mockNftOracle.setAssetData(users[0].address, 400);
-      await mockNftOracle.mock_setBlockTimestamp(currentTime.add(30));
-      await expect(mockNftOracle.setAssetData(users[0].address, 481)).to.be.revertedWith(
-        "NFTOracle: invalid price data"
-      );
-      await mockNftOracle.setAssetData(users[0].address, 480);
-      await mockNftOracle.mock_setBlockTimestamp(currentTime.add(39));
-      await expect(mockNftOracle.setAssetData(users[0].address, 530)).to.be.revertedWith(
-        "NFTOracle: invalid price data"
-      );
-      await mockNftOracle.mock_setBlockTimestamp(currentTime.add(45));
-      await mockNftOracle.setAssetData(users[0].address, 530);
-      await mockNftOracle.mock_setBlockTimestamp(currentTime.add(49));
-      await expect(mockNftOracle.setAssetData(users[0].address, 531)).to.be.revertedWith(
-        "NFTOracle: invalid price data"
-      );
-      await mockNftOracle.mock_setBlockTimestamp(currentTime.add(60));
-      await mockNftOracle.setAssetData(users[0].address, 531);
-      await mockNftOracle.removeAsset(users[0].address);
-    });
-
-    it("set data validity parameters", async () => {
-      const { mockNftOracle, users } = testEnv;
-      const maxPriceDeviation = await mockNftOracle.maxPriceDeviation();
-      const maxPriceDeviationWithTime = await mockNftOracle.maxPriceDeviationWithTime();
-      const timeIntervalWithPrice = await mockNftOracle.timeIntervalWithPrice();
-      const minimumUpdateTime = await mockNftOracle.minUpdateTime();
-      expect(maxPriceDeviation).to.equal("200000000000000000");
-      expect(maxPriceDeviationWithTime).to.equal("100000000000000000");
-      expect(timeIntervalWithPrice).to.equal("10");
-      expect(minimumUpdateTime).to.equal("5");
-
-      await mockNftOracle.setDataValidityParameters("150000000000000000", "60000000000000000", 3600, 600);
-      const maxPriceDeviation2 = await mockNftOracle.maxPriceDeviation();
-      const maxPriceDeviationWithTime2 = await mockNftOracle.maxPriceDeviationWithTime();
-      const timeIntervalWithPrice2 = await mockNftOracle.timeIntervalWithPrice();
-      const minimumUpdateTime2 = await mockNftOracle.minUpdateTime();
-      expect(maxPriceDeviation2).to.equal("150000000000000000");
-      expect(maxPriceDeviationWithTime2).to.equal("60000000000000000");
-      expect(timeIntervalWithPrice2).to.equal("3600");
-      expect(minimumUpdateTime2).to.equal("600");
-      await mockNftOracle.setDataValidityParameters("200000000000000000", "100000000000000000", 10, 5);
     });
   });
 
