@@ -61,6 +61,7 @@ export enum Network {
       PUDGY: '0x000088fb0b3f8c43da271DB60098A000D8bf1a62',
       MFER: '0x000000FFe81592Aafa726938b672E1d94bA58d05',
       LILP: '0x0000000EB7a675E278a37532E027754fB92716B8',
+      TEST: '0x0000Fe4C00AB4e80340CdDD7c9005200e70BE9f4'
     },
     [Network.main]: {
       WPUNKS: '0xb7F7F6C52F2e2fdb1963Eab30438024864c313F6',
@@ -122,6 +123,11 @@ export enum Network {
         maxSupply: "21905",
         maxTokenId: "21904",
       }, 
+      TEST: {
+        ...strategyNft,
+        maxSupply: "10000",
+        maxTokenId: "9999",
+      }
     },
     [Network.main]: {
       WPUNKS: {
