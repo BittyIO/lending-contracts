@@ -111,9 +111,8 @@ task("deploy:deploy-all", "Deploy lend pool for full enviroment")
     await run("config:config-nft-oracle");
     await run("config:config-reserves", { verify });
     await run('config:add-aggregators');
-    await run("config:config-nfts", { init: true });
     await run("deploy:deploy-weth-gateway", { verify });
-    await run("config:config-weth-gateway");
+    await run("config:config-nfts", { init: true });
     await run("deploy:deploy-punk-gateway", { verify });
     await run('config:punkgateway-authorize-lendpool-erc20-tokens');
     await run("config:wethgateway-authorize-caller-whitelist", { caller: (await getPunkGateway()).address, flag: '1' });
@@ -465,6 +464,7 @@ task("config:config-nfts", "")
       await initNftsByHelper(nftsConfig, nftsAssets);
     }
     await configureNftsByHelper(nftsConfig, nftsAssets);
+    await run("config:config-weth-gateway");
   });
 
 export const deployWETHGateway = async (verify?: boolean) => {
@@ -513,7 +513,6 @@ task(`deploy:deploy-weth-gateway`, ``)
 
 
 task(`config:config-weth-gateway`, ``)
-  .addFlag("verify", `Verify contract via Etherscan API.`)
   .setAction(async ({ }, { network, run }) => {
     await run("set-DRE");
     await run("compile");
