@@ -271,3 +271,14 @@ export enum Network {
     [Network.sepolia]: '0x17D6f53fba815bAcE0e6921885addAd79add1340',
     [Network.main]: '0xb47e3cd837ddf8e4c57f05d70ab865de6e193bbb',
   };
+
+  export const UniswapV3Router: Params<string> = {
+    [Network.sepolia]: '0x3bFA4769FB09eefC5a80d6E87c3B9C650f7Ae48E',
+    [Network.main]: '0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45',
+  };
+
+
+  export const AaveAddressProvider: Params<string> = {
+    [Network.sepolia]: '0x012bAC54348C0E635dCAc9D5FB99f06F24136C9A',
+    [Network.main]: '0x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e',
+  };

@@ -53,7 +53,7 @@ makeSuite("Adapter: Uniswap v3 debt swap test cases", (testEnv: TestEnv) => {
 
     mockAaveAddressProvider = await new MockAaveLendPoolAddressesProviderFactory(testEnv.deployer.signer).deploy();
     mockAavePool = await new MockAaveLendPoolFactory(testEnv.deployer.signer).deploy();
-    await waitForTx(await mockAaveAddressProvider.setLendingPool(mockAavePool.address));
+    await waitForTx(await mockAaveAddressProvider.setPool(mockAavePool.address));
     mockUniswapV3SwapRouter = await new MockUniswapV3SwapRouterFactory(testEnv.deployer.signer).deploy();
 
     debtSwapAdapter = await new UniswapV3DebtSwapAdapterFactory(testEnv.deployer.signer).deploy();

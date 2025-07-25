@@ -6,11 +6,11 @@ import {IAaveLendPoolAddressesProvider} from "../adapters/interfaces/IAaveLendPo
 contract MockAaveLendPoolAddressesProvider is IAaveLendPoolAddressesProvider {
   address public lendingPool;
 
-  function setLendingPool(address lendingPool_) public {
+  function setPool(address lendingPool_) public {
     lendingPool = lendingPool_;
   }
 
-  function getLendingPool() public view override returns (address) {
+  function getPool() public view override returns (address) {
     return lendingPool;
   }
 }

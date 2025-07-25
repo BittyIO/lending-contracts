@@ -9,5 +9,5 @@ pragma solidity 0.8.4;
  * @author Bitty
  **/
 interface IAaveLendPoolAddressesProvider {
-  function getLendingPool() external view returns (address);
+  function getPool() external view returns (address);
 }
