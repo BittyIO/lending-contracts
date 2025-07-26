@@ -1,5 +1,4 @@
 import { task } from "hardhat/config";
-import { ZERO_ADDRESS } from "../../helpers/constants";
 import {
     deployBorrowLogicLibrary,
     deployGenericLogic,
@@ -11,10 +10,7 @@ import {
     deploySupplyLogicLibrary,
     deployValidationLogic
 } from "../../helpers/contracts-deployments";
-import { getDeploySigner, getPunkGateway } from "../../helpers/contracts-getters";
-import { getContractAddressInDb } from "../../helpers/contracts-helpers";
-import { BittyProxyAdminFactory, LendPoolAddressesProviderFactory } from "../../types";
-import { deployWETHGateway, getWETHGateway } from "../deploy/deploy";
+import { deployWETHGateway } from "../deploy/deploy";
 
 task(`upgrade:referral`, ``)
     .addFlag("verify", `Verify contracts at Etherscan`)
@@ -44,34 +40,5 @@ task(`upgrade:referral`, ``)
     });
 
 
-task(`abi:referral`, ``)
-    .setAction(async ({ }, { run }) => {
-        await run("set-DRE");
-        await run("compile");
-        console.log("0x0000000000000000000000000000000000000000000000000000000000000000");
-        const wethGateway = await getWETHGateway();
-        const wethGatewayImpl = await getContractAddressInDb("WETHGatewayImpl");
-        console.log("upgrade WETHGateway %s to %s", wethGateway.address, wethGatewayImpl);
-        let data = BittyProxyAdminFactory.connect(
-            ZERO_ADDRESS,
-            await getDeploySigner()
-        ).interface.encodeFunctionData("upgrade", [wethGateway.address, wethGatewayImpl]);
-        console.log('WETHGateway upgrade data', data);
-        const punkGateway = await getPunkGateway();
-        const punkGatewayImpl = await getContractAddressInDb("PunkGatewayImpl");
-        console.log("upgrade PunkGateway %s to %s", punkGateway.address, punkGatewayImpl);
-        data = BittyProxyAdminFactory.connect(
-            ZERO_ADDRESS,
-            await getDeploySigner()
-        ).interface.encodeFunctionData("upgrade", [punkGateway.address, punkGatewayImpl]);
-        console.log('PunkGateway upgrade data', data);
 
 
-        const lendPoolImpl = await getContractAddressInDb("LendPoolImpl");
-        console.log("upgrade LendPool to %s", lendPoolImpl);
-        data = LendPoolAddressesProviderFactory.connect(
-            ZERO_ADDRESS,
-            await getDeploySigner()
-        ).interface.encodeFunctionData("setLendPoolImpl", [lendPoolImpl, []]);
-        console.log('LendPool upgrade data', data);
-    });
