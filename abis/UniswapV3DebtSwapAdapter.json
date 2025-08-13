@@ -269,7 +269,7 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "aaveAddressesProvider_",
+        "name": "aaveV3PoolAddressesProvider_",
         "type": "address"
       },
       {

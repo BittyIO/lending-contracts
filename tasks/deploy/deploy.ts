@@ -29,6 +29,7 @@ import {
   deployReserveOracle,
   deploySupplyLogicLibrary,
   deployUiPoolDataProvider,
+  deployUniswapV3DebtSwapAdapter,
   deployValidationLogic,
   deployWalletBalancerProvider
 } from "../../helpers/contracts-deployments";
@@ -59,12 +60,14 @@ import {
   getReserveOracleImpl,
   getSupplyLogic,
   getUIPoolDataProvider,
+  getUniswapV3DebtSwapAdapter,
   getWalletProvider
 } from "../../helpers/contracts-getters";
 import {
   getContractAddressInDb,
   insertContractAddressInDb,
   registerContractInJsonDb,
+  tryGetContractAddressInDb,
   verifyContract,
   withSaveAndVerify
 } from "../../helpers/contracts-helpers";
@@ -84,9 +87,10 @@ import {
   BittyUpgradeableProxy,
   BittyUpgradeableProxyFactory,
   PunkGateway,
+  UniswapV3DebtSwapAdapter,
   WETHGatewayFactory,
 } from "../../types";
-import { BNFTRegistry, IncentivesController, NftAssets, NftConfigs, Punk, ReserveAggregators, ReserveAssets, ReserveConfigs } from "./config";
+import { AaveAddressProvider, BNFTRegistry, IncentivesController, NftAssets, NftConfigs, Punk, ReserveAggregators, ReserveAssets, ReserveConfigs, UniswapV3Router } from "./config";
 
 task("deploy:deploy-all", "Deploy lend pool for full enviroment")
   .addFlag("verify", "Verify contracts at Etherscan")
@@ -966,4 +970,75 @@ task("config:set-timelock", "Set timelock address")
     const punkGateway = await getPunkGateway();
     await punkGateway.transferOwnership(timelock);
     console.log("punkGateway transfer ownership to", timelock);
+  });
+
+
+task(`deploy:uniswapv3-debtswap-adapter`, `Deploys the UniswapV3DebtSwapAdapter contract`)
+  .addFlag("verify", `Verify contract via Etherscan API.`)
+  .setAction(async ({ verify }, DRE) => {
+    await DRE.run("set-DRE");
+    await DRE.run("clean");
+    await DRE.run("compile");
+
+    if (!DRE.network.config.chainId) {
+      throw new Error("INVALID_CHAIN_ID");
+    }
+    const addressesProvider = await getLendPoolAddressesProvider();
+
+    const proxyAdmin = await getBittyProxyAdminById(eContractid.BittyProxyAdminPool);
+    if (proxyAdmin == undefined || !notFalsyOrZeroAddress(proxyAdmin.address)) {
+      throw Error("Invalid common proxy admin in config");
+    }
+    const proxyAdminOwnerAddress = await proxyAdmin.owner();
+    const proxyAdminOwnerSigner = DRE.ethers.provider.getSigner(proxyAdminOwnerAddress);
+
+    const swapAdapterId = eContractid.UniswapV3DebtSwapAdapter;
+    // try find the existing proxy address first
+    const swapAdapterAddress = await tryGetContractAddressInDb(swapAdapterId);
+
+    console.log(`Deploying new ${swapAdapterId} implementation...`);
+    const swapAdapterImpl = await deployUniswapV3DebtSwapAdapter(verify);
+    // const swapAdapterImpl = await getUniswapV3DebtSwapAdapterImpl();
+
+    console.log("AaveAddressProvider", AaveAddressProvider[DRE.network.name]);
+    console.log("addressesProvider", addressesProvider.address);
+    console.log("UniswapV3Router", UniswapV3Router[DRE.network.name]);
+
+    const initEncodedData = swapAdapterImpl.interface.encodeFunctionData("initialize", [
+      AaveAddressProvider[DRE.network.name],
+      addressesProvider.address,
+      UniswapV3Router[DRE.network.name],
+    ]);
+
+    let swapAdapter: UniswapV3DebtSwapAdapter;
+    let swapAdapterProxy: BittyUpgradeableProxy;
+
+    if (swapAdapterAddress != undefined && notFalsyOrZeroAddress(swapAdapterAddress)) {
+      console.log(`Upgrading exist ${swapAdapterId} proxy to new implementation...`);
+
+      await insertContractAddressInDb(swapAdapterId, swapAdapterAddress);
+      swapAdapterProxy = await getBittyUpgradeableProxy(swapAdapterAddress);
+
+      // only proxy admin can do upgrading
+      await waitForTx(
+        await proxyAdmin.connect(proxyAdminOwnerSigner).upgrade(swapAdapterProxy.address, swapAdapterImpl.address)
+      );
+
+      swapAdapter = await getUniswapV3DebtSwapAdapter(swapAdapterProxy.address);
+    } else {
+      console.log(`Deploying new ${swapAdapterId} proxy with implementation...`);
+      swapAdapterProxy = await deployBittyUpgradeableProxy(
+        swapAdapterId,
+        proxyAdmin.address,
+        swapAdapterImpl.address,
+        initEncodedData,
+        verify
+      );
+
+      swapAdapter = await getUniswapV3DebtSwapAdapter(swapAdapterProxy.address);
+    }
+
+    console.log(`${swapAdapterId}: proxy ${swapAdapter.address}, implementation ${swapAdapterImpl.address}`);
+
+    console.log(`Finished ${swapAdapterId} deployment`);
   });

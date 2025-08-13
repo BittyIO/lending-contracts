@@ -9,8 +9,8 @@ import {IERC721Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC7
 import {SafeERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
 import {ERC721HolderUpgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC721/utils/ERC721HolderUpgradeable.sol";
 
-import {IAaveLendPoolAddressesProvider} from "./interfaces/IAaveLendPoolAddressesProvider.sol";
 import {IAaveLendPool} from "./interfaces/IAaveLendPool.sol";
+import {IAaveLendPoolAddressesProvider} from "./interfaces/IAaveLendPoolAddressesProvider.sol";
 import {IAaveFlashLoanReceiver} from "./interfaces/IAaveFlashLoanReceiver.sol";
 import {ILendPoolAddressesProvider} from "../interfaces/ILendPoolAddressesProvider.sol";
 import {ILendPool} from "../interfaces/ILendPool.sol";
@@ -23,6 +23,7 @@ import {PercentageMath} from "../libraries/math/PercentageMath.sol";
 import {BittyProtocolDataProvider} from "../misc/BittyProtocolDataProvider.sol";
 
 import {ISwapRouter} from "./interfaces/ISwapRouter.sol";
+
 
 /**
  * @title UniswapV3DebtSwapAdapter
@@ -54,7 +55,7 @@ contract UniswapV3DebtSwapAdapter is
   ISwapRouter public swapRouter;
 
   function initialize(
-    address aaveAddressesProvider_,
+    address aaveV3PoolAddressesProvider_,
     address bittyAddressesProvider_,
     address swapRouter_
   ) external initializer {
@@ -63,8 +64,8 @@ contract UniswapV3DebtSwapAdapter is
     __Pausable_init();
     __ERC721Holder_init();
 
-    aaveAddressesProvider = IAaveLendPoolAddressesProvider(aaveAddressesProvider_);
-    aaveLendPool = IAaveLendPool(aaveAddressesProvider.getLendingPool());
+    aaveAddressesProvider = IAaveLendPoolAddressesProvider(aaveV3PoolAddressesProvider_);
+    aaveLendPool = IAaveLendPool(aaveAddressesProvider.getPool());
 
     bittyAddressesProvider = ILendPoolAddressesProvider(bittyAddressesProvider_);
     bittyLendPool = ILendPool(bittyAddressesProvider.getLendPool());

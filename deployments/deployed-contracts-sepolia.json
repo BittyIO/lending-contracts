@@ -134,5 +134,8 @@
   },
   "bittyDebtUSDC": {
     "address": "0x1f52E6BFf3F280542D7CfbF369D2C57B50B0B54D"
+  },
+  "UniswapV3DebtSwapAdapter": {
+    "address": "0x3554d916105d069425f13AA9C5474CAFaD5A9407",
   }
 }
